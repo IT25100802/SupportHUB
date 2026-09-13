@@ -1,0 +1,37 @@
+-- SE2030 Customer Support System Database Schema
+-- Target Database: MySQL 8.0+
+
+CREATE DATABASE IF NOT EXISTS customer_support_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE customer_support_db;
+
+-- 11. FAQ Articles Table
+CREATE TABLE IF NOT EXISTS faq_articles (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    question VARCHAR(255) NOT NULL,
+    answer TEXT NOT NULL,
+    category_id BIGINT NULL,
+    is_published TINYINT(1) NOT NULL DEFAULT 1,
+    keywords TEXT,
+    view_count INT NOT NULL DEFAULT 0,
+    created_by_id BIGINT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_faq_category FOREIGN KEY (category_id) REFERENCES ticket_categories(id) ON DELETE SET NULL,
+    CONSTRAINT fk_faq_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 12. Knowledge Base Articles Table
+CREATE TABLE IF NOT EXISTS knowledge_base_articles (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    content LONGTEXT NOT NULL,
+    category_id BIGINT NULL,
+    is_published TINYINT(1) NOT NULL DEFAULT 1,
+    tags VARCHAR(255),
+    view_count INT NOT NULL DEFAULT 0,
+    created_by_id BIGINT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_kb_category FOREIGN KEY (category_id) REFERENCES ticket_categories(id) ON DELETE SET NULL,
+    CONSTRAINT fk_kb_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
