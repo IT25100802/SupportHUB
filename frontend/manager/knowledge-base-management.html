@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Base Management - SupportHUB</title>
+  <link rel="stylesheet" href="../css/main.css?v=2.0">
+  <link rel="stylesheet" href="../css/components.css?v=2.0">
+  <link rel="stylesheet" href="../css/dashboard.css?v=2.0">
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div></div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="page-header-row">
+          <div class="page-title-group">
+            <h1>Knowledge Base Articles</h1>
+            <p>Manage, edit, publish, and structure technical documentation articles.</p>
+          </div>
+          <div class="header-action-wrap">
+            <div class="view-toggle-container">
+              <button id="btn-view-cards" onclick="switchKbView('cards')" class="btn btn-primary"><i class="fa-solid fa-table-cells-large"></i> Cards</button>
+              <button id="btn-view-table" onclick="switchKbView('table')" class="btn btn-secondary"><i class="fa-solid fa-table-list"></i> Table</button>
+            </div>
+            <button onclick="openKbModal()" class="btn btn-primary btn-header-action"><i class="fa-solid fa-plus"></i> Create Article</button>
+          </div>
+        </div>
+
+        <!-- Divided Cards Grid View (Default) -->
+        <div id="kb-cards-container" class="kb-cards-grid">
+          <!-- Dynamically loaded cards -->
+        </div>
+
+        <!-- Data Table View (Optional Hidden View) -->
+        <div id="kb-table-container" class="card-table-wrapper" style="display:none;">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th class="col-center" style="width: 70px;">ID</th>
+                <th class="col-left">Title</th>
+                <th class="col-center" style="width: 220px;">Category</th>
+                <th class="col-center" style="width: 100px;">Views</th>
+                <th class="col-center" style="width: 130px;">Status</th>
+                <th class="col-center" style="width: 280px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="kb-table-body">
+              <tr><td colspan="6" class="col-center">Loading articles...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create/Edit KB Modal -->
+  <div class="modal-backdrop" id="kb-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="kb-modal-title">Create Knowledge Article</h3>
+        <button onclick="closeKbModal()" class="close-modal">&times;</button>
+      </div>
+      <form id="kb-form">
+        <input type="hidden" id="kb-id" />
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select id="kb-category" class="form-control">
+            <option value="">-- General --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Article Title *</label>
+          <input type="text" id="kb-title" class="form-control" placeholder="e.g. Getting Started Guide..." required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Article Content *</label>
+          <textarea id="kb-content" class="form-control" rows="6" placeholder="Full documentation text..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+            <input type="checkbox" id="kb-published" checked />
+            <span>Publish immediately</span>
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Save Article</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js?v=9.0"></script>
+  <script src="../js/auth.js?v=9.0"></script>
+  <script src="../js/utils.js?v=9.0"></script>
+  <script src="../js/notifications.js?v=9.0"></script>
+  <script>
+    let kbCache = [];
+    let currentKbView = 'cards';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['CUSTOMER_SUPPORT_MANAGER'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      await fetchCategories();
+      await fetchKbArticles();
+
+      document.getElementById('kb-form').addEventListener('submit', handleKbSubmit);
+    });
+
+    function switchKbView(view) {
+      currentKbView = view;
+      const cardsContainer = document.getElementById('kb-cards-container');
+      const tableContainer = document.getElementById('kb-table-container');
+      const btnCards = document.getElementById('btn-view-cards');
+      const btnTable = document.getElementById('btn-view-table');
+
+      if (view === 'cards') {
+        cardsContainer.style.display = 'grid';
+        tableContainer.style.display = 'none';
+        btnCards.className = 'btn btn-primary';
+        btnTable.className = 'btn btn-secondary';
+      } else {
+        cardsContainer.style.display = 'none';
+        tableContainer.style.display = 'block';
+        btnCards.className = 'btn btn-secondary';
+        btnTable.className = 'btn btn-primary';
+      }
+    }
+
+    async function fetchCategories() {
+      try {
+        const res = await API.get('/categories');
+        const select = document.getElementById('kb-category');
+        select.innerHTML = '<option value="">-- General --</option>' +
+          (res.data || []).map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      } catch (err) {
+        console.warn('Could not fetch categories');
+      }
+    }
+
+    async function fetchKbArticles() {
+      try {
+        const res = await API.get('/knowledge-base');
+        kbCache = res.data || [];
+
+        const cardsContainer = document.getElementById('kb-cards-container');
+        const tbody = document.getElementById('kb-table-body');
+
+        if (kbCache.length === 0) {
+          cardsContainer.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:3rem; background:white; border-radius:16px; color:var(--text-muted);">No knowledge articles created yet.</div>';
+          tbody.innerHTML = '<tr><td colspan="6" class="col-center">No knowledge articles created yet.</td></tr>';
+          return;
+        }
+
+        // Render Cards View
+        cardsContainer.innerHTML = kbCache.map(k => `
+          <div class="kb-article-card">
+            <div>
+              <div class="kb-card-top">
+                <span class="kb-card-id">#${k.id}</span>
+                <span class="badge ${k.published ? 'badge-resolved' : 'badge-closed'}">${k.published ? 'PUBLISHED' : 'DRAFT'}</span>
+              </div>
+              <h3 class="kb-card-title">${k.title}</h3>
+              <p class="kb-card-snippet">${k.content ? k.content.substring(0, 140) + '...' : 'No content preview available.'}</p>
+            </div>
+            <div>
+              <div class="kb-card-meta">
+                <span class="badge badge-in_progress"><i class="fa-solid fa-folder"></i> ${k.categoryName || 'General'}</span>
+                <span class="kb-card-views"><i class="fa-solid fa-eye"></i> ${k.viewCount} views</span>
+              </div>
+              <div class="kb-card-actions">
+                <button onclick="editKb(${k.id})" class="btn btn-outline-secondary"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                <button onclick="toggleKbPublished(${k.id})" class="btn btn-outline-warning"><i class="fa-solid ${k.published ? 'fa-eye-slash' : 'fa-eye'}"></i> ${k.published ? 'Unpublish' : 'Publish'}</button>
+                <button onclick="deleteKb(${k.id})" class="btn btn-outline-danger"><i class="fa-solid fa-trash-can"></i> Delete</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        // Render Table View
+        tbody.innerHTML = kbCache.map(k => `
+          <tr>
+            <td class="col-center"><strong>#${k.id}</strong></td>
+            <td class="col-left"><strong style="color:var(--navy-dark); font-size:0.925rem;">${k.title}</strong></td>
+            <td class="col-center"><span class="badge badge-in_progress">${k.categoryName || 'General'}</span></td>
+            <td class="col-center"><span style="font-weight:700;">${k.viewCount}</span></td>
+            <td class="col-center">
+              <span class="badge ${k.published ? 'badge-resolved' : 'badge-closed'}">${k.published ? 'PUBLISHED' : 'DRAFT'}</span>
+            </td>
+            <td class="col-center">
+              <div class="action-btn-group">
+                <button onclick="editKb(${k.id})" class="btn btn-outline-secondary"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                <button onclick="toggleKbPublished(${k.id})" class="btn btn-outline-warning"><i class="fa-solid ${k.published ? 'fa-eye-slash' : 'fa-eye'}"></i> ${k.published ? 'Unpublish' : 'Publish'}</button>
+                <button onclick="deleteKb(${k.id})" class="btn btn-outline-danger"><i class="fa-solid fa-trash-can"></i> Delete</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        Utils.showToast('Failed to fetch knowledge base articles', 'error');
+      }
+    }
+
+    function openKbModal() {
+      document.getElementById('kb-id').value = '';
+      document.getElementById('kb-form').reset();
+      document.getElementById('kb-published').checked = true;
+      document.getElementById('kb-modal-title').textContent = 'Create Knowledge Article';
+      document.getElementById('kb-modal').classList.add('show');
+    }
+
+    function closeKbModal() {
+      document.getElementById('kb-modal').classList.remove('show');
+    }
+
+    function editKb(id) {
+      const k = kbCache.find(x => x.id === id);
+      if (!k) return;
+
+      document.getElementById('kb-id').value = k.id;
+      document.getElementById('kb-category').value = k.categoryId || '';
+      document.getElementById('kb-title').value = k.title;
+      document.getElementById('kb-content').value = k.content;
+      document.getElementById('kb-published').checked = k.published;
+      document.getElementById('kb-modal-title').textContent = 'Edit Knowledge Article';
+      document.getElementById('kb-modal').classList.add('show');
+    }
+
+    async function handleKbSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('kb-id').value;
+      const categoryId = document.getElementById('kb-category').value;
+      const title = document.getElementById('kb-title').value.trim();
+      const content = document.getElementById('kb-content').value.trim();
+      const published = document.getElementById('kb-published').checked;
+
+      const body = {
+        categoryId: categoryId ? parseInt(categoryId, 10) : null,
+        title,
+        content,
+        tags: '',
+        published
+      };
+
+      try {
+        if (id) {
+          await API.put(`/knowledge-base/${id}`, body);
+          Utils.showToast('Article updated successfully', 'success');
+        } else {
+          await API.post('/knowledge-base', body);
+          Utils.showToast('Article created successfully', 'success');
+        }
+
+        closeKbModal();
+        await fetchKbArticles();
+      } catch (err) {
+        Utils.showToast(err.message || 'Action failed', 'error');
+      }
+    }
+
+    async function toggleKbPublished(id) {
+      try {
+        await API.patch(`/knowledge-base/${id}/toggle-published`);
+        Utils.showToast('Published status toggled', 'success');
+        await fetchKbArticles();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to toggle status', 'error');
+      }
+    }
+
+    async function deleteKb(id) {
+      if (!confirm('Are you sure you want to delete this knowledge article?')) return;
+      try {
+        await API.delete(`/knowledge-base/${id}`);
+        Utils.showToast('Article deleted successfully', 'success');
+        await fetchKbArticles();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to delete article', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

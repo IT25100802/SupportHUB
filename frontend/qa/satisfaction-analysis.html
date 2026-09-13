@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Satisfaction Analytics - SupportHUB</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div></div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="page-header-row">
+          <div class="page-title-group">
+            <h1>CSAT & Quality Assurance Report</h1>
+            <p>Quantitative analysis of overall customer satisfaction metrics derived from real database feedback.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-grid-2">
+          <div class="panel-card">
+            <h3 style="margin-bottom: 1.5rem;">Overall Customer Satisfaction Index</h3>
+            <div style="display:flex; align-items:center; gap:2rem; margin-bottom:2rem; flex-wrap:wrap;">
+              <div style="text-align:center;">
+                <div style="font-size: 3.5rem; font-weight: 800; color: var(--warning);" id="report-avg-rating">0.0</div>
+                <div id="report-stars" style="font-size: 1.5rem; margin-top:-0.5rem;">★★★★★</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top:0.25rem;">Average CSAT Rating</div>
+              </div>
+              <div style="flex:1; min-width:200px;">
+                <div style="margin-bottom: 1rem;">
+                  <div style="font-size: 1.1rem; font-weight:700; color: var(--success);" id="report-sat-pct">0%</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">Positive Customer Satisfaction Score (Ratings 4 & 5)</div>
+                </div>
+                <div>
+                  <div style="font-size: 1.1rem; font-weight:700; color: var(--text-main);" id="report-total-count">0</div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">Total Verified Feedback Submissions</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <h3 style="margin-bottom: 1.5rem;">Ratings Breakdown</h3>
+            <div id="csat-breakdown-rows" style="display:flex; flex-direction:column; gap:1rem;">
+              <!-- Loaded dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['QA_EXECUTIVE'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      await loadSatisfactionReport();
+    });
+
+    async function loadSatisfactionReport() {
+      try {
+        const res = await API.get('/feedback/analytics');
+        const r = res.data;
+
+        document.getElementById('report-avg-rating').textContent = r.averageRating;
+        document.getElementById('report-sat-pct').textContent = `${r.satisfactionPercentage}%`;
+        document.getElementById('report-total-count').textContent = r.totalFeedbackCount;
+        document.getElementById('report-stars').innerHTML = Utils.renderStars(Math.round(r.averageRating));
+
+        const dist = r.ratingDistribution || {};
+        const total = r.totalFeedbackCount || 1;
+
+        const rowsContainer = document.getElementById('csat-breakdown-rows');
+        rowsContainer.innerHTML = [5, 4, 3, 2, 1].map(stars => {
+          const count = dist[stars] || 0;
+          const pct = Math.round((count / total) * 100);
+          return `
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.9rem; font-weight:500; margin-bottom:0.25rem;">
+                <span>${stars} Stars</span>
+                <span>${count} responses (${pct}%)</span>
+              </div>
+              <div style="height:10px; background-color:var(--bg-dark); border-radius:var(--radius-full); overflow:hidden;">
+                <div style="width:${pct}%; height:100%; background-color:${stars >= 4 ? 'var(--success)' : (stars === 3 ? 'var(--warning)' : 'var(--danger)')};"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        Utils.showToast('Failed to load satisfaction report', 'error');
+      }
+    }
+  </script>
+</body>
+</html>
