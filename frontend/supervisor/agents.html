@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Agents - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div>
+      </div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">
+                Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i
+              class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="page-header-row">
+          <div class="page-title-group">
+            <h1>Support Officer Roster</h1>
+            <p>Register new support officers, view active workloads, and configure category permissions.</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <div class="btn-group-toggle">
+              <button id="view-cards-btn" onclick="setViewMode('cards')"
+                class="btn btn-sm btn-outline-secondary active"><i class="fa-solid fa-grid-2"></i> Cards</button>
+              <button id="view-table-btn" onclick="setViewMode('table')" class="btn btn-sm btn-outline-secondary"><i
+                  class="fa-solid fa-table-list"></i> Table</button>
+            </div>
+            <button onclick="openAgentModal()" class="btn btn-warning" style="background: #f59e0b; border: 1px solid #d97706; color: #0f172a; font-weight: 700; padding: 0.6rem 1.25rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35); cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem;"><i class="fa-solid fa-user-plus"></i> Onboard Staff Member</button>
+          </div>
+        </div>
+
+        <!-- Cards Grid View (Default) -->
+        <div id="agents-cards-container" class="cards-grid">
+          <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">Loading officers...</div>
+        </div>
+
+        <!-- Table View (Optional Toggle) -->
+        <div id="agents-table-wrapper" class="card-table-wrapper" style="display: none;">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Assigned Categories</th>
+                <th class="col-center">Active Tickets</th>
+                <th class="col-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="agents-table-body">
+              <tr>
+                <td colspan="8" style="text-align: center;">Loading officers...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Agent Modal -->
+  <div class="modal-backdrop" id="agent-modal">
+    <div class="modal-content"
+      style="max-width: 580px; max-height: 85vh; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+      <div class="modal-header" style="padding: 1.5rem 1.75rem 1rem; margin-bottom: 0; flex-shrink: 0; background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white;">
+        <h3 style="color: white; margin: 0;"><i class="fa-solid fa-user-plus" style="color: #f59e0b; margin-right: 6px;"></i> Onboard Staff Member</h3>
+        <button onclick="closeAgentModal()" class="close-modal" style="color: white;">&times;</button>
+      </div>
+      <form id="agent-form" style="display: flex; flex-direction: column; flex: 1; min-height: 0; margin: 0;">
+        <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1.25rem 1.75rem 0.5rem;">
+          <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-user-shield" style="color: var(--navy-primary); margin-right: 4px;"></i> Staff Role *</label>
+            <select id="agent-role" class="form-control" onchange="toggleAgentCategorySection()" required>
+              <option value="CUSTOMER_SERVICE_OFFICER" selected>🎧 Customer Service Officer</option>
+              <option value="OPERATIONS_SUPERVISOR">🛡️ Operations Supervisor</option>
+              <option value="QA_EXECUTIVE">📊 QA Executive</option>
+              <option value="CUSTOMER_SUPPORT_MANAGER">👑 Customer Support Manager</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" id="agent-fullName" class="form-control" placeholder="Jane Smith" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Employee Code</label>
+            <input type="text" id="agent-employeeCode" class="form-control" placeholder="e.g. AGT-1003 (Auto-generated if left blank)" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address *</label>
+            <input type="email" id="agent-email" class="form-control" placeholder="jane.agent@demo.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="text" id="agent-phone" class="form-control" placeholder="+94 77 1234567" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Initial Password *</label>
+            <input type="password" id="agent-password" class="form-control" placeholder="••••••••" required />
+          </div>
+          <div class="form-group" style="margin-bottom: 0.5rem;">
+            <label class="form-label"><i class="fa-solid fa-layer-group"
+                style="color: var(--navy-primary); margin-right: 4px;"></i> Assign Support Categories (Optional)</label>
+            <div id="register-categories-list"
+              style="display: flex; flex-direction: column; gap: 0.6rem; padding: 0.25rem;">
+              <div style="text-align: center; color: var(--text-muted); padding: 0.75rem; font-size: 0.85rem;">Loading
+                categories...</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer"
+          style="padding: 1rem 1.75rem 1.5rem; flex-shrink: 0; border-top: 1px solid var(--border-color, #e2e8f0); background: var(--bg-surface, #ffffff);">
+          <button type="submit" class="btn btn-warning" style="width: 100%; background: #f59e0b; border-color: #d97706; color: #0f172a; font-weight: 700;"><i class="fa-solid fa-user-check"></i> Onboard Staff Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Agent Details Modal -->
+  <div class="modal-backdrop" id="edit-agent-modal">
+    <div class="modal-content" style="max-width: 580px; max-height: 85vh; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+      <div class="modal-header" style="padding: 1.5rem 1.75rem 1rem; margin-bottom: 0; flex-shrink: 0;">
+        <div>
+          <h3 style="margin:0;">Edit Support Officer Details</h3>
+          <p id="edit-agent-subtitle" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Update officer profile information & category assignments</p>
+        </div>
+        <button onclick="closeEditAgentModal()" class="close-modal">&times;</button>
+      </div>
+      <form id="edit-agent-form" style="display: flex; flex-direction: column; flex: 1; min-height: 0; margin: 0;">
+        <input type="hidden" id="edit-agent-id" />
+        <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1.25rem 1.75rem 0.5rem;">
+          <div class="form-group">
+            <label class="form-label">Employee Code</label>
+            <input type="text" id="edit-agent-employeeCode" class="form-control" readonly style="background: #f1f5f9; cursor: not-allowed;" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" id="edit-agent-fullName" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number *</label>
+            <input type="text" id="edit-agent-phone" class="form-control" placeholder="+94 77 1234567" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-user-shield" style="color: var(--navy-primary); margin-right: 4px;"></i> Staff Job Role / Position *</label>
+            <select id="edit-agent-role" class="form-control" required>
+              <option value="CUSTOMER_SERVICE_OFFICER">🎧 Customer Service Officer</option>
+              <option value="OPERATIONS_SUPERVISOR">🛡️ Operations Supervisor</option>
+              <option value="QA_EXECUTIVE">📊 QA Executive</option>
+              <option value="CUSTOMER_SUPPORT_MANAGER">👑 Customer Support Manager</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-toggle-on" style="color: var(--navy-primary); margin-right: 4px;"></i> Account Status</label>
+            <select id="edit-agent-active" class="form-control">
+              <option value="true">🟢 ACTIVE (Can Log In & Access System)</option>
+              <option value="false">🔴 DEACTIVATED (Access Suspended)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Availability Status</label>
+            <select id="edit-agent-status" class="form-control">
+              <option value="AVAILABLE">AVAILABLE</option>
+              <option value="BUSY">BUSY</option>
+              <option value="OFFLINE">OFFLINE</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 0.5rem;">
+            <label class="form-label"><i class="fa-solid fa-layer-group" style="color: var(--navy-primary); margin-right: 4px;"></i> Category Permissions</label>
+            <div id="edit-categories-list" style="display: flex; flex-direction: column; gap: 0.6rem; padding: 0.25rem;">
+              <div style="text-align: center; color: var(--text-muted); padding: 0.75rem; font-size: 0.85rem;">Loading categories...</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="padding: 1rem 1.75rem 1.5rem; flex-shrink: 0; border-top: 1px solid var(--border-color, #e2e8f0); background: var(--bg-surface, #ffffff); display: flex; gap: 0.75rem;">
+          <button type="button" onclick="closeEditAgentModal()" class="btn btn-secondary" style="flex:1;">Cancel</button>
+          <button type="button" onclick="handleEditAgentSubmit(event)" class="btn btn-primary" style="flex:2;"><i class="fa-solid fa-floppy-disk"></i> Save Officer Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Assign Categories Tick Option Pop-up Modal -->
+  <div class="modal-backdrop" id="assign-categories-modal">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header">
+        <div>
+          <h3 id="assign-modal-title" style="margin:0;">Assign Support Categories</h3>
+          <p id="assign-modal-subtitle" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+            Select which support categories this officer is authorized to handle.
+          </p>
+        </div>
+        <button onclick="closeAssignCategoriesModal()" class="close-modal">&times;</button>
+      </div>
+
+      <div id="assign-categories-list"
+        style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 340px; overflow-y: auto; margin-bottom: 1.5rem; padding-right: 0.3rem;">
+        <div style="text-align: center; color: var(--text-muted);">Loading categories...</div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+        <button onclick="closeAssignCategoriesModal()" class="btn btn-secondary">Cancel</button>
+        <button onclick="saveAssignedCategories()" class="btn btn-primary"><i class="fa-solid fa-circle-check"></i> Save
+          Category Permissions</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    let currentAgents = [];
+    let currentViewMode = 'cards';
+    let selectedAgentForCategories = null;
+    let allSystemCategories = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['OPERATIONS_SUPERVISOR'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      await Promise.all([
+        fetchAgents(),
+        fetchCategories()
+      ]);
+
+      document.getElementById('agent-form').addEventListener('submit', handleAgentSubmit);
+      const editForm = document.getElementById('edit-agent-form');
+      if (editForm) {
+        editForm.addEventListener('submit', handleEditAgentSubmit);
+      }
+    });
+
+    function setViewMode(mode) {
+      currentViewMode = mode;
+      document.getElementById('view-cards-btn').classList.toggle('active', mode === 'cards');
+      document.getElementById('view-table-btn').classList.toggle('active', mode === 'table');
+
+      document.getElementById('agents-cards-container').style.display = mode === 'cards' ? 'grid' : 'none';
+      document.getElementById('agents-table-wrapper').style.display = mode === 'table' ? 'block' : 'none';
+      renderAgents();
+    }
+
+    async function fetchCategories() {
+      try {
+        const res = await API.get('/categories');
+        allSystemCategories = (res.data || []).filter(c => c.active);
+      } catch (err) {
+        console.error('Failed to fetch categories:', err);
+      }
+    }
+
+    async function fetchAgents() {
+      try {
+        const res = await API.get('/agents');
+        currentAgents = res.data || [];
+        renderAgents();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to fetch support officers', 'error');
+      }
+    }
+
+    function formatRoleName(role) {
+      if (!role) return '🎧 Customer Service Officer';
+      switch (role) {
+        case 'CUSTOMER_SERVICE_OFFICER': return '🎧 Customer Service Officer';
+        case 'OPERATIONS_SUPERVISOR': return '🛡️ Operations Supervisor';
+        case 'QA_EXECUTIVE': return '📊 QA Executive';
+        case 'CUSTOMER_SUPPORT_MANAGER': return '👑 Customer Support Manager';
+        default: return role.replace(/_/g, ' ');
+      }
+    }
+
+    function renderAgents() {
+      if (currentViewMode === 'cards') {
+        renderCardsView();
+      } else {
+        renderTableView();
+      }
+    }
+
+    function renderCardsView() {
+      const container = document.getElementById('agents-cards-container');
+      if (!currentAgents || currentAgents.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">No support officers registered.</div>';
+        return;
+      }
+
+      container.innerHTML = currentAgents.map(a => {
+        const initials = a.fullName ? a.fullName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : 'AG';
+        const catChips = (a.assignedCategories || []).length > 0
+          ? (a.assignedCategories || []).map(c => `
+              <span class="tag-chip">
+                <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> ${c.name}
+              </span>
+            `).join('')
+          : '<span style="color:var(--text-muted); font-size:0.8rem;">No assigned categories</span>';
+
+        const statusBadgeClass = a.status === 'AVAILABLE' ? 'badge-resolved' : (a.status === 'BUSY' ? 'badge-in-progress' : 'badge-open');
+
+        return `
+          <div class="officer-card">
+            <div class="officer-card-header">
+              <div class="officer-info-wrap">
+                <div class="officer-avatar">${initials}</div>
+                <div class="officer-details">
+                  <div class="officer-name">${a.fullName}</div>
+                  <div class="officer-code"><i class="fa-solid fa-id-badge"></i> ${a.employeeCode}</div>
+                  <div style="margin-top: 0.35rem; display: inline-flex;">
+                    <span class="badge" style="background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; font-size: 0.725rem; font-weight: 700; padding: 0.18rem 0.55rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+                      ${formatRoleName(a.role)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <span class="badge ${statusBadgeClass}" style="align-self: flex-start; flex-shrink: 0; margin-left: auto;">${a.status}</span>
+            </div>
+
+            <div class="officer-card-body">
+              <div class="officer-meta-row"><i class="fa-solid fa-envelope"></i> <span>${a.email}</span></div>
+              <div class="officer-meta-row"><i class="fa-solid fa-phone"></i> <span>${a.phone || 'Not provided'}</span></div>
+              <div class="officer-workload"><i class="fa-solid fa-ticket"></i> <span>${a.activeTicketCount} Active Tickets</span></div>
+
+              <div class="officer-categories-title">Assigned Categories (${(a.assignedCategories || []).length})</div>
+              <div class="tag-chip-wrapper" style="margin-top: 0.3rem; cursor: pointer;" onclick="openAssignCategoriesModal(${a.id})" title="Click to edit category permissions">${catChips}</div>
+            </div>
+
+            <div class="officer-card-actions">
+              <button onclick="openEditAgentModal(${a.id})" class="btn btn-outline-primary" title="Edit Officer Details">
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </button>
+              <button onclick="openAssignCategoriesModal(${a.id})" class="btn btn-outline-secondary" title="Assign Categories">
+                <i class="fa-solid fa-layer-group"></i> Categories
+              </button>
+              <button onclick="deleteAgent(${a.id})" class="btn btn-outline-danger" title="Permanently Delete Staff Member">
+                <i class="fa-solid fa-trash-can"></i> Delete
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderTableView() {
+      const tbody = document.getElementById('agents-table-body');
+      if (!currentAgents || currentAgents.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No support officers registered.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = currentAgents.map(a => {
+        const catCount = (a.assignedCategories || []).length;
+        let catDisplay = '<span style="color:var(--text-muted); font-size:0.8rem;">None</span>';
+        if (catCount === 1) {
+          const cat = a.assignedCategories[0];
+          catDisplay = `<span class="tag-chip" onclick="openAssignCategoriesModal(${a.id})" style="cursor:pointer;" title="Click to edit category permissions"><i class="fa-solid fa-circle-check" style="color:#10b981;"></i> ${cat.name}</span>`;
+        } else if (catCount > 1) {
+          const catNames = a.assignedCategories.map(c => c.name).join(', ');
+          catDisplay = `<span class="tag-chip" onclick="openAssignCategoriesModal(${a.id})" style="background:#eff6ff; border-color:#bfdbfe; color:#1e40af; cursor:pointer;" title="Edit categories (${catNames})"><i class="fa-solid fa-layer-group"></i> ${catCount} Categories Assigned</span>`;
+        }
+
+        return `
+          <tr>
+            <td><strong style="color:var(--navy-primary); font-size:0.85rem;">${a.employeeCode}</strong></td>
+            <td><strong style="color:var(--navy-dark); font-size:0.875rem;">${a.fullName}</strong></td>
+            <td><span style="font-weight:600; color: #334155; font-size:0.85rem;">${a.email}</span></td>
+            <td><span style="font-weight:600; color: #334155; font-size:0.85rem;">${a.phone || '-'}</span></td>
+            <td><span class="badge badge-resolved" style="font-size:0.75rem;">${a.status}</span></td>
+            <td>${catDisplay}</td>
+            <td class="col-center"><span style="font-weight:800; color:var(--navy-dark);">${a.activeTicketCount}</span> active</td>
+            <td class="col-right">
+              <div class="action-btn-group">
+                <button onclick="openEditAgentModal(${a.id})" class="btn-action-icon btn-action-edit" title="Edit Officer Details">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button onclick="openAssignCategoriesModal(${a.id})" class="btn-action-icon btn-action-secondary" title="Assign Categories">
+                  <i class="fa-solid fa-network-wired"></i>
+                </button>
+                <button onclick="deleteAgent(${a.id})" class="btn-action-icon btn-action-danger" title="Delete Staff Member">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function openAssignCategoriesModal(agentId) {
+      selectedAgentForCategories = currentAgents.find(a => a.id === agentId);
+      if (!selectedAgentForCategories) return;
+
+      document.getElementById('assign-modal-title').textContent = `Assign Categories: ${selectedAgentForCategories.fullName}`;
+      document.getElementById('assign-modal-subtitle').textContent = `Employee Code: ${selectedAgentForCategories.employeeCode} | Authorize category permissions`;
+
+      const modalEl = document.getElementById('assign-categories-modal');
+      if (modalEl) {
+        modalEl.style.cssText = 'display: flex !important; z-index: 100000 !important;';
+        modalEl.classList.add('show');
+      }
+
+      const listContainer = document.getElementById('assign-categories-list');
+      listContainer.innerHTML = '<div style="text-align: center; padding: 1.5rem;">Loading categories...</div>';
+
+      try {
+        if (allSystemCategories.length === 0) {
+          const res = await API.get('/categories');
+          allSystemCategories = (res.data || []).filter(c => c.active);
+        }
+
+        const assignedIds = new Set((selectedAgentForCategories.assignedCategories || []).map(c => c.id));
+
+        if (allSystemCategories.length === 0) {
+          listContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted);">No active categories available.</div>';
+          return;
+        }
+
+        listContainer.innerHTML = allSystemCategories.map(cat => {
+          const isChecked = assignedIds.has(cat.id);
+          return `
+            <div class="cat-tick-card ${isChecked ? 'selected' : ''}" onclick="toggleTickCard(this, event)">
+              <input type="checkbox" class="cat-checkbox" value="${cat.id}" ${isChecked ? 'checked' : ''} />
+              <div class="cat-tick-box"><i class="fa-solid fa-check"></i></div>
+              <div class="cat-tick-info">
+                <div class="cat-tick-name">${cat.name}</div>
+                <div class="cat-tick-desc">${cat.description || 'No description provided'}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        Utils.showToast('Failed to load categories', 'error');
+      }
+    }
+
+    function toggleTickCard(cardEl, event) {
+      if (event && event.target.tagName === 'INPUT') return;
+      const checkbox = cardEl.querySelector('input[type="checkbox"]');
+      if (checkbox) {
+        checkbox.checked = !checkbox.checked;
+        cardEl.classList.toggle('selected', checkbox.checked);
+      }
+    }
+
+    function closeAssignCategoriesModal() {
+      const modalEl = document.getElementById('assign-categories-modal');
+      if (modalEl) {
+        modalEl.style.cssText = 'display: none !important;';
+        modalEl.classList.remove('show');
+      }
+      selectedAgentForCategories = null;
+    }
+
+    async function saveAssignedCategories() {
+      if (!selectedAgentForCategories) return;
+
+      const checkboxes = document.querySelectorAll('.cat-checkbox:checked');
+      const selectedCategoryIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+      try {
+        await API.put(`/agents/${selectedAgentForCategories.id}/categories`, {
+          categoryIds: selectedCategoryIds
+        });
+        Utils.showToast(`Category permissions updated for ${selectedAgentForCategories.fullName}`, 'success');
+        closeAssignCategoriesModal();
+        await fetchAgents();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to update category assignments', 'error');
+      }
+    }
+
+    async function openAgentModal() {
+      document.getElementById('agent-form').reset();
+      toggleAgentCategorySection();
+      const modalEl = document.getElementById('agent-modal');
+      if (modalEl) {
+        modalEl.style.cssText = 'display: flex !important; z-index: 100000 !important;';
+        modalEl.classList.add('show');
+      }
+
+      const listContainer = document.getElementById('register-categories-list');
+      listContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 0.75rem; font-size: 0.85rem;">Loading categories...</div>';
+
+      try {
+        if (allSystemCategories.length === 0) {
+          await fetchCategories();
+        }
+
+        if (allSystemCategories.length === 0) {
+          listContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 0.75rem; font-size: 0.85rem;">No active categories available.</div>';
+          return;
+        }
+
+        listContainer.innerHTML = allSystemCategories.map(cat => `
+          <div class="cat-tick-card" onclick="toggleTickCard(this, event)">
+            <input type="checkbox" class="register-cat-checkbox" value="${cat.id}" />
+            <div class="cat-tick-box"><i class="fa-solid fa-check"></i></div>
+            <div class="cat-tick-info">
+              <div class="cat-tick-name">${cat.name}</div>
+              <div class="cat-tick-desc">${cat.description || 'No description provided'}</div>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        listContainer.innerHTML = '<div style="text-align: center; color: var(--danger-color); padding: 0.75rem; font-size: 0.85rem;">Failed to load categories</div>';
+      }
+    }
+
+    function closeAgentModal() {
+      const modalEl = document.getElementById('agent-modal');
+      if (modalEl) {
+        modalEl.style.cssText = 'display: none !important;';
+        modalEl.classList.remove('show');
+      }
+    }
+
+    function toggleAgentCategorySection() {
+      const role = document.getElementById('agent-role').value;
+      const catGroup = document.getElementById('register-categories-list').parentElement;
+      const codeGroup = document.getElementById('agent-employeeCode').parentElement;
+
+      if (role === 'CUSTOMER_SERVICE_OFFICER') {
+        catGroup.style.display = 'block';
+        codeGroup.style.display = 'block';
+      } else {
+        catGroup.style.display = 'none';
+        codeGroup.style.display = 'none';
+      }
+    }
+
+    async function handleAgentSubmit(e) {
+      e.preventDefault();
+      const role = document.getElementById('agent-role').value;
+      const fullName = document.getElementById('agent-fullName').value.trim();
+      const employeeCode = document.getElementById('agent-employeeCode').value.trim();
+      const email = document.getElementById('agent-email').value.trim();
+      const phone = document.getElementById('agent-phone').value.trim();
+      const password = document.getElementById('agent-password').value;
+
+      const selectedCheckboxes = document.querySelectorAll('.register-cat-checkbox:checked');
+      const categoryIds = Array.from(selectedCheckboxes).map(cb => parseInt(cb.value));
+
+      try {
+        await API.post('/agents', {
+          fullName,
+          employeeCode,
+          email,
+          phone,
+          password,
+          role,
+          categoryIds
+        });
+        Utils.showToast(`Staff member (${fullName}) onboarded successfully!`, 'success');
+        closeAgentModal();
+        await fetchAgents();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to onboard staff member', 'error');
+      }
+    }
+
+    async function deleteAgent(id) {
+      const agent = currentAgents ? currentAgents.find(a => String(a.id) === String(id)) : null;
+      const agentName = agent ? agent.fullName : 'this staff member';
+      if (!confirm(`Are you sure you want to permanently delete ${agentName}? This action cannot be undone.`)) return;
+      try {
+        await API.delete(`/agents/${id}`);
+        Utils.showToast(`${agentName} deleted successfully`, 'success');
+        await fetchAgents();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to delete staff member', 'error');
+      }
+    }
+
+    let selectedAgentForEdit = null;
+
+    async function openEditAgentModal(agentId) {
+      if (!currentAgents || currentAgents.length === 0) {
+        try {
+          const res = await API.get('/agents');
+          currentAgents = res.data || [];
+        } catch (e) {
+          console.error('Failed to reload agents:', e);
+        }
+      }
+
+      selectedAgentForEdit = currentAgents.find(a => String(a.id) === String(agentId));
+      if (!selectedAgentForEdit) {
+        Utils.showToast('Officer details not found', 'error');
+        return;
+      }
+
+      document.getElementById('edit-agent-id').value = selectedAgentForEdit.id;
+      document.getElementById('edit-agent-employeeCode').value = selectedAgentForEdit.employeeCode;
+      document.getElementById('edit-agent-fullName').value = selectedAgentForEdit.fullName || '';
+      document.getElementById('edit-agent-phone').value = selectedAgentForEdit.phone || '';
+      document.getElementById('edit-agent-role').value = selectedAgentForEdit.role || 'CUSTOMER_SERVICE_OFFICER';
+      document.getElementById('edit-agent-active').value = String(selectedAgentForEdit.active !== false);
+      document.getElementById('edit-agent-status').value = selectedAgentForEdit.status || 'AVAILABLE';
+
+      document.getElementById('edit-agent-subtitle').textContent = `Code: ${selectedAgentForEdit.employeeCode} | Email: ${selectedAgentForEdit.email}`;
+
+      const listContainer = document.getElementById('edit-categories-list');
+      listContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 0.75rem; font-size: 0.85rem;">Loading categories...</div>`;
+
+      try {
+        if (!allSystemCategories || allSystemCategories.length === 0) {
+          await fetchCategories();
+        }
+
+        const assignedIds = new Set((selectedAgentForEdit.assignedCategories || []).map(c => c.id));
+        if (!allSystemCategories || allSystemCategories.length === 0) {
+          listContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 0.75rem; font-size: 0.85rem;">No active categories available.</div>`;
+        } else {
+          listContainer.innerHTML = allSystemCategories.map(cat => {
+            const isChecked = assignedIds.has(cat.id);
+            return `
+              <div class="cat-tick-card ${isChecked ? 'selected' : ''}" onclick="toggleTickCard(this, event)">
+                <input type="checkbox" class="edit-cat-checkbox" value="${cat.id}" ${isChecked ? 'checked' : ''} />
+                <div class="cat-tick-box"><i class="fa-solid fa-check"></i></div>
+                <div class="cat-tick-info">
+                  <div class="cat-tick-name">${cat.name}</div>
+                  <div class="cat-tick-desc">${cat.description || 'No description provided'}</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (err) {
+        listContainer.innerHTML = `<div style="text-align: center; color: var(--danger-color); padding: 0.75rem; font-size: 0.85rem;">Failed to load categories</div>`;
+      }
+
+      const modalEl = document.getElementById('edit-agent-modal');
+      if (modalEl) {
+        modalEl.style.cssText = 'display: flex !important; z-index: 100000 !important;';
+        modalEl.classList.add('show');
+      }
+    }
+
+    function closeEditAgentModal() {
+      const modalEl = document.getElementById('edit-agent-modal');
+      if (modalEl) {
+        modalEl.style.cssText = 'display: none !important;';
+        modalEl.classList.remove('show');
+      }
+    }
+
+    async function handleEditAgentSubmit(e) {
+      e.preventDefault();
+      const agentId = document.getElementById('edit-agent-id').value;
+      const fullName = document.getElementById('edit-agent-fullName').value.trim();
+      const phone = document.getElementById('edit-agent-phone').value.trim();
+      const role = document.getElementById('edit-agent-role').value;
+      const active = document.getElementById('edit-agent-active').value === 'true';
+      const status = document.getElementById('edit-agent-status').value;
+
+      const checkedBoxes = document.querySelectorAll('.edit-cat-checkbox:checked');
+      const categoryIds = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
+
+      try {
+        await API.put(`/agents/${agentId}`, {
+          fullName,
+          phone,
+          role,
+          active,
+          status,
+          categoryIds
+        });
+
+        Utils.showToast('Support Officer details updated successfully', 'success');
+        closeEditAgentModal();
+        await fetchAgents();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to update officer details', 'error');
+      }
+    }
+  </script>
+</body>
+
+</html>

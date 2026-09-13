@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div></div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="page-header-row">
+          <div class="page-title-group">
+            <h1>Operations Supervisor Dashboard</h1>
+            <p>Manage categories, support officers, workload assignments, and operational statistics.</p>
+          </div>
+          <div class="live-datetime-badge" id="live-datetime">
+            <i class="fa-regular fa-calendar-days" style="color: var(--navy-primary);"></i>
+            <span id="live-date-text">Loading date...</span>
+            <span class="datetime-divider">|</span>
+            <i class="fa-regular fa-clock" style="color: var(--yellow-accent);"></i>
+            <span id="live-time-text">Loading time...</span>
+          </div>
+        </div>
+
+        <!-- Metric KPI Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-info">
+              <h4>Support Officers</h4>
+              <div class="stat-value" id="stat-total-agents">0</div>
+            </div>
+            <div class="stat-icon blue">👥</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <h4>Active Categories</h4>
+              <div class="stat-value" id="stat-active-categories">0</div>
+            </div>
+            <div class="stat-icon green">🏷️</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <h4>Open Tickets</h4>
+              <div class="stat-value" id="stat-open-tickets">0</div>
+            </div>
+            <div class="stat-icon amber">⏳</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <h4>Total System Tickets</h4>
+              <div class="stat-value" id="stat-total-tickets">0</div>
+            </div>
+            <div class="stat-icon purple">📊</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid-2">
+          <!-- Support Officer Workload Summary -->
+          <div class="card-table-wrapper">
+            <div class="table-header-bar">
+              <h3>Support Officer Workload Distribution</h3>
+              <a href="agents.html" class="btn btn-secondary btn-sm">Manage Officers</a>
+            </div>
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Officer Code</th>
+                  <th>Full Name</th>
+                  <th>Status</th>
+                  <th>Active Tickets</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="agent-workload-body">
+                <tr><td colspan="5" style="text-align: center;">Loading workload stats...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Quick Actions -->
+          <div>
+            <div class="panel-card">
+              <div class="panel-header">
+                <h3>Quick Management Actions</h3>
+              </div>
+              <div class="quick-action-list">
+                <a href="categories.html" class="quick-action-item">
+                  <span>🏷️</span> Add New Ticket Category
+                </a>
+                <a href="agents.html" class="quick-action-item">
+                  <span>➕</span> Register New Support Officer
+                </a>
+                <a href="agents.html" class="quick-action-item">
+                  <span>⚙️</span> Map Officers to Categories
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['OPERATIONS_SUPERVISOR'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      await loadSupervisorData();
+    });
+
+    async function loadSupervisorData() {
+      try {
+        const [reportRes, agentsRes, catRes] = await Promise.all([
+          API.get('/reports/dashboard'),
+          API.get('/agents'),
+          API.get('/categories')
+        ]);
+
+        const r = reportRes.data;
+        const agents = agentsRes.data || [];
+        const categories = catRes.data || [];
+
+        document.getElementById('stat-total-agents').textContent = agents.length;
+        document.getElementById('stat-active-categories').textContent = categories.filter(c => c.active).length;
+        document.getElementById('stat-open-tickets').textContent = r.openTickets;
+        document.getElementById('stat-total-tickets').textContent = r.totalTickets;
+
+        const tbody = document.getElementById('agent-workload-body');
+        if (agents.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No support officers registered.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = agents.map(a => `
+          <tr>
+            <td><strong>${a.employeeCode}</strong></td>
+            <td>${a.fullName}</td>
+            <td><span class="badge badge-resolved">${a.status}</span></td>
+            <td><strong>${a.activeTicketCount}</strong> active tickets</td>
+            <td><a href="agents.html" class="btn btn-secondary btn-sm">Manage Officer</a></td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        Utils.showToast('Failed to load supervisor metrics', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

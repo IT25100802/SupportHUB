@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ Management - SupportHUB</title>
+  <link rel="stylesheet" href="../css/main.css?v=10.0">
+  <link rel="stylesheet" href="../css/components.css?v=10.0">
+  <link rel="stylesheet" href="../css/dashboard.css?v=10.0">
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div></div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="page-header-row">
+          <div class="page-title-group">
+            <h1>FAQ Articles Management</h1>
+            <p>Create, edit, publish/unpublish, and manage automated FAQ articles.</p>
+          </div>
+          <div class="header-action-wrap">
+            <div class="view-toggle-container">
+              <button id="btn-view-cards" onclick="switchFaqView('cards')" class="btn btn-primary"><i class="fa-solid fa-table-cells-large"></i> Cards</button>
+              <button id="btn-view-table" onclick="switchFaqView('table')" class="btn btn-secondary"><i class="fa-solid fa-table-list"></i> Table</button>
+            </div>
+            <button onclick="openFaqModal()" class="btn btn-primary btn-header-action"><i class="fa-solid fa-plus"></i> Create FAQ Article</button>
+          </div>
+        </div>
+
+        <!-- Divided Cards Grid View (Default) -->
+        <div id="faqs-cards-container" class="kb-cards-grid">
+          <!-- Dynamically loaded cards -->
+        </div>
+
+        <!-- Data Table View (Optional Hidden View) -->
+        <div id="faqs-table-container" class="card-table-wrapper" style="display:none;">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th class="col-center" style="width: 70px;">ID</th>
+                <th class="col-left">Question</th>
+                <th class="col-center" style="width: 220px;">Category</th>
+                <th class="col-center" style="width: 100px;">Views</th>
+                <th class="col-center" style="width: 130px;">Status</th>
+                <th class="col-center" style="width: 280px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="faqs-table-body">
+              <tr><td colspan="6" class="col-center">Loading FAQs...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create/Edit FAQ Modal -->
+  <div class="modal-backdrop" id="faq-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="faq-modal-title">Create FAQ Article</h3>
+        <button onclick="closeFaqModal()" class="close-modal">&times;</button>
+      </div>
+      <form id="faq-form">
+        <input type="hidden" id="faq-id" />
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select id="faq-category" class="form-control">
+            <option value="">-- General --</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Question *</label>
+          <input type="text" id="faq-question" class="form-control" placeholder="e.g. How do I reset password?" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Answer *</label>
+          <textarea id="faq-answer" class="form-control" rows="5" placeholder="Detailed answer text..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+            <input type="checkbox" id="faq-published" checked />
+            <span>Publish immediately to Customer Portal & Chatbot</span>
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Save FAQ Article</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js?v=10.0"></script>
+  <script src="../js/auth.js?v=10.0"></script>
+  <script src="../js/utils.js?v=10.0"></script>
+  <script src="../js/notifications.js?v=10.0"></script>
+  <script>
+    let faqsCache = [];
+    let currentFaqView = 'cards';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['CUSTOMER_SUPPORT_MANAGER'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      await fetchCategories();
+      await fetchFaqs();
+
+      document.getElementById('faq-form').addEventListener('submit', handleFaqSubmit);
+    });
+
+    function switchFaqView(view) {
+      currentFaqView = view;
+      const cardsContainer = document.getElementById('faqs-cards-container');
+      const tableContainer = document.getElementById('faqs-table-container');
+      const btnCards = document.getElementById('btn-view-cards');
+      const btnTable = document.getElementById('btn-view-table');
+
+      if (view === 'cards') {
+        cardsContainer.style.display = 'grid';
+        tableContainer.style.display = 'none';
+        btnCards.className = 'btn btn-primary';
+        btnTable.className = 'btn btn-secondary';
+      } else {
+        cardsContainer.style.display = 'none';
+        tableContainer.style.display = 'block';
+        btnCards.className = 'btn btn-secondary';
+        btnTable.className = 'btn btn-primary';
+      }
+    }
+
+    async function fetchCategories() {
+      try {
+        const res = await API.get('/categories');
+        const select = document.getElementById('faq-category');
+        select.innerHTML = '<option value="">-- General --</option>' +
+          (res.data || []).map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      } catch (err) {
+        console.warn('Could not fetch categories');
+      }
+    }
+
+    async function fetchFaqs() {
+      try {
+        const res = await API.get('/faqs');
+        faqsCache = res.data || [];
+
+        const cardsContainer = document.getElementById('faqs-cards-container');
+        const tbody = document.getElementById('faqs-table-body');
+
+        if (faqsCache.length === 0) {
+          cardsContainer.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:3rem; background:white; border-radius:16px; color:var(--text-muted);">No FAQs created yet.</div>';
+          tbody.innerHTML = '<tr><td colspan="6" class="col-center">No FAQs created yet.</td></tr>';
+          return;
+        }
+
+        // Render Cards View
+        cardsContainer.innerHTML = faqsCache.map(f => `
+          <div class="kb-article-card">
+            <div>
+              <div class="kb-card-top">
+                <span class="kb-card-id">#${f.id}</span>
+                <span class="badge ${f.published ? 'badge-resolved' : 'badge-closed'}">${f.published ? 'PUBLISHED' : 'DRAFT'}</span>
+              </div>
+              <h3 class="kb-card-title">${f.question}</h3>
+              <p class="kb-card-snippet">${f.answer ? f.answer.substring(0, 140) + '...' : 'No answer preview available.'}</p>
+            </div>
+            <div>
+              <div class="kb-card-meta">
+                <span class="badge badge-in_progress"><i class="fa-solid fa-folder"></i> ${f.categoryName || 'General'}</span>
+                <span class="kb-card-views"><i class="fa-solid fa-eye"></i> ${f.viewCount} views</span>
+              </div>
+              <div class="kb-card-actions">
+                <button onclick="editFaq(${f.id})" class="btn btn-outline-secondary"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                <button onclick="toggleFaqPublished(${f.id})" class="btn btn-outline-warning"><i class="fa-solid ${f.published ? 'fa-eye-slash' : 'fa-eye'}"></i> ${f.published ? 'Unpublish' : 'Publish'}</button>
+                <button onclick="deleteFaq(${f.id})" class="btn btn-outline-danger"><i class="fa-solid fa-trash-can"></i> Delete</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        // Render Table View
+        tbody.innerHTML = faqsCache.map(f => `
+          <tr>
+            <td class="col-center"><strong>#${f.id}</strong></td>
+            <td class="col-left"><strong style="color:var(--navy-dark); font-size:0.925rem;">${f.question}</strong></td>
+            <td class="col-center"><span class="badge badge-in_progress">${f.categoryName || 'General'}</span></td>
+            <td class="col-center"><span style="font-weight:700;">${f.viewCount}</span></td>
+            <td class="col-center">
+              <span class="badge ${f.published ? 'badge-resolved' : 'badge-closed'}">${f.published ? 'PUBLISHED' : 'DRAFT'}</span>
+            </td>
+            <td class="col-center">
+              <div class="action-btn-group">
+                <button onclick="editFaq(${f.id})" class="btn btn-outline-secondary"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                <button onclick="toggleFaqPublished(${f.id})" class="btn btn-outline-warning"><i class="fa-solid ${f.published ? 'fa-eye-slash' : 'fa-eye'}"></i> ${f.published ? 'Unpublish' : 'Publish'}</button>
+                <button onclick="deleteFaq(${f.id})" class="btn btn-outline-danger"><i class="fa-solid fa-trash-can"></i> Delete</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        Utils.showToast('Failed to fetch FAQs', 'error');
+      }
+    }
+
+    function openFaqModal() {
+      document.getElementById('faq-id').value = '';
+      document.getElementById('faq-form').reset();
+      document.getElementById('faq-published').checked = true;
+      document.getElementById('faq-modal-title').textContent = 'Create FAQ Article';
+      document.getElementById('faq-modal').classList.add('show');
+    }
+
+    function closeFaqModal() {
+      document.getElementById('faq-modal').classList.remove('show');
+    }
+
+    function editFaq(id) {
+      const f = faqsCache.find(x => x.id === id);
+      if (!f) return;
+
+      document.getElementById('faq-id').value = f.id;
+      document.getElementById('faq-category').value = f.categoryId || '';
+      document.getElementById('faq-question').value = f.question;
+      document.getElementById('faq-answer').value = f.answer;
+      document.getElementById('faq-published').checked = f.published;
+      document.getElementById('faq-modal-title').textContent = 'Edit FAQ Article';
+      document.getElementById('faq-modal').classList.add('show');
+    }
+
+    async function handleFaqSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('faq-id').value;
+      const categoryId = document.getElementById('faq-category').value;
+      const question = document.getElementById('faq-question').value.trim();
+      const answer = document.getElementById('faq-answer').value.trim();
+      const published = document.getElementById('faq-published').checked;
+
+      const body = {
+        categoryId: categoryId ? parseInt(categoryId, 10) : null,
+        question,
+        answer,
+        keywords: '',
+        published
+      };
+
+      try {
+        if (id) {
+          await API.put(`/faqs/${id}`, body);
+          Utils.showToast('FAQ article updated successfully', 'success');
+        } else {
+          await API.post('/faqs', body);
+          Utils.showToast('FAQ article created successfully', 'success');
+        }
+
+        closeFaqModal();
+        await fetchFaqs();
+      } catch (err) {
+        Utils.showToast(err.message || 'Action failed', 'error');
+      }
+    }
+
+    async function toggleFaqPublished(id) {
+      try {
+        await API.patch(`/faqs/${id}/toggle-published`);
+        Utils.showToast('Published status toggled', 'success');
+        await fetchFaqs();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to toggle status', 'error');
+      }
+    }
+
+    async function deleteFaq(id) {
+      if (!confirm('Are you sure you want to delete this FAQ article?')) return;
+      try {
+        await API.delete(`/faqs/${id}`);
+        Utils.showToast('FAQ article deleted successfully', 'success');
+        await fetchFaqs();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to delete FAQ', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

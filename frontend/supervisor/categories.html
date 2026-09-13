@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div></div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="page-header-row">
+          <div class="page-title-group">
+            <h1>Ticket Categories</h1>
+            <p>Define support classification categories used for routing customer support tickets.</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <div class="btn-group-toggle">
+              <button id="view-cards-btn" onclick="setViewMode('cards')" class="btn btn-sm btn-outline-secondary active"><i class="fa-solid fa-grid-2"></i> Cards</button>
+              <button id="view-table-btn" onclick="setViewMode('table')" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-table-list"></i> Table</button>
+            </div>
+            <button onclick="openCategoryModal()" class="btn btn-primary">➕ Create New Category</button>
+          </div>
+        </div>
+
+        <!-- Cards Grid View (Default) -->
+        <div id="categories-cards-container" class="cards-grid">
+          <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">Loading categories...</div>
+        </div>
+
+        <!-- Table View (Optional Toggle) -->
+        <div id="categories-table-wrapper" class="card-table-wrapper" style="display: none;">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Category Name</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th class="col-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="categories-table-body">
+              <tr><td colspan="6" style="text-align: center;">Loading categories...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create/Edit Category Modal -->
+  <div class="modal-backdrop" id="category-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="cat-modal-title">Create Ticket Category</h3>
+        <button onclick="closeCategoryModal()" class="close-modal">&times;</button>
+      </div>
+      <form id="category-form">
+        <input type="hidden" id="cat-id" />
+        <div class="form-group">
+          <label class="form-label">Category Name *</label>
+          <input type="text" id="cat-name" class="form-control" placeholder="e.g. Technical Support" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea id="cat-desc" class="form-control" rows="3" placeholder="Brief description of support scope..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Save Category</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Assigned Officers Modal -->
+  <div class="modal-backdrop" id="category-officers-modal">
+    <div class="modal-content" style="max-width: 540px;">
+      <div class="modal-header">
+        <div>
+          <h3 id="cat-officers-title" style="margin:0;">Assigned Support Officers</h3>
+          <p id="cat-officers-subtitle" style="font-size:0.85rem; color:var(--text-muted); margin-top:0.2rem;">Officers authorized to handle tickets in this category</p>
+        </div>
+        <button onclick="closeCategoryOfficersModal()" class="close-modal">&times;</button>
+      </div>
+
+      <div id="cat-officers-list" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 320px; overflow-y: auto; margin-bottom: 1.5rem;">
+        <div style="text-align: center; color: var(--text-muted);">Loading officers...</div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end;">
+        <button onclick="closeCategoryOfficersModal()" class="btn btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    let currentCategories = [];
+    let currentViewMode = 'cards';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['OPERATIONS_SUPERVISOR'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      await fetchCategories();
+
+      document.getElementById('category-form').addEventListener('submit', handleCategorySubmit);
+    });
+
+    function setViewMode(mode) {
+      currentViewMode = mode;
+      document.getElementById('view-cards-btn').classList.toggle('active', mode === 'cards');
+      document.getElementById('view-table-btn').classList.toggle('active', mode === 'table');
+
+      document.getElementById('categories-cards-container').style.display = mode === 'cards' ? 'grid' : 'none';
+      document.getElementById('categories-table-wrapper').style.display = mode === 'table' ? 'block' : 'none';
+      renderCategories();
+    }
+
+    async function fetchCategories() {
+      try {
+        const res = await API.get('/categories');
+        currentCategories = res.data || [];
+        renderCategories();
+      } catch (err) {
+        Utils.showToast('Failed to fetch categories', 'error');
+      }
+    }
+
+    function renderCategories() {
+      if (currentViewMode === 'cards') {
+        renderCardsView();
+      } else {
+        renderTableView();
+      }
+    }
+
+    function renderCardsView() {
+      const container = document.getElementById('categories-cards-container');
+      if (currentCategories.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">No categories found.</div>';
+        return;
+      }
+
+      container.innerHTML = currentCategories.map(c => `
+        <div class="officer-card">
+          <div class="officer-card-header">
+            <div class="officer-info-wrap">
+              <div class="officer-avatar" style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);"><i class="fa-solid fa-folder-open"></i></div>
+              <div class="officer-details">
+                <div class="officer-name">${c.name}</div>
+                <div class="officer-code">ID: #${c.id}</div>
+              </div>
+            </div>
+            <span class="badge ${c.active ? 'badge-resolved' : 'badge-closed'}">${c.active ? 'ACTIVE' : 'INACTIVE'}</span>
+          </div>
+
+          <div class="officer-card-body">
+            <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">
+              ${c.description || 'No description provided.'}
+            </p>
+            <div class="officer-meta-row"><i class="fa-solid fa-calendar"></i> <span>Created ${Utils.formatDate(c.createdAt)}</span></div>
+          </div>
+
+          <div class="officer-card-actions">
+            <button onclick="viewCategoryOfficers(${c.id}, '${c.name.replaceAll("'", "\\'")}')" class="btn btn-outline-secondary" style="flex: 1; justify-content: center;">
+              <i class="fa-solid fa-users"></i> Officers
+            </button>
+            <button onclick="editCategory(${c.id}, '${c.name.replaceAll("'", "\\'")}', '${(c.description||'').replaceAll("'", "\\'")}')" class="btn btn-outline-secondary" style="padding:0.45rem 0.65rem;">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button onclick="toggleActive(${c.id})" class="btn btn-outline-warning" style="padding:0.45rem 0.65rem;">
+              <i class="fa-solid ${c.active ? 'fa-toggle-off' : 'fa-toggle-on'}"></i>
+            </button>
+            <button onclick="deleteCategory(${c.id})" class="btn btn-outline-danger" style="padding: 0.45rem 0.65rem;">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderTableView() {
+      const tbody = document.getElementById('categories-table-body');
+      if (currentCategories.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No categories found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = currentCategories.map(c => `
+        <tr>
+          <td><strong>#${c.id}</strong></td>
+          <td><strong style="color:var(--navy-dark); font-size:0.925rem;">${c.name}</strong></td>
+          <td><span style="color:var(--text-muted); font-size:0.85rem;">${c.description || '-'}</span></td>
+          <td>
+            <span class="badge ${c.active ? 'badge-resolved' : 'badge-closed'}">${c.active ? 'ACTIVE' : 'INACTIVE'}</span>
+          </td>
+          <td><span style="font-weight:600; font-size:0.85rem;">${Utils.formatDate(c.createdAt)}</span></td>
+          <td class="col-right">
+            <div class="action-btn-group">
+              <button onclick="viewCategoryOfficers(${c.id}, '${c.name.replaceAll("'", "\\'")}')" class="btn-action-icon btn-action-secondary" title="View Assigned Officers">
+                <i class="fa-solid fa-users"></i>
+              </button>
+              <button onclick="editCategory(${c.id}, '${c.name.replaceAll("'", "\\'")}', '${(c.description||'').replaceAll("'", "\\'")}')" class="btn-action-icon btn-action-secondary" title="Edit Category">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </button>
+              <button onclick="toggleActive(${c.id})" class="btn-action-icon btn-action-warning" title="${c.active ? 'Deactivate Category' : 'Activate Category'}">
+                <i class="fa-solid ${c.active ? 'fa-toggle-off' : 'fa-toggle-on'}"></i>
+              </button>
+              <button onclick="deleteCategory(${c.id})" class="btn-action-icon btn-action-danger" title="Delete Category">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function viewCategoryOfficers(categoryId, categoryName) {
+      document.getElementById('cat-officers-title').textContent = `Assigned Officers: ${categoryName}`;
+      document.getElementById('category-officers-modal').classList.add('show');
+
+      const listEl = document.getElementById('cat-officers-list');
+      listEl.innerHTML = '<div style="text-align:center; padding:1.5rem;">Loading assigned officers...</div>';
+
+      try {
+        const res = await API.get(`/agents/category/${categoryId}`);
+        const officers = res.data || [];
+
+        if (officers.length === 0) {
+          listEl.innerHTML = '<div style="text-align:center; padding:1.5rem; color:var(--text-muted);">No officers assigned to this category yet.</div>';
+          return;
+        }
+
+        listEl.innerHTML = officers.map(o => `
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:0.85rem 1rem; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px;">
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <div style="width:36px; height:36px; border-radius:10px; background:#0f172a; color:#f59e0b; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:0.85rem;">
+                ${o.fullName ? o.fullName.substring(0,2).toUpperCase() : 'AG'}
+              </div>
+              <div>
+                <div style="font-weight:800; color:var(--navy-dark); font-size:0.9rem;">${o.fullName}</div>
+                <div style="font-size:0.78rem; color:#2563eb; font-weight:600;">Code: ${o.employeeCode} | ${o.email}</div>
+              </div>
+            </div>
+            <span class="badge badge-resolved" style="font-size:0.75rem;">${o.status}</span>
+          </div>
+        `).join('');
+      } catch (err) {
+        listEl.innerHTML = '<div style="text-align:center; padding:1rem; color:var(--danger);">Failed to load assigned officers.</div>';
+      }
+    }
+
+    function closeCategoryOfficersModal() {
+      document.getElementById('category-officers-modal').classList.remove('show');
+    }
+
+    function openCategoryModal() {
+      document.getElementById('cat-id').value = '';
+      document.getElementById('cat-name').value = '';
+      document.getElementById('cat-desc').value = '';
+      document.getElementById('cat-modal-title').textContent = 'Create Ticket Category';
+      document.getElementById('category-modal').classList.add('show');
+    }
+
+    function closeCategoryModal() {
+      document.getElementById('category-modal').classList.remove('show');
+    }
+
+    function editCategory(id, name, desc) {
+      document.getElementById('cat-id').value = id;
+      document.getElementById('cat-name').value = name;
+      document.getElementById('cat-desc').value = desc;
+      document.getElementById('cat-modal-title').textContent = 'Edit Ticket Category';
+      document.getElementById('category-modal').classList.add('show');
+    }
+
+    async function handleCategorySubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('cat-id').value;
+      const name = document.getElementById('cat-name').value.trim();
+      const description = document.getElementById('cat-desc').value.trim();
+
+      try {
+        if (id) {
+          await API.put(`/categories/${id}`, { name, description });
+          Utils.showToast('Category updated successfully', 'success');
+        } else {
+          await API.post('/categories', { name, description });
+          Utils.showToast('Category created successfully', 'success');
+        }
+
+        closeCategoryModal();
+        await fetchCategories();
+      } catch (err) {
+        Utils.showToast(err.message || 'Action failed', 'error');
+      }
+    }
+
+    async function toggleActive(id) {
+      try {
+        await API.patch(`/categories/${id}/toggle-active`);
+        Utils.showToast('Active status updated', 'success');
+        await fetchCategories();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to toggle status', 'error');
+      }
+    }
+
+    async function deleteCategory(id) {
+      if (!confirm('Are you sure you want to delete this category? (Will fail if tickets exist)')) return;
+      try {
+        await API.delete(`/categories/${id}`);
+        Utils.showToast('Category deleted successfully', 'success');
+        await fetchCategories();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to delete category', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

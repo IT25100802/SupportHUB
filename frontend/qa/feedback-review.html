@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback Review - SupportHUB</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div></div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="page-header-row">
+          <div class="page-title-group">
+            <h1>Customer Feedback Review Log</h1>
+            <p>Filter customer feedback by star rating, ticket #, or search comments.</p>
+          </div>
+        </div>
+
+        <div class="card-table-wrapper">
+          <div class="table-header-bar">
+            <div class="table-filters">
+              <input type="text" id="filter-keyword" class="form-control" placeholder="Search ticket # or comment..." style="width: 250px;" />
+              <select id="filter-rating" class="form-control" style="width: 160px;">
+                <option value="">All Ratings</option>
+                <option value="5">5 Stars (Excellent)</option>
+                <option value="4">4 Stars (Good)</option>
+                <option value="3">3 Stars (Average)</option>
+                <option value="2">2 Stars (Poor)</option>
+                <option value="1">1 Star (Very Poor)</option>
+              </select>
+              <button id="apply-feedback-filter" class="btn btn-secondary btn-sm">Filter</button>
+            </div>
+          </div>
+
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Ticket #</th>
+                <th>Subject</th>
+                <th>Customer</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Suggestions</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="feedback-log-body">
+              <tr><td colspan="7" style="text-align: center;">Loading feedback log...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['QA_EXECUTIVE'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      await fetchFeedbackLog();
+
+      document.getElementById('apply-feedback-filter').addEventListener('click', fetchFeedbackLog);
+    });
+
+    async function fetchFeedbackLog() {
+      const keyword = document.getElementById('filter-keyword').value.trim();
+      const rating = document.getElementById('filter-rating').value;
+
+      try {
+        let query = `/feedback?page=0&size=20`;
+        if (keyword) query += `&keyword=${encodeURIComponent(keyword)}`;
+        if (rating) query += `&rating=${rating}`;
+
+        const res = await API.get(query);
+        const list = res.data.content || [];
+        const tbody = document.getElementById('feedback-log-body');
+
+        if (list.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No matching feedback entries found.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = list.map(f => `
+          <tr>
+            <td><strong>${f.ticketNumber}</strong></td>
+            <td>${f.ticketSubject}</td>
+            <td>${f.customerName}</td>
+            <td>${Utils.renderStars(f.rating)}</td>
+            <td>${f.comment || '-'}</td>
+            <td>${f.suggestions || '-'}</td>
+            <td>${Utils.formatDate(f.createdAt)}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        Utils.showToast('Failed to fetch feedback log', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

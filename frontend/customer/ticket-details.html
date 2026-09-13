@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Details - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    .timeline-container {
+      position: relative;
+      padding-left: 1.5rem;
+      border-left: 2px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .timeline-point {
+      position: relative;
+    }
+    .timeline-point::before {
+      content: '';
+      position: absolute;
+      left: -1.95rem;
+      top: 0.25rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #2563eb;
+      border: 3px solid #ffffff;
+      box-shadow: 0 0 0 2px #bfdbfe;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div></div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        
+        <!-- Header Banner & Action Control Bar -->
+        <div class="page-header-row" style="margin-bottom: 1.5rem; background: #ffffff; padding: 1.25rem 1.75rem; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.35rem;">
+              <button onclick="goBackToTickets()" class="btn btn-sm btn-outline-secondary" style="border-radius: 8px; font-weight: 600; padding: 0.3rem 0.65rem; cursor: pointer;"><i class="fa-solid fa-arrow-left"></i> Back</button>
+              <h1 id="ticket-number-heading" style="font-size: 1.4rem; margin: 0; color: #0f172a; font-weight: 800;">Ticket #...</h1>
+            </div>
+            <p id="ticket-subject-sub" style="font-size: 0.95rem; color: #64748b; margin: 0; font-weight: 500;">Loading ticket information...</p>
+          </div>
+          <div id="action-bar" style="display: flex; gap: 0.65rem; align-items: center;"></div>
+        </div>
+
+        <!-- 2-Column Command Center Layout -->
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; align-items: start;">
+          
+          <!-- Left Column (68% - Main Details & Conversation Thread) -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Issue Overview Card -->
+            <div class="panel-card" style="margin: 0; padding: 1.5rem; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #f1f5f9; flex-wrap: wrap; gap: 0.65rem;">
+                <div style="display: flex; align-items: center; gap: 0.6rem;">
+                  <span id="ticket-status-badge"></span>
+                  <span id="ticket-priority-badge"></span>
+                  <span id="ticket-category-badge" style="background: #eff6ff; color: #2563eb; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 12px; border: 1px solid #bfdbfe;"></span>
+                </div>
+                <div style="font-size: 0.825rem; color: #64748b; font-weight: 600; display: flex; align-items: center; gap: 0.35rem;" id="ticket-created-date">
+                  <i class="fa-regular fa-clock"></i> Loading...
+                </div>
+              </div>
+
+              <h4 style="margin: 0 0 0.65rem 0; font-size: 0.95rem; color: #0f172a; font-weight: 700; display: flex; align-items: center; gap: 0.4rem;">
+                <i class="fa-solid fa-align-left" style="color: #2563eb;"></i> Issue Description & Problem Details
+              </h4>
+              
+              <!-- Clean Readable Description Container -->
+              <div id="ticket-description-text" style="background: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a; padding: 1.25rem; border-radius: 12px; font-size: 0.95rem; line-height: 1.6; white-space: pre-line; font-weight: 500;">
+                Loading description...
+              </div>
+
+              <!-- Attachments Gallery Section -->
+              <div id="attachments-section" style="margin-top: 1.25rem; display: none; padding-top: 1rem; border-top: 1px dashed #e2e8f0;">
+                <h5 style="font-size: 0.85rem; margin: 0 0 0.65rem 0; color: #475569; font-weight: 700;"><i class="fa-solid fa-paperclip" style="color: #2563eb; margin-right: 4px;"></i> Attached Files & Evidence:</h5>
+                <div id="attachments-list" style="display: flex; gap: 0.65rem; flex-wrap: wrap;"></div>
+              </div>
+            </div>
+
+            <!-- Replies & Live Discussion Hub -->
+            <div class="panel-card" style="margin: 0; padding: 1.5rem; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+              <h4 style="margin: 0 0 1.25rem 0; font-size: 1.05rem; color: #0f172a; font-weight: 700; display: flex; align-items: center; justify-content: space-between;">
+                <span><i class="fa-solid fa-comments" style="color: #2563eb; margin-right: 6px;"></i> Discussion & Reply History</span>
+                <span id="reply-count-badge" style="font-size: 0.75rem; background: #f1f5f9; color: #475569; padding: 0.2rem 0.6rem; border-radius: 12px; font-weight: 700;">0 Replies</span>
+              </h4>
+              
+              <div id="replies-list" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+                <!-- Loaded dynamically -->
+              </div>
+
+              <!-- Reply Form -->
+              <div id="reply-form-container" style="background: #f8fafc; padding: 1.25rem; border-radius: 14px; border: 1px solid #e2e8f0;">
+                <form id="reply-form">
+                  <div class="form-group" style="margin-bottom: 0.85rem;">
+                    <label class="form-label" style="font-weight: 700; color: #0f172a;"><i class="fa-solid fa-reply" style="color: #2563eb; margin-right: 4px;"></i> Post Your Reply / Update</label>
+                    <textarea id="replyMessage" class="form-control" rows="4" placeholder="Write your official response or update here..." style="border-radius: 10px; padding: 0.85rem 1rem; background: #ffffff;" required></textarea>
+                  </div>
+                  <div style="display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn btn-warning" style="background: #f59e0b; border: 1px solid #d97706; color: #0f172a; font-weight: 700; padding: 0.65rem 1.5rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35); cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem;">
+                      <i class="fa-solid fa-paper-plane"></i> Send Reply
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Right Column (32% - Metadata & Audit Timeline) -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Metadata & Assignment Card -->
+            <div class="panel-card" style="margin: 0; padding: 1.25rem; border-radius: 16px; border: 1px solid #e2e8f0;">
+              <h4 style="margin: 0 0 1rem 0; font-size: 0.9rem; color: #0f172a; font-weight: 700; display: flex; align-items: center; gap: 0.4rem;">
+                <i class="fa-solid fa-circle-info" style="color: #2563eb;"></i> Ticket Metadata
+              </h4>
+
+              <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.65rem; border-bottom: 1px solid #f1f5f9;">
+                  <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Customer:</span>
+                  <strong id="meta-customer-name" style="font-size: 0.85rem; color: #0f172a;">Loading...</strong>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.65rem; border-bottom: 1px solid #f1f5f9;">
+                  <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Assigned Officer:</span>
+                  <strong id="meta-officer-name" style="font-size: 0.85rem; color: #2563eb;">Unassigned</strong>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.65rem; border-bottom: 1px solid #f1f5f9;">
+                  <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Category:</span>
+                  <strong id="meta-category-name" style="font-size: 0.85rem; color: #0f172a;">-</strong>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-size: 0.8rem; color: #64748b; font-weight: 600;">SLA Resolution Target:</span>
+                  <span id="meta-sla-badge" style="font-size: 0.75rem; font-weight: 700; background: #eff6ff; color: #2563eb; padding: 0.15rem 0.5rem; border-radius: 10px;">24 Hours</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Audit History Timeline Panel -->
+            <div class="panel-card" style="margin: 0; padding: 1.25rem; border-radius: 16px; border: 1px solid #e2e8f0;">
+              <h4 style="margin: 0 0 1.25rem 0; font-size: 0.9rem; color: #0f172a; font-weight: 700; display: flex; align-items: center; gap: 0.4rem;">
+                <i class="fa-solid fa-clock-rotate-left" style="color: #2563eb;"></i> Audit History Timeline
+              </h4>
+
+              <div class="timeline-container" id="history-timeline">
+                <div style="text-align: center; color: #94a3b8; font-size: 0.85rem; padding: 1rem;">Loading audit history...</div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/chatbot.js"></script>
+  <script>
+    let currentTicketId = null;
+
+    function goBackToTickets() {
+      if (document.referrer && document.referrer.includes(window.location.host) && !document.referrer.includes('login.html') && !document.referrer.includes('register.html')) {
+        window.history.back();
+        return;
+      }
+
+      const user = Auth.getUser();
+      if (!user) {
+        window.location.href = '../login.html';
+        return;
+      }
+
+      const basePath = Auth.getBasePath();
+
+      switch (user.role) {
+        case 'CUSTOMER':
+          window.location.href = `${basePath}/customer/my-tickets.html`;
+          break;
+        case 'CUSTOMER_SERVICE_OFFICER':
+          window.location.href = `${basePath}/officer/assigned-tickets.html`;
+          break;
+        case 'OPERATIONS_SUPERVISOR':
+          window.location.href = `${basePath}/supervisor/supervisor-dashboard.html`;
+          break;
+        case 'CUSTOMER_SUPPORT_MANAGER':
+          window.location.href = `${basePath}/manager/manager-dashboard.html`;
+          break;
+        case 'QA_EXECUTIVE':
+          window.location.href = `${basePath}/qa/qa-dashboard.html`;
+          break;
+        default:
+          window.location.href = `${basePath}/index.html`;
+          break;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['CUSTOMER', 'CUSTOMER_SERVICE_OFFICER', 'OPERATIONS_SUPERVISOR', 'CUSTOMER_SUPPORT_MANAGER', 'QA_EXECUTIVE'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+      ChatbotWidget.init();
+
+      const params = new URLSearchParams(window.location.search);
+      currentTicketId = params.get('id');
+
+      if (!currentTicketId) {
+        window.location.href = 'my-tickets.html';
+        return;
+      }
+
+      await loadTicketDetails();
+
+      document.getElementById('reply-form').addEventListener('submit', handleReplySubmit);
+    });
+
+    async function loadTicketDetails() {
+      try {
+        const res = await API.get(`/tickets/${currentTicketId}`);
+        const t = res.data;
+
+        document.getElementById('ticket-number-heading').textContent = `Ticket #${t.ticketNumber}`;
+        document.getElementById('ticket-subject-sub').textContent = t.subject;
+        document.getElementById('ticket-status-badge').innerHTML = Utils.getStatusBadge(t.status);
+        document.getElementById('ticket-priority-badge').innerHTML = Utils.getPriorityBadge(t.priority);
+        document.getElementById('ticket-category-badge').textContent = t.categoryName || 'General';
+        document.getElementById('ticket-created-date').innerHTML = `<i class="fa-regular fa-clock"></i> Created: ${Utils.formatDate(t.createdAt)}`;
+        document.getElementById('ticket-description-text').textContent = t.description;
+
+        // Metadata sidebar
+        document.getElementById('meta-customer-name').textContent = t.customerName || t.customerEmail || 'Customer';
+        document.getElementById('meta-officer-name').textContent = t.assignedAgentName || 'Unassigned';
+        document.getElementById('meta-category-name').textContent = t.categoryName || 'General';
+
+        // Action Bar for Customer / Officer Status Controls
+        const user = Auth.getUser();
+        const actionBar = document.getElementById('action-bar');
+        actionBar.innerHTML = '';
+
+        if (user.role === 'CUSTOMER' && (t.status === 'RESOLVED' || t.status === 'CLOSED')) {
+          if (!t.hasFeedback) {
+            actionBar.innerHTML = `<a href="my-tickets.html" class="btn btn-warning" style="background: #f59e0b; border-color: #d97706; color: #0f172a; font-weight: 700; font-size: 0.85rem;"><i class="fa-solid fa-star"></i> Rate Service in My Tickets</a>`;
+          }
+        }
+
+        // Officer / Supervisor Status Switcher Action Bar
+        if (user.role === 'CUSTOMER_SERVICE_OFFICER' || user.role === 'OPERATIONS_SUPERVISOR' || user.role === 'CUSTOMER_SUPPORT_MANAGER') {
+          actionBar.innerHTML = `
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: #64748b;">Change Status:</span>
+              <button onclick="updateTicketStatus('IN_PROGRESS')" class="btn btn-sm btn-secondary" style="font-size: 0.78rem; font-weight: 600;">In Progress</button>
+              <button onclick="updateTicketStatus('RESOLVED')" class="btn btn-sm btn-success" style="font-size: 0.78rem; font-weight: 600;">Resolve</button>
+              <button onclick="updateTicketStatus('CLOSED')" class="btn btn-sm btn-outline-danger" style="font-size: 0.78rem; font-weight: 600;">Close</button>
+            </div>
+          `;
+        }
+
+        // Attachments List
+        if (t.attachments && t.attachments.length > 0) {
+          const section = document.getElementById('attachments-section');
+          const list = document.getElementById('attachments-list');
+          section.style.display = 'block';
+          list.innerHTML = t.attachments.map(a => `
+            <a href="http://localhost:8080${a.fileUrl}" target="_blank" class="btn btn-secondary btn-sm" style="background: #ffffff; border: 1px solid #cbd5e1; color: #0f172a; font-size: 0.8rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 8px; display: inline-flex; align-items: center; gap: 0.35rem;">
+              <i class="fa-solid fa-paperclip" style="color: #2563eb;"></i> ${a.originalFileName}
+            </a>
+          `).join('');
+        }
+
+        // Replies Thread
+        const repliesContainer = document.getElementById('replies-list');
+        const countBadge = document.getElementById('reply-count-badge');
+        
+        if (!t.replies || t.replies.length === 0) {
+          countBadge.textContent = '0 Replies';
+          repliesContainer.innerHTML = '<div style="text-align: center; color: #94a3b8; font-size: 0.875rem; padding: 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px dashed #e2e8f0;">No replies yet. Start the discussion below.</div>';
+        } else {
+          countBadge.textContent = `${t.replies.length} ${t.replies.length === 1 ? 'Reply' : 'Replies'}`;
+          repliesContainer.innerHTML = t.replies.map(r => {
+            const isStaff = r.userRole !== 'CUSTOMER';
+            const cardBg = isStaff ? 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' : '#ffffff';
+            const textColor = isStaff ? '#ffffff' : '#0f172a';
+            const borderColor = isStaff ? 'rgba(255,255,255,0.1)' : '#e2e8f0';
+            const badgeColor = isStaff ? '#38bdf8' : '#2563eb';
+
+            return `
+              <div style="background: ${cardBg}; color: ${textColor}; padding: 1.15rem 1.35rem; border-radius: 14px; border: 1px solid ${borderColor}; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.4rem;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; background: ${badgeColor}; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">
+                      ${(r.userName || 'U').charAt(0).toUpperCase()}
+                    </div>
+                    <strong style="font-size: 0.9rem; font-weight: 700;">${r.userName}</strong>
+                    <span style="font-size: 0.725rem; padding: 0.15rem 0.5rem; border-radius: 10px; background: rgba(255,255,255,0.15); font-weight: 600;">${r.userRole}</span>
+                    ${r.internal ? '<span style="background: #f59e0b; color: #0f172a; font-size: 0.7rem; font-weight: 800; padding: 0.1rem 0.45rem; border-radius: 8px;">INTERNAL NOTE</span>' : ''}
+                  </div>
+                  <span style="font-size: 0.775rem; opacity: 0.8;"><i class="fa-regular fa-clock"></i> ${Utils.formatDate(r.createdAt)}</span>
+                </div>
+                <p style="font-size: 0.925rem; line-height: 1.55; white-space: pre-line; margin: 0;">${r.message}</p>
+              </div>
+            `;
+          }).join('');
+        }
+
+        // Audit History Timeline
+        const timeline = document.getElementById('history-timeline');
+        if (!t.history || t.history.length === 0) {
+          timeline.innerHTML = '<div style="text-align: center; color: #94a3b8; font-size: 0.85rem; padding: 1rem;">No history records logged.</div>';
+        } else {
+          timeline.innerHTML = t.history.map(h => `
+            <div class="timeline-point">
+              <div style="font-size: 0.825rem; font-weight: 700; color: #2563eb; margin-bottom: 0.15rem;">${h.action}</div>
+              <div style="font-size: 0.85rem; color: #0f172a; font-weight: 600;">${h.newValue || '-'}</div>
+              <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.2rem;">By ${h.performedByName || 'System'} • ${Utils.formatDate(h.timestamp)}</div>
+            </div>
+          `).join('');
+        }
+
+        if (t.status === 'CLOSED') {
+          document.getElementById('reply-form-container').innerHTML = '<div style="background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 1rem; border-radius: 12px; font-size: 0.875rem; font-weight: 600; text-align: center;"><i class="fa-solid fa-lock" style="margin-right: 6px;"></i> This ticket is CLOSED. Discussion thread is locked.</div>';
+        }
+      } catch (err) {
+        Utils.showToast('Failed to load ticket details', 'error');
+      }
+    }
+
+    async function updateTicketStatus(status) {
+      try {
+        await API.put(`/tickets/${currentTicketId}/status`, { status });
+        Utils.showToast(`Ticket status updated to ${status}`, 'success');
+        await loadTicketDetails();
+      } catch (err) {
+        try {
+          await API.patch(`/tickets/${currentTicketId}/status`, { status });
+          Utils.showToast(`Ticket status updated to ${status}`, 'success');
+          await loadTicketDetails();
+        } catch (e) {
+          Utils.showToast(e.message || 'Failed to update ticket status', 'error');
+        }
+      }
+    }
+
+    async function handleReplySubmit(e) {
+      e.preventDefault();
+      const message = document.getElementById('replyMessage').value.trim();
+
+      if (!message) return;
+
+      try {
+        await API.post(`/tickets/${currentTicketId}/replies`, { message, internal: false });
+        Utils.showToast('Reply added successfully', 'success');
+        document.getElementById('replyMessage').value = '';
+        await loadTicketDetails();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to add reply', 'error');
+      }
+    }
+  </script>
+</body>
+</html>
