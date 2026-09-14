@@ -94,6 +94,7 @@ const Auth = {
       case 'OPERATIONS_SUPERVISOR':
         links = [
           { label: 'Dashboard', url: '/supervisor/supervisor-dashboard.html', icon: '<i class="fa-solid fa-chart-line"></i>' },
+          { label: 'Customers', url: '/supervisor/customers.html', icon: '<i class="fa-solid fa-users"></i>' },
           { label: 'Ticket Categories', url: '/supervisor/categories.html', icon: '<i class="fa-solid fa-folder-tree"></i>' },
           { label: 'Support Officers', url: '/supervisor/agents.html', icon: '<i class="fa-solid fa-users-gear"></i>' }
         ];
@@ -102,10 +103,12 @@ const Auth = {
       case 'CUSTOMER_SUPPORT_MANAGER':
         links = [
           { label: 'Dashboard', url: '/manager/manager-dashboard.html', icon: '<i class="fa-solid fa-gauge-high"></i>' },
+          { label: 'Customers', url: '/supervisor/customers.html', icon: '<i class="fa-solid fa-users"></i>' },
           { label: 'FAQs Management', url: '/manager/faqs-management.html', icon: '<i class="fa-solid fa-circle-question"></i>' },
           { label: 'Knowledge Base', url: '/manager/knowledge-base-management.html', icon: '<i class="fa-solid fa-book-bookmark"></i>' }
         ];
         break;
+
 
       case 'QA_EXECUTIVE':
         links = [

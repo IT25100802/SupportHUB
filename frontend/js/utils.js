@@ -2,6 +2,16 @@
  * SupportHUB Enterprise Platform - Utility & UI Component Helpers
  */
 const Utils = {
+  escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  },
+
   formatDate(dateString) {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface CustomerService {
+    CustomerDto createCustomer(CreateCustomerRequest request);
     CustomerDto getCustomerById(Long id);
     CustomerDto getCustomerByUserId(Long userId);
     CustomerDto getCustomerByEmail(String email);
@@ -14,3 +15,4 @@ public interface CustomerService {
     CustomerDto updateCustomer(Long id, UpdateCustomerRequest request);
     void deleteCustomer(Long id);
 }
+

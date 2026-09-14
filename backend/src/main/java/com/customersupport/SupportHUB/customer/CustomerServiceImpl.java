@@ -1,11 +1,14 @@
 package com.customersupport.SupportHUB.customer;
 
+import com.customersupport.SupportHUB.common.DuplicateResourceException;
 import com.customersupport.SupportHUB.common.ResourceNotFoundException;
+import com.customersupport.SupportHUB.common.Role;
 import com.customersupport.SupportHUB.common.User;
 import com.customersupport.SupportHUB.common.UserRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +19,32 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository, UserRepository userRepository) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.customerRepository = customerRepository;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    @Transactional
+    public CustomerDto createCustomer(CreateCustomerRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateResourceException("User already exists with email: " + request.getEmail());
+        }
+
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.CUSTOMER);
+        user.setActive(true);
+        user = userRepository.save(user);
+
+        Customer customer = new Customer(user, request.getFullName(), request.getPhone(), request.getAddress());
+        Customer saved = customerRepository.save(customer);
+
+        return mapToDto(saved);
     }
 
     @Override

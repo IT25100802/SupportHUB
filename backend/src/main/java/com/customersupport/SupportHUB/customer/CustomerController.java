@@ -23,6 +23,13 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
+    @PostMapping
+    @PreAuthorize("hasAnyRole('OPERATIONS_SUPERVISOR', 'CUSTOMER_SUPPORT_MANAGER', 'CUSTOMER_SERVICE_OFFICER')")
+    public ResponseEntity<ApiResponse<CustomerDto>> createCustomer(@Valid @RequestBody CreateCustomerRequest request) {
+        CustomerDto created = customerService.createCustomer(request);
+        return ResponseEntity.ok(ApiResponse.success("Customer account created successfully", created));
+    }
+
     @GetMapping("/me")
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<ApiResponse<CustomerDto>> getMyProfile(Authentication authentication) {

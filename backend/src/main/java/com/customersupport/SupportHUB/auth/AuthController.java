@@ -20,6 +20,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @PreAuthorize("hasAnyRole('CUSTOMER_SUPPORT_MANAGER', 'OPERATIONS_SUPERVISOR', 'CUSTOMER_SERVICE_OFFICER')")
     public ResponseEntity<ApiResponse<JwtResponse>> register(@Valid @RequestBody RegisterRequest request) {
         JwtResponse response = authService.register(request);
         return ResponseEntity.ok(ApiResponse.success("User registered successfully", response));

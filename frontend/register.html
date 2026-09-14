@@ -1,13 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Sign In - SupportHUB</title>
-  <script>
-    window.location.replace('login.html');
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Provisioning - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
 </head>
+
 <body>
-  <p>Redirecting to <a href="login.html">Sign In</a>...</p>
+  <div class="auth-container">
+    <div class="auth-card" style="text-align: center; max-width: 480px;">
+      <div class="auth-header">
+        <a href="index.html" class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></a>
+      </div>
+
+      <div style="margin: 1.5rem 0;">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(30, 58, 138, 0.1); color: #1e3a8a; display: inline-flex; align-items: center; justify-content: center; font-size: 1.75rem; margin-bottom: 1rem;">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <h2 style="font-size: 1.35rem; color: var(--text-main); margin-bottom: 0.5rem;">Managed Account Access</h2>
+        <p style="font-size: 0.925rem; color: var(--text-secondary); line-height: 1.5;">
+          Public self-registration is closed. Customer and student accounts are provisioned internally by Campus Administration and Support Officers.
+        </p>
+      </div>
+
+      <div style="background: var(--bg-surface-secondary, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem; text-align: left; font-size: 0.85rem; color: var(--text-secondary);">
+        <p style="margin: 0 0 0.4rem 0; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-circle-info" style="color: #3b82f6; margin-right: 4px;"></i> How to get access:</p>
+        <ul style="margin: 0; padding-left: 1.25rem; line-height: 1.4;">
+          <li>Contact your University / Support Administrator to have your account provisioned.</li>
+          <li>Once onboarded, sign in directly with your assigned credentials.</li>
+        </ul>
+      </div>
+
+      <a href="login.html" class="btn btn-primary" style="width: 100%; justify-content: center;">
+        <i class="fa-solid fa-arrow-left"></i> Return to Sign In
+      </a>
+    </div>
+  </div>
 </body>
+
 </html>
