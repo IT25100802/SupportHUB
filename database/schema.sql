@@ -4,6 +4,19 @@
 CREATE DATABASE IF NOT EXISTS customer_support_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE customer_support_db;
 
+-- 1. Users Table
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL,
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_user_email (email),
+    INDEX idx_user_role (role)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- 2. Customers Table
 CREATE TABLE IF NOT EXISTS customers (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -14,6 +27,16 @@ CREATE TABLE IF NOT EXISTS customers (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_customer_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 3. Ticket Categories Table
+CREATE TABLE IF NOT EXISTS ticket_categories (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 4. Support Agents Table
@@ -28,48 +51,6 @@ CREATE TABLE IF NOT EXISTS support_agents (
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_agent_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- 3. Ticket Categories Table
-CREATE TABLE IF NOT EXISTS ticket_categories (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    description TEXT,
-    is_active TINYINT(1) NOT NULL DEFAULT 1,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- 11. FAQ Articles Table
-CREATE TABLE IF NOT EXISTS faq_articles (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    question VARCHAR(255) NOT NULL,
-    answer TEXT NOT NULL,
-    category_id BIGINT NULL,
-    is_published TINYINT(1) NOT NULL DEFAULT 1,
-    keywords TEXT,
-    view_count INT NOT NULL DEFAULT 0,
-    created_by_id BIGINT NULL,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_faq_category FOREIGN KEY (category_id) REFERENCES ticket_categories(id) ON DELETE SET NULL,
-    CONSTRAINT fk_faq_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- 12. Knowledge Base Articles Table
-CREATE TABLE IF NOT EXISTS knowledge_base_articles (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(200) NOT NULL,
-    content LONGTEXT NOT NULL,
-    category_id BIGINT NULL,
-    is_published TINYINT(1) NOT NULL DEFAULT 1,
-    tags VARCHAR(255),
-    view_count INT NOT NULL DEFAULT 0,
-    created_by_id BIGINT NULL,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_kb_category FOREIGN KEY (category_id) REFERENCES ticket_categories(id) ON DELETE SET NULL,
-    CONSTRAINT fk_kb_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL
- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 5. Support Agent Categories Mapping Table (Many-To-Many)
 CREATE TABLE IF NOT EXISTS support_agent_categories (
@@ -154,4 +135,71 @@ CREATE TABLE IF NOT EXISTS feedback (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_feedback_ticket FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE,
     CONSTRAINT fk_feedback_customer FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 11. FAQ Articles Table
+CREATE TABLE IF NOT EXISTS faq_articles (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    question VARCHAR(255) NOT NULL,
+    answer TEXT NOT NULL,
+    category_id BIGINT NULL,
+    is_published TINYINT(1) NOT NULL DEFAULT 1,
+    keywords TEXT,
+    view_count INT NOT NULL DEFAULT 0,
+    created_by_id BIGINT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_faq_category FOREIGN KEY (category_id) REFERENCES ticket_categories(id) ON DELETE SET NULL,
+    CONSTRAINT fk_faq_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 12. Knowledge Base Articles Table
+CREATE TABLE IF NOT EXISTS knowledge_base_articles (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    content LONGTEXT NOT NULL,
+    category_id BIGINT NULL,
+    is_published TINYINT(1) NOT NULL DEFAULT 1,
+    tags VARCHAR(255),
+    view_count INT NOT NULL DEFAULT 0,
+    created_by_id BIGINT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_kb_category FOREIGN KEY (category_id) REFERENCES ticket_categories(id) ON DELETE SET NULL,
+    CONSTRAINT fk_kb_user FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 13. Notifications Table
+CREATE TABLE IF NOT EXISTS notifications (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    title VARCHAR(150) NOT NULL,
+    message TEXT NOT NULL,
+    type VARCHAR(50) NOT NULL DEFAULT 'SYSTEM',
+    related_ticket_id BIGINT NULL,
+    is_read TINYINT(1) NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_notif_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 14. Password Reset Tokens Table
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    token VARCHAR(100) NOT NULL UNIQUE,
+    user_id BIGINT NOT NULL,
+    expiry_date DATETIME NOT NULL,
+    used TINYINT(1) NOT NULL DEFAULT 0,
+    CONSTRAINT fk_prt_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 15. Audit Logs Table
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NULL,
+    action VARCHAR(100) NOT NULL,
+    entity_name VARCHAR(100),
+    entity_id BIGINT,
+    details TEXT,
+    timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_audit_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
