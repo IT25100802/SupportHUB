@@ -4,7 +4,115 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="175f4e54-473f-4f2b-a010-4e32df9542b5" name="Changes" comment="" />
+    <list default="true" id="175f4e54-473f-4f2b-a010-4e32df9542b5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/CustomerSupportApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/agent/AgentController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/agent/AgentService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/agent/AgentServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/agent/AgentStatus.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/agent/AssignAgentRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/agent/CreateAgentRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/agent/SupportAgent.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/agent/SupportAgentDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/agent/SupportAgentRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/agent/UpdateAgentCategoriesRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/agent/UpdateAgentDetailsRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/auth/AuthController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/auth/AuthService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/auth/AuthServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/auth/ChangePasswordRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/auth/ForgotPasswordRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/auth/JwtResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/auth/LoginRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/auth/RegisterRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/auth/ResetPasswordRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/category/CategoryController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/category/CategoryService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/category/CategoryServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/category/CreateCategoryRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/category/TicketCategory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/category/TicketCategoryDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/category/TicketCategoryRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/AccessDeniedException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/ApiResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/Attachment.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/AttachmentRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/AuditLog.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/AuditLogRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/BadRequestException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/CustomUserDetailsService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/DataInitializer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/DuplicateResourceException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/FileUploadException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/GlobalExceptionHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/JwtAuthenticationFilter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/JwtUtils.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/PasswordResetToken.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/PasswordResetTokenRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/ResourceNotFoundException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/Role.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/SecurityConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/UnauthorizedException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/User.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/UserPrincipal.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/common/UserRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/customer/Customer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/customer/CustomerController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/customer/CustomerDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/customer/CustomerRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/customer/CustomerService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/customer/CustomerServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/customer/CustomerSpecification.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/customer/UpdateCustomerRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/ChatbotController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/ChatbotQueryRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/ChatbotQueryResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/ChatbotService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/ChatbotServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/ChatbotStrategyContext.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/CreateFaqRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/CreateKBRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/ExactMatchStrategy.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/FaqArticle.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/FaqArticleDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/FaqArticleRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/FaqController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/FaqMatchingStrategy$MatchResult.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/FaqMatchingStrategy.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/FaqService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/FaqServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/FuzzyJaccardMatchStrategy.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/KeywordMatchStrategy.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/KnowledgeBaseArticle.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/KnowledgeBaseArticleDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/KnowledgeBaseArticleRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/KnowledgeBaseController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/KnowledgeBaseService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/faq/KnowledgeBaseServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/CreateFeedbackRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/DashboardReportDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/Feedback.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/FeedbackController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/FeedbackDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/FeedbackReportDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/FeedbackRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/FeedbackService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/FeedbackServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/FeedbackSpecification.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/ReportController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/ReportFactory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/ReportService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/feedback/ReportServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/notification/Notification.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/notification/NotificationController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/notification/NotificationDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/notification/NotificationFactory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/notification/NotificationRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/notification/NotificationService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/notification/NotificationServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/customersupport/SupportHUB/notification/NotificationType.class" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,22 +121,22 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "IT25100802"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;IT25100802&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/IT25100802/SupportHUB.git",
-    "accountId": "3649581a-c423-42d4-aab1-c4967119e8a7"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/IT25100802/SupportHUB.git&quot;,
+    &quot;accountId&quot;: &quot;3649581a-c423-42d4-aab1-c4967119e8a7&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 6
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="3JGhAR5HK0rDT6NptSqeOLFA0YZ" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -38,7 +146,9 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "ticket-category-management",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.CustomerSupportApplication.executor": "Run",
+    "git-widget-placeholder": "dev",
     "kotlin-language-version-configured": "true"
   }
 }]]></component>
