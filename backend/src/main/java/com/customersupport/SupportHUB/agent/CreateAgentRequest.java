@@ -23,6 +23,8 @@ public class CreateAgentRequest {
     @NotBlank(message = "Employee code is required")
     private String employeeCode;
 
+    private String role;
+
     private Set<Long> categoryIds;
 
     public CreateAgentRequest() {
@@ -66,6 +68,14 @@ public class CreateAgentRequest {
 
     public void setEmployeeCode(String employeeCode) {
         this.employeeCode = employeeCode;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Set<Long> getCategoryIds() {
