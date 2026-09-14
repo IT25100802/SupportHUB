@@ -1,4 +1,4 @@
-package com.customersupport.SupportHUB.knowledgebase;
+package com.customersupport.SupportHUB.faq;
 
 import com.customersupport.SupportHUB.category.TicketCategory;
 import com.customersupport.SupportHUB.common.User;

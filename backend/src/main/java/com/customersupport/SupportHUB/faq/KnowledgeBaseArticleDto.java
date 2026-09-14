@@ -1,4 +1,4 @@
-package com.customersupport.SupportHUB.knowledgebase;
+package com.customersupport.SupportHUB.faq;
 
 import java.time.LocalDateTime;
 

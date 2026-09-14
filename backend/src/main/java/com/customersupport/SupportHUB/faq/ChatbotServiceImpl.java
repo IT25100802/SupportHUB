@@ -1,4 +1,4 @@
-package com.customersupport.SupportHUB.knowledgebase;
+package com.customersupport.SupportHUB.faq;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

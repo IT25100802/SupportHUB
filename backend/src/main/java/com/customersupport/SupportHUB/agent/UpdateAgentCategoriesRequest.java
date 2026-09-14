@@ -21,4 +21,3 @@ public class UpdateAgentCategoriesRequest {
         this.categoryIds = categoryIds;
     }
 }
-

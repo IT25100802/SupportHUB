@@ -22,4 +22,3 @@ public class AssignAgentRequest {
         this.agentId = agentId;
     }
 }
-

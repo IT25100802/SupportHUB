@@ -13,12 +13,30 @@ public class SupportAgentDto {
     private String fullName;
     private String phone;
     private String employeeCode;
+    private String role;
+    private boolean active = true;
     private AgentStatus status;
     private Set<TicketCategoryDto> assignedCategories;
     private long activeTicketCount;
     private LocalDateTime createdAt;
 
     public SupportAgentDto() {
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Long getId() {
@@ -101,4 +119,3 @@ public class SupportAgentDto {
         this.createdAt = createdAt;
     }
 }
-

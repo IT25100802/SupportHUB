@@ -35,9 +35,9 @@ public class SupportAgent {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "support_agent_categories",
-            joinColumns = @JoinColumn(name = "agent_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
+        name = "support_agent_categories",
+        joinColumns = @JoinColumn(name = "agent_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private Set<TicketCategory> assignedCategories = new HashSet<>();
 
@@ -141,4 +141,3 @@ public class SupportAgent {
         this.updatedAt = updatedAt;
     }
 }
-

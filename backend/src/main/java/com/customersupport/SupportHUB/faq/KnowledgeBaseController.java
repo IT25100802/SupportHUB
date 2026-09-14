@@ -1,4 +1,4 @@
-package com.customersupport.SupportHUB.knowledgebase;
+package com.customersupport.SupportHUB.faq;
 
 import com.customersupport.SupportHUB.common.ApiResponse;
 
@@ -30,7 +30,7 @@ public class KnowledgeBaseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<KnowledgeBaseArticleDto>> getArticleById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<KnowledgeBaseArticleDto>> getArticleById(@PathVariable("id") Long id) {
         KnowledgeBaseArticleDto article = kbService.getArticleById(id);
         return ResponseEntity.ok(ApiResponse.success("Knowledge base article fetched successfully", article));
     }
@@ -49,13 +49,13 @@ public class KnowledgeBaseController {
     }
 
     @GetMapping("/public/category/{categoryId}")
-    public ResponseEntity<ApiResponse<List<KnowledgeBaseArticleDto>>> getArticlesByCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<ApiResponse<List<KnowledgeBaseArticleDto>>> getArticlesByCategory(@PathVariable("categoryId") Long categoryId) {
         List<KnowledgeBaseArticleDto> articles = kbService.getArticlesByCategory(categoryId);
         return ResponseEntity.ok(ApiResponse.success("Knowledge base articles for category fetched successfully", articles));
     }
 
     @GetMapping("/public/search")
-    public ResponseEntity<ApiResponse<List<KnowledgeBaseArticleDto>>> searchArticles(@RequestParam String q) {
+    public ResponseEntity<ApiResponse<List<KnowledgeBaseArticleDto>>> searchArticles(@RequestParam("q") String q) {
         List<KnowledgeBaseArticleDto> articles = kbService.searchArticles(q);
         return ResponseEntity.ok(ApiResponse.success("Knowledge base search completed", articles));
     }
@@ -63,7 +63,7 @@ public class KnowledgeBaseController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('CUSTOMER_SUPPORT_MANAGER')")
     public ResponseEntity<ApiResponse<KnowledgeBaseArticleDto>> updateArticle(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Valid @RequestBody CreateKBRequest request) {
         KnowledgeBaseArticleDto updated = kbService.updateArticle(id, request);
         return ResponseEntity.ok(ApiResponse.success("Knowledge base article updated successfully", updated));
@@ -71,14 +71,14 @@ public class KnowledgeBaseController {
 
     @PatchMapping("/{id}/toggle-published")
     @PreAuthorize("hasRole('CUSTOMER_SUPPORT_MANAGER')")
-    public ResponseEntity<ApiResponse<KnowledgeBaseArticleDto>> toggleArticlePublished(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<KnowledgeBaseArticleDto>> toggleArticlePublished(@PathVariable("id") Long id) {
         KnowledgeBaseArticleDto toggled = kbService.toggleArticlePublished(id);
         return ResponseEntity.ok(ApiResponse.success("Article published status toggled", toggled));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('CUSTOMER_SUPPORT_MANAGER')")
-    public ResponseEntity<ApiResponse<Void>> deleteArticle(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteArticle(@PathVariable("id") Long id) {
         kbService.deleteArticle(id);
         return ResponseEntity.ok(ApiResponse.success("Knowledge base article deleted successfully"));
     }

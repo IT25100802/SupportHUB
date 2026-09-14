@@ -1,4 +1,4 @@
-package com.customersupport.SupportHUB.knowledgebase;
+package com.customersupport.SupportHUB.faq;
 
 import com.customersupport.SupportHUB.common.ApiResponse;
 
@@ -30,7 +30,7 @@ public class FaqController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<FaqArticleDto>> getFaqById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<FaqArticleDto>> getFaqById(@PathVariable("id") Long id) {
         FaqArticleDto faq = faqService.getFaqById(id);
         return ResponseEntity.ok(ApiResponse.success("FAQ article fetched successfully", faq));
     }
@@ -49,13 +49,13 @@ public class FaqController {
     }
 
     @GetMapping("/public/category/{categoryId}")
-    public ResponseEntity<ApiResponse<List<FaqArticleDto>>> getFaqsByCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<ApiResponse<List<FaqArticleDto>>> getFaqsByCategory(@PathVariable("categoryId") Long categoryId) {
         List<FaqArticleDto> faqs = faqService.getFaqsByCategory(categoryId);
         return ResponseEntity.ok(ApiResponse.success("FAQs for category fetched successfully", faqs));
     }
 
     @GetMapping("/public/search")
-    public ResponseEntity<ApiResponse<List<FaqArticleDto>>> searchFaqs(@RequestParam String q) {
+    public ResponseEntity<ApiResponse<List<FaqArticleDto>>> searchFaqs(@RequestParam("q") String q) {
         List<FaqArticleDto> faqs = faqService.searchFaqs(q);
         return ResponseEntity.ok(ApiResponse.success("FAQ search completed", faqs));
     }
@@ -69,7 +69,7 @@ public class FaqController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('CUSTOMER_SUPPORT_MANAGER')")
     public ResponseEntity<ApiResponse<FaqArticleDto>> updateFaq(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Valid @RequestBody CreateFaqRequest request) {
         FaqArticleDto updated = faqService.updateFaq(id, request);
         return ResponseEntity.ok(ApiResponse.success("FAQ article updated successfully", updated));
@@ -77,14 +77,14 @@ public class FaqController {
 
     @PatchMapping("/{id}/toggle-published")
     @PreAuthorize("hasRole('CUSTOMER_SUPPORT_MANAGER')")
-    public ResponseEntity<ApiResponse<FaqArticleDto>> toggleFaqPublished(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<FaqArticleDto>> toggleFaqPublished(@PathVariable("id") Long id) {
         FaqArticleDto toggled = faqService.toggleFaqPublished(id);
         return ResponseEntity.ok(ApiResponse.success("FAQ published status toggled", toggled));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('CUSTOMER_SUPPORT_MANAGER')")
-    public ResponseEntity<ApiResponse<Void>> deleteFaq(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteFaq(@PathVariable("id") Long id) {
         faqService.deleteFaq(id);
         return ResponseEntity.ok(ApiResponse.success("FAQ article deleted successfully"));
     }

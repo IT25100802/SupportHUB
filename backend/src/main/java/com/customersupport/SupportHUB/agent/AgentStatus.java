@@ -5,4 +5,3 @@ public enum AgentStatus {
     BUSY,
     OFFLINE
 }
-
