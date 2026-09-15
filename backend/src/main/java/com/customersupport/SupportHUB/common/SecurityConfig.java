@@ -89,7 +89,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/knowledge-base/public/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/api/categories/active").permitAll()
+                        .requestMatchers("/api/categories/active", "/api/categories/public/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

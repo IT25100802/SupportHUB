@@ -39,7 +39,7 @@ public class CategoryController {
         return ResponseEntity.ok(ApiResponse.success("Categories list fetched successfully", categories));
     }
 
-    @GetMapping("/active")
+    @GetMapping({"/active", "/public/active"})
     public ResponseEntity<ApiResponse<List<TicketCategoryDto>>> getActiveCategories() {
         List<TicketCategoryDto> categories = categoryService.getActiveCategories();
         return ResponseEntity.ok(ApiResponse.success("Active categories fetched successfully", categories));

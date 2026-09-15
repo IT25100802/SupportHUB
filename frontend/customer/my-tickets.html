@@ -352,7 +352,7 @@
       const catSelect = document.getElementById('create-modal-category');
 
       try {
-        const res = await API.get('/categories/public/active');
+        const res = await API.get('/categories/active');
         const categories = res.data || [];
         if (categories.length === 0) {
           catSelect.innerHTML = '<option value="">No active categories available</option>';
