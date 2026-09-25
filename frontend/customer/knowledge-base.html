@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Base & Guides - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css?v=13.0">
+  <link rel="stylesheet" href="../css/components.css?v=13.0">
+  <link rel="stylesheet" href="../css/dashboard.css?v=13.0">
+
+  <style>
+    /* ==========================================================================
+       Customer Knowledge Base - Dynamic E-Commerce Help Center Design
+       ========================================================================== */
+
+    .page-body {
+      padding: 1rem 1.35rem !important;
+    }
+
+    /* Page Header */
+    .kb-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.95rem;
+      gap: 1rem;
+    }
+
+    .kb-title-group h1 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 0.15rem 0;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .kb-title-group p {
+      font-size: 0.825rem;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    /* Search Bar */
+    .kb-search-bar {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.5rem 0.75rem 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      margin-bottom: 0.85rem;
+    }
+
+    .kb-search-bar input {
+      border: none;
+      outline: none;
+      flex: 1;
+      font-size: 0.85rem;
+      color: #1e293b;
+      background: transparent;
+    }
+
+    .btn-search-orange {
+      background: #f59e0b;
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 0.825rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .btn-search-orange:hover {
+      background: #d97706;
+      color: #ffffff;
+    }
+
+    /* Category Filter Pills */
+    .kb-category-pills {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.15rem;
+    }
+
+    .kb-cat-pill {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: all 0.15s ease;
+    }
+
+    .kb-cat-pill:hover {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+    }
+
+    .kb-cat-pill.active {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+    }
+
+    .kb-cat-pill.active i {
+      color: #ffffff !important;
+    }
+
+    /* 3-Column Articles Grid */
+    .kb-articles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 1080px) {
+      .kb-articles-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .kb-articles-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kb-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .kb-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px -3px rgba(15, 23, 42, 0.08);
+      border-color: #cbd5e1;
+    }
+
+    .kb-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .kb-card-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .kb-card-cat-tag {
+      font-size: 0.685rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      margin-bottom: 0.15rem;
+    }
+
+    .kb-card-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.3;
+      margin: 0;
+    }
+
+    .kb-card-desc {
+      font-size: 0.785rem;
+      color: #475569;
+      line-height: 1.45;
+      margin: 0 0 0.95rem 0;
+    }
+
+    .kb-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.75rem;
+      border-top: 1px solid #f1f5f9;
+      font-size: 0.725rem;
+      color: #64748b;
+    }
+
+    .kb-read-link {
+      font-weight: 700;
+      color: #2563eb;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      transition: gap 0.15s ease;
+    }
+
+    .kb-card:hover .kb-read-link {
+      gap: 0.45rem;
+    }
+
+    /* Bottom Help Banner */
+    .kb-help-banner {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 1.15rem 1.35rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .kb-help-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .kb-help-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
+      flex-shrink: 0;
+    }
+
+    .kb-help-text h4 {
+      margin: 0 0 0.15rem 0;
+      font-size: 0.925rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .kb-help-text p {
+      margin: 0;
+      font-size: 0.775rem;
+      color: #475569;
+    }
+
+    .btn-create-ticket-orange {
+      background: #f59e0b;
+      color: #0f172a;
+      font-size: 0.785rem;
+      font-weight: 700;
+      padding: 0.55rem 1.15rem;
+      border-radius: 8px;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-create-ticket-orange:hover {
+      background: #d97706;
+      color: #ffffff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div>
+      </div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Page Header Row -->
+        <div class="kb-header-row">
+          <div class="kb-title-group">
+            <h1 id="kb-page-title">Knowledge Base & Guides</h1>
+            <p id="kb-page-subtitle">Find step-by-step guides, policies, and solutions for orders, deliveries, payments, and account security.</p>
+          </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="kb-search-bar">
+          <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; font-size: 0.85rem;"></i>
+          <input type="text" id="kb-search-input" placeholder="Search guides, articles, keywords..." oninput="handleSearch(this.value)" />
+          <button class="btn-search-orange" onclick="handleSearch(document.getElementById('kb-search-input').value)">Search</button>
+        </div>
+
+        <!-- Category Filter Pills -->
+        <div class="kb-category-pills">
+          <button class="kb-cat-pill active" onclick="switchCategoryFilter(this, '')">
+            <i class="fa-solid fa-table-cells-large"></i> All Guides
+          </button>
+          <button class="kb-cat-pill" onclick="switchCategoryFilter(this, 'Order Issues')">
+            <i class="fa-solid fa-cart-shopping" style="color: #ea580c;"></i> Order Issues
+          </button>
+          <button class="kb-cat-pill" onclick="switchCategoryFilter(this, 'Delivery Issues')">
+            <i class="fa-solid fa-truck" style="color: #2563eb;"></i> Delivery Issues
+          </button>
+          <button class="kb-cat-pill" onclick="switchCategoryFilter(this, 'Payment & Refunds')">
+            <i class="fa-solid fa-credit-card" style="color: #ec4899;"></i> Payment & Refunds
+          </button>
+          <button class="kb-cat-pill" onclick="switchCategoryFilter(this, 'Account Issues')">
+            <i class="fa-solid fa-user" style="color: #9333ea;"></i> Account Issues
+          </button>
+          <button class="kb-cat-pill" onclick="switchCategoryFilter(this, 'Product Information')">
+            <i class="fa-solid fa-box" style="color: #f59e0b;"></i> Product Information
+          </button>
+        </div>
+
+        <!-- 3-Column Articles Grid (Dynamic from Database) -->
+        <div class="kb-articles-grid" id="articles-grid-container">
+          <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem; color: #64748b;">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+            Loading knowledge base articles...
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Read Guide Detailed Modal -->
+  <div class="modal-backdrop" id="guide-modal">
+    <div class="modal-content" style="max-width: 640px;">
+      <div class="modal-header">
+        <h3 id="gm-title"><i class="fa-solid fa-book-open" style="color: #2563eb;"></i> Guide</h3>
+        <button onclick="closeGuideModal()" class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem 1.5rem; max-height: calc(85vh - 120px); overflow-y: auto;">
+        <div id="gm-meta" style="font-size: 0.775rem; color: #64748b; margin-bottom: 0.85rem; display: flex; gap: 1rem;"></div>
+        <div id="gm-content" style="font-size: 0.85rem; color: #334155; line-height: 1.6; white-space: pre-line;"></div>
+      </div>
+      <div class="modal-footer" style="padding: 0.85rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.775rem; color: #64748b;">Was this article helpful? <button class="btn btn-secondary btn-sm" onclick="Utils.showToast('Thank you for your feedback!','success')">👍 Yes</button> <button class="btn btn-secondary btn-sm" onclick="Utils.showToast('We will improve this guide.','info')">👎 No</button></span>
+        <button type="button" onclick="closeGuideModal()" class="btn btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js?v=13.0"></script>
+  <script src="../js/auth.js?v=13.0"></script>
+  <script src="../js/utils.js?v=13.0"></script>
+  <script src="../js/notifications.js?v=13.0"></script>
+  <script>
+    let currentCategory = '';
+    let allPublishedArticles = [];
+
+    const CAT_ICONS = {
+      'Order Issues': { icon: 'fa-box-open', bg: '#fff7ed', color: '#ea580c' },
+      'Delivery Issues': { icon: 'fa-truck', bg: '#eff6ff', color: '#2563eb' },
+      'Payment & Refunds': { icon: 'fa-credit-card', bg: '#fdf2f8', color: '#db2777' },
+      'Account Issues': { icon: 'fa-user-gear', bg: '#faf5ff', color: '#9333ea' },
+      'Product Information': { icon: 'fa-box', bg: '#ecfdf5', color: '#059669' }
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['CUSTOMER', 'CUSTOMER_SERVICE_OFFICER', 'OPERATIONS_SUPERVISOR', 'CUSTOMER_SUPPORT_MANAGER', 'QA_EXECUTIVE'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      // Adapt view subtitle based on user role
+      const user = Auth.getUser();
+      const isCustomer = user && user.role === 'CUSTOMER';
+      const pageTitle = document.getElementById('kb-page-title');
+      const pageSubtitle = document.getElementById('kb-page-subtitle');
+
+      if (!isCustomer) {
+        if (pageTitle) pageTitle.textContent = 'Knowledge Base & Resolution Guides';
+        if (pageSubtitle) pageSubtitle.textContent = 'Browse step-by-step resolution guides, policies, and troubleshooting solutions.';
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const q = urlParams.get('q');
+      if (q) {
+        document.getElementById('kb-search-input').value = q;
+      }
+
+      await loadKnowledgeBaseArticles();
+    });
+
+    async function loadKnowledgeBaseArticles() {
+      const container = document.getElementById('articles-grid-container');
+      try {
+        const res = await API.get('/knowledge-base/public');
+        allPublishedArticles = (res && res.data) ? res.data : [];
+        renderArticles();
+      } catch (err) {
+        console.error('Error fetching knowledge base articles:', err);
+        allPublishedArticles = [];
+        renderArticles();
+      }
+    }
+
+    function switchCategoryFilter(btnEl, category) {
+      document.querySelectorAll('.kb-cat-pill').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+      currentCategory = category;
+      renderArticles();
+    }
+
+    function handleSearch(query) {
+      renderArticles();
+    }
+
+    function renderArticles() {
+      const container = document.getElementById('articles-grid-container');
+      const q = (document.getElementById('kb-search-input').value || '').toLowerCase().trim();
+
+      const filtered = allPublishedArticles.filter(art => {
+        const cat = art.categoryName || 'General Support';
+        const title = (art.title || '').toLowerCase();
+        const content = (art.content || '').toLowerCase();
+        const tags = (art.tags || '').toLowerCase();
+
+        const matchCat = !currentCategory || cat === currentCategory;
+        const matchQuery = !q || title.includes(q) || content.includes(q) || tags.includes(q) || cat.toLowerCase().includes(q);
+
+        return matchCat && matchQuery;
+      });
+
+      if (filtered.length === 0) {
+        const emptyMsg = allPublishedArticles.length === 0
+          ? 'There are currently no published articles in this help center. Knowledge base articles published will appear here.'
+          : `No articles matching "${escapeHtml(q)}" in this category.`;
+
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1.5rem; background: #ffffff; border-radius: 12px; border: 1px dashed #cbd5e1;">
+            <i class="fa-solid fa-book-open" style="font-size: 2.25rem; color: #94a3b8; margin-bottom: 0.75rem; display: block;"></i>
+            <h3 style="font-size: 1.1rem; font-weight: 800; color: #0f172a; margin-bottom: 0.35rem;">
+              ${allPublishedArticles.length === 0 ? 'No Knowledge Base Articles Published Yet' : 'No Matching Articles Found'}
+            </h3>
+            <p style="font-size: 0.825rem; color: #64748b; margin: 0; max-width: 480px; margin-left: auto; margin-right: auto;">
+              ${emptyMsg}
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(art => {
+        const cat = art.categoryName || 'General Support';
+        const cfg = CAT_ICONS[cat] || { icon: 'fa-book-bookmark', bg: '#f1f5f9', color: '#475569' };
+        const cleanDesc = art.content ? (art.content.length > 115 ? art.content.substring(0, 115) + '...' : art.content) : 'Click to read guide.';
+        const dateStr = art.updatedAt ? new Date(art.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent';
+
+        return `
+          <div class="kb-card" onclick="openArticleModal(${art.id})">
+            <div>
+              <div class="kb-card-top">
+                <div class="kb-card-icon" style="background: ${cfg.bg}; color: ${cfg.color};">
+                  <i class="fa-solid ${cfg.icon}"></i>
+                </div>
+                <div>
+                  <div class="kb-card-cat-tag">${escapeHtml(cat)}</div>
+                  <h3 class="kb-card-title">${escapeHtml(art.title)}</h3>
+                </div>
+              </div>
+              <p class="kb-card-desc">${escapeHtml(cleanDesc)}</p>
+            </div>
+            <div class="kb-card-footer">
+              <div style="display: flex; gap: 0.65rem;">
+                <span><i class="fa-regular fa-eye"></i> ${(art.viewCount || 0).toLocaleString()} views</span>
+                <span><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+              </div>
+              <span class="kb-read-link">Read Guide →</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openArticleModal(id) {
+      const art = allPublishedArticles.find(a => a.id === id);
+      if (!art) return;
+
+      const dateStr = art.updatedAt ? new Date(art.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent';
+      document.getElementById('gm-title').innerHTML = `<i class="fa-solid fa-book-open" style="color: #2563eb;"></i> ${escapeHtml(art.title)}`;
+      document.getElementById('gm-meta').innerHTML = `
+        <span><i class="fa-regular fa-eye"></i> ${(art.viewCount || 0).toLocaleString()} views</span>
+        <span>Category: <strong>${escapeHtml(art.categoryName || 'General Support')}</strong></span>
+        <span>Updated: ${dateStr}</span>
+      `;
+      document.getElementById('gm-content').textContent = art.content || 'No detailed content available.';
+
+      document.getElementById('guide-modal').classList.add('show');
+    }
+
+    function closeGuideModal() {
+      document.getElementById('guide-modal').classList.remove('show');
+    }
+
+    window.addEventListener('click', (e) => {
+      const modal = document.getElementById('guide-modal');
+      if (e.target === modal) {
+        closeGuideModal();
+      }
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+
+</html>
