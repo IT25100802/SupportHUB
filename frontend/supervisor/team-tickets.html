@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Ticket Queue - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    /* ==========================================================================
+       Team Ticket Queue - Pixel-Perfect Reference UI
+       ========================================================================== */
+
+    :root {
+      --primary-navy: #0f172a;
+      --navy-light: #1e293b;
+      --blue-accent: #2563eb;
+      --border-subtle: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --bg-light-blue: #f8fafc;
+    }
+
+    /* Page Header */
+    .page-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .page-title-group h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.35rem 0;
+      line-height: 1.2;
+    }
+
+    .page-title-group p {
+      font-size: 0.925rem;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    /* 4 Top KPI Summary Cards */
+    .kpi-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      .kpi-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .kpi-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kpi-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 1.25rem 1.35rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.08);
+      border-color: #cbd5e1;
+    }
+
+    .kpi-card-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .kpi-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .kpi-icon-box.blue {
+      background: #eff6ff;
+      color: #3b82f6;
+    }
+
+    .kpi-icon-box.green {
+      background: #f0fdf4;
+      color: #10b981;
+    }
+
+    .kpi-icon-box.red {
+      background: #fef2f2;
+      color: #ef4444;
+    }
+
+    .kpi-icon-box.purple {
+      background: #faf5ff;
+      color: #a855f7;
+    }
+
+    .kpi-info h3 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .kpi-info p {
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: #64748b;
+      margin: 0.3rem 0 0 0;
+    }
+
+    .kpi-chevron {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      transition: transform 0.2s ease;
+    }
+
+    .kpi-card:hover .kpi-chevron {
+      transform: translateX(3px);
+      color: #334155;
+    }
+
+    /* Status Navigation Tabs Bar */
+    .status-tabs-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding: 0.4rem 0.2rem 0.8rem 0.2rem;
+      margin-bottom: 1.25rem;
+      scrollbar-width: thin;
+    }
+
+    .status-tabs-container::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .status-tabs-container::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .status-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .status-tab-btn:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      color: #0f172a;
+    }
+
+    .status-tab-btn.active {
+      background: #0f172a;
+      border-color: #0f172a;
+      color: #ffffff;
+    }
+
+    .status-tab-btn .tab-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .status-tab-btn .tab-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.1rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: #f1f5f9;
+      color: #475569;
+      margin-left: 0.15rem;
+    }
+
+    .status-tab-btn.active .tab-count {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+
+    /* Filters & Search Toolbar */
+    .filter-toolbar {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .filter-search-box {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+      max-width: 380px;
+    }
+
+    .filter-search-box i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 0.875rem;
+    }
+
+    .filter-search-box input {
+      width: 100%;
+      padding: 0.55rem 0.85rem 0.55rem 2.25rem;
+      font-size: 0.85rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #f8fafc;
+      color: #0f172a;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .filter-search-box input:focus {
+      background: #ffffff;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .filter-dropdowns-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-select {
+      padding: 0.5rem 0.85rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: #334155;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .filter-select:hover {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+    }
+
+    .filter-select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+    }
+
+    /* Table Container & Custom Styling */
+    .tickets-table-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .team-queue-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    .team-queue-table thead th {
+      background: #0f172a;
+      color: #ffffff;
+      font-size: 0.725rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 1rem 0.95rem;
+      white-space: nowrap;
+      border: none;
+    }
+
+    .team-queue-table tbody td {
+      padding: 1rem 0.95rem;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+      color: #334155;
+      background: #ffffff;
+    }
+
+    .team-queue-table tbody tr:hover td {
+      background: #f8fafc;
+    }
+
+    /* Column Specific Styling */
+    .ticket-id-link {
+      font-weight: 800;
+      color: #2563eb;
+      text-decoration: none;
+      font-size: 0.875rem;
+      letter-spacing: -0.01em;
+      transition: color 0.15s ease;
+    }
+
+    .ticket-id-link:hover {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
+
+    .ticket-subject-cell {
+      font-weight: 700;
+      color: #0f172a;
+      max-width: 260px;
+      line-height: 1.35;
+    }
+
+    /* Customer Cell with Initial Avatar */
+    .customer-cell-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      min-width: 170px;
+    }
+
+    .customer-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.775rem;
+      color: #ffffff;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+
+    .customer-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .customer-name {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 0.85rem;
+    }
+
+    .customer-order-tag {
+      font-size: 0.725rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    /* Category Cell */
+    .category-cell-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      min-width: 140px;
+    }
+
+    .cat-main {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 0.85rem;
+    }
+
+    .cat-sub {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .department-cell {
+      font-weight: 500;
+      color: #334155;
+      font-size: 0.825rem;
+      white-space: nowrap;
+    }
+
+    /* Priority Badges */
+    .priority-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .priority-badge.high,
+    .priority-badge.urgent {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .priority-badge.medium {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .priority-badge.low {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.28rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-badge.in-progress {
+      background: #e0f2fe;
+      color: #0284c7;
+    }
+
+    .status-badge.open {
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    .status-badge.assigned {
+      background: #e0f2fe;
+      color: #0284c7;
+    }
+
+    .status-badge.waiting {
+      background: #f3e8ff;
+      color: #9333ea;
+    }
+
+    .status-badge.escalated {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .status-badge.resolved {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .status-badge.closed {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .status-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* Assigned Officer Cell */
+    .officer-cell-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-width: 150px;
+    }
+
+    .officer-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #0f172a;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .officer-name {
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 0.825rem;
+    }
+
+    .unassigned-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #64748b;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .unassigned-chip:hover {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    /* Created Time Cell */
+    .created-time-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      white-space: nowrap;
+    }
+
+    .created-date {
+      font-weight: 600;
+      color: #334155;
+      font-size: 0.8rem;
+    }
+
+    .created-hour {
+      font-size: 0.725rem;
+      color: #64748b;
+    }
+
+    /* Actions Column Buttons */
+    .actions-group {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      position: relative;
+    }
+
+    .action-btn-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .action-btn-icon:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    .action-btn-icon.primary-hover:hover {
+      background: #eff6ff;
+      color: #2563eb;
+      border-color: #bfdbfe;
+    }
+
+    /* More Actions Menu Dropdown */
+    .dropdown-menu-actions {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      margin-top: 0.4rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+      min-width: 180px;
+      z-index: 100;
+      display: none;
+      overflow: hidden;
+      animation: fadeInDropdown 0.15s ease-out;
+    }
+
+    .dropdown-menu-actions.show {
+      display: block;
+    }
+
+    @keyframes fadeInDropdown {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .dropdown-menu-actions button {
+      width: 100%;
+      padding: 0.65rem 1rem;
+      background: transparent;
+      border: none;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s ease;
+    }
+
+    .dropdown-menu-actions button:hover {
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    .dropdown-menu-actions button.text-danger {
+      color: #dc2626;
+    }
+
+    .dropdown-menu-actions button.text-danger:hover {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    /* Pagination Footer */
+    .pagination-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .pagination-info {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .page-btn {
+      min-width: 34px;
+      height: 34px;
+      padding: 0 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      color: #475569;
+      font-size: 0.825rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .page-btn.active {
+      background: #f59e0b;
+      border-color: #f59e0b;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Modal Backdrop & Dialogs */
+    .modal-backdrop-custom {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1050;
+      padding: 2.5rem 1.5rem;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+
+    .modal-backdrop-custom.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-dialog-custom {
+      background: #ffffff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 480px;
+      max-height: calc(100vh - 5rem);
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.25);
+      overflow: hidden;
+      animation: modalSlide 0.2s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from {
+        opacity: 0;
+        transform: scale(0.96) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-head {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-head h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.25rem;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+
+    .modal-close-btn:hover {
+      color: #0f172a;
+    }
+
+    .modal-body-custom {
+      padding: 1.25rem 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-foot {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      background: #f8fafc;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div>
+      </div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Page Title -->
+        <div class="page-header-row">
+          <div class="page-title-group">
+            <h1>Team Ticket Queue</h1>
+            <p>Monitor, assign, prioritize, and manage customer support tickets across your support team.</p>
+          </div>
+        </div>
+
+        <!-- 4 Top KPI Summary Cards -->
+        <div class="kpi-cards-grid">
+          <!-- Card 1: Unassigned -->
+          <div class="kpi-card" onclick="setTab('UNASSIGNED')">
+            <div class="kpi-card-left">
+              <div class="kpi-icon-box blue">
+                <i class="fa-solid fa-inbox"></i>
+              </div>
+              <div class="kpi-info">
+                <h3 id="kpi-unassigned">00</h3>
+                <p>Unassigned Tickets</p>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right kpi-chevron"></i>
+          </div>
+
+          <!-- Card 2: Active -->
+          <div class="kpi-card" onclick="setTab('ACTIVE')">
+            <div class="kpi-card-left">
+              <div class="kpi-icon-box green">
+                <i class="fa-solid fa-ticket-simple"></i>
+              </div>
+              <div class="kpi-info">
+                <h3 id="kpi-active">00</h3>
+                <p>Active Tickets</p>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right kpi-chevron"></i>
+          </div>
+
+          <!-- Card 3: Escalated -->
+          <div class="kpi-card" onclick="setTab('ESCALATED')">
+            <div class="kpi-card-left">
+              <div class="kpi-icon-box red">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </div>
+              <div class="kpi-info">
+                <h3 id="kpi-escalated">00</h3>
+                <p>Escalated Tickets</p>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right kpi-chevron"></i>
+          </div>
+
+          <!-- Card 4: Waiting -->
+          <div class="kpi-card" onclick="setTab('WAITING')">
+            <div class="kpi-card-left">
+              <div class="kpi-icon-box purple">
+                <i class="fa-solid fa-clock"></i>
+              </div>
+              <div class="kpi-info">
+                <h3 id="kpi-waiting">00</h3>
+                <p>Waiting for Customer</p>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right kpi-chevron"></i>
+          </div>
+        </div>
+
+        <!-- Status Tabs Bar -->
+        <div class="status-tabs-container" id="status-tabs-bar">
+          <button class="status-tab-btn active" data-tab="ALL" onclick="handleTabClick(this, 'ALL')">
+            All Tickets <span class="tab-count" id="count-all">0</span>
+          </button>
+          <button class="status-tab-btn" data-tab="UNASSIGNED" onclick="handleTabClick(this, 'UNASSIGNED')">
+            <span class="tab-dot" style="background: #3b82f6;"></span> Unassigned <span class="tab-count" id="count-unassigned">0</span>
+          </button>
+          <button class="status-tab-btn" data-tab="OPEN" onclick="handleTabClick(this, 'OPEN')">
+            <span class="tab-dot" style="background: #f59e0b;"></span> Open <span class="tab-count" id="count-open">0</span>
+          </button>
+          <button class="status-tab-btn" data-tab="ASSIGNED" onclick="handleTabClick(this, 'ASSIGNED')">
+            <span class="tab-dot" style="background: #10b981;"></span> Assigned <span class="tab-count" id="count-assigned">0</span>
+          </button>
+          <button class="status-tab-btn" data-tab="IN_PROGRESS" onclick="handleTabClick(this, 'IN_PROGRESS')">
+            <span class="tab-dot" style="background: #0284c7;"></span> In Progress <span class="tab-count" id="count-progress">0</span>
+          </button>
+          <button class="status-tab-btn" data-tab="WAITING" onclick="handleTabClick(this, 'WAITING')">
+            <span class="tab-dot" style="background: #a855f7;"></span> Waiting <span class="tab-count" id="count-waiting">0</span>
+          </button>
+          <button class="status-tab-btn" data-tab="ESCALATED" onclick="handleTabClick(this, 'ESCALATED')">
+            <span class="tab-dot" style="background: #ef4444;"></span> Escalated <span class="tab-count" id="count-escalated">0</span>
+          </button>
+          <button class="status-tab-btn" data-tab="RESOLVED" onclick="handleTabClick(this, 'RESOLVED')">
+            <span class="tab-dot" style="background: #10b981;"></span> Resolved <span class="tab-count" id="count-resolved">0</span>
+          </button>
+          <button class="status-tab-btn" data-tab="CLOSED" onclick="handleTabClick(this, 'CLOSED')">
+            <span class="tab-dot" style="background: #64748b;"></span> Closed <span class="tab-count" id="count-closed">0</span>
+          </button>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="filter-toolbar">
+          <div class="filter-search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="filter-search" placeholder="Search ticket #, customer, order #, or subject..." oninput="handleSearchChange()" />
+          </div>
+
+          <div class="filter-dropdowns-group">
+            <select id="filter-cat" class="filter-select" onchange="applyFilters()">
+              <option value="">Category ▼</option>
+            </select>
+
+            <select id="filter-officer" class="filter-select" onchange="applyFilters()">
+              <option value="">Support Officer ▼</option>
+              <option value="UNASSIGNED">Unassigned</option>
+            </select>
+
+            <select id="filter-priority" class="filter-select" onchange="applyFilters()">
+              <option value="">Priority ▼</option>
+              <option value="HIGH">High</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="LOW">Low</option>
+              <option value="URGENT">Urgent</option>
+            </select>
+
+            <select id="filter-status" class="filter-select" onchange="applyFilters()">
+              <option value="">Status ▼</option>
+              <option value="OPEN">Open</option>
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="WAITING_FOR_CUSTOMER">Waiting</option>
+              <option value="RESOLVED">Resolved</option>
+              <option value="CLOSED">Closed</option>
+            </select>
+
+            <select id="filter-sort" class="filter-select" onchange="applyFilters()">
+              <option value="NEWEST">Sort: Newest First ▼</option>
+              <option value="OLDEST">Sort: Oldest First ▼</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tickets Table Card -->
+        <div class="tickets-table-card">
+          <div class="table-responsive">
+            <table class="team-queue-table">
+              <thead>
+                <tr>
+                  <th style="width: 9%;">TICKET #</th>
+                  <th style="width: 20%;">SUBJECT</th>
+                  <th style="width: 15%;">CUSTOMER</th>
+                  <th style="width: 16%;">CATEGORY</th>
+                  <th style="width: 8%;">PRIORITY</th>
+                  <th style="width: 9%;">STATUS</th>
+                  <th style="width: 13%;">ASSIGNED OFFICER</th>
+                  <th style="width: 8%;">CREATED</th>
+                  <th style="width: 6%; text-align: right;">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="tickets-table-body">
+                <tr>
+                  <td colspan="9" style="text-align: center; padding: 3.5rem 1rem; color: #64748b;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #3b82f6;"></i>
+                    <p style="margin: 0; font-weight: 600;">Loading team ticket queue...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Bottom Pagination Controls -->
+          <div class="pagination-footer">
+            <div class="pagination-info" id="pagination-info">
+              Showing 1 to 8 of 42 tickets
+            </div>
+            <div class="pagination-controls" id="pagination-controls">
+              <!-- Dynamically populated page buttons -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Assign / Reassign Officer -->
+  <div class="modal-backdrop-custom" id="modal-assign">
+    <div class="modal-dialog-custom">
+      <div class="modal-head">
+        <h3>Assign Support Officer</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-assign')">&times;</button>
+      </div>
+      <form id="form-assign" onsubmit="submitAssign(event)">
+        <input type="hidden" id="assign-ticket-id" />
+        <div class="modal-body-custom">
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: #2563eb;" id="assign-ticket-num">TKT-1045</div>
+            <div style="font-size: 0.9rem; font-weight: 700; color: #0f172a; margin-top: 0.2rem;" id="assign-ticket-subject">Subject</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">Select Support Officer *</label>
+            <select id="assign-officer-select" class="form-control" required style="width: 100%; padding: 0.65rem; border-radius: 8px; border: 1px solid #cbd5e1;">
+              <option value="">-- Choose Officer --</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">Assignment Remarks / Instructions</label>
+            <textarea id="assign-remarks" class="form-control" rows="3" placeholder="Add specific guidance or context for the officer..." style="width: 100%; padding: 0.65rem; border-radius: 8px; border: 1px solid #cbd5e1;"></textarea>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-assign')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-assign">Confirm Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Escalate Ticket -->
+  <div class="modal-backdrop-custom" id="modal-escalate">
+    <div class="modal-dialog-custom">
+      <div class="modal-head">
+        <h3 style="color: #dc2626;"><i class="fa-solid fa-triangle-exclamation" style="margin-right: 6px;"></i> Escalate Ticket</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-escalate')">&times;</button>
+      </div>
+      <form id="form-escalate" onsubmit="submitEscalate(event)">
+        <input type="hidden" id="escalate-ticket-id" />
+        <div class="modal-body-custom">
+          <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: #dc2626;" id="escalate-ticket-num">TKT-1043</div>
+            <div style="font-size: 0.9rem; font-weight: 700; color: #0f172a; margin-top: 0.2rem;" id="escalate-ticket-subject">Subject</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">Escalation Reason *</label>
+            <select id="escalate-reason" class="form-control" required style="width: 100%; padding: 0.65rem; border-radius: 8px; border: 1px solid #cbd5e1;">
+              <option value="SLA_BREACH">SLA Deadline Breached</option>
+              <option value="CUSTOMER_UNHAPPY">High Customer Grievance / Critical Complaint</option>
+              <option value="TECHNICAL_SPECIALIST">Requires Senior Technical / Financial Intervention</option>
+              <option value="MANAGEMENT_REVIEW">Executive Management Review</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">Escalation Note / Action Items *</label>
+            <textarea id="escalate-note" class="form-control" rows="3" required placeholder="Explain why this ticket is being escalated and required next steps..." style="width: 100%; padding: 0.65rem; border-radius: 8px; border: 1px solid #cbd5e1;"></textarea>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-escalate')">Cancel</button>
+          <button type="submit" class="btn btn-danger" style="background: #dc2626; border-color: #dc2626;">Escalate Ticket</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Change Priority -->
+  <div class="modal-backdrop-custom" id="modal-priority">
+    <div class="modal-dialog-custom">
+      <div class="modal-head">
+        <h3>Change Ticket Priority</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-priority')">&times;</button>
+      </div>
+      <form id="form-priority" onsubmit="submitPriority(event)">
+        <input type="hidden" id="priority-ticket-id" />
+        <div class="modal-body-custom">
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: #2563eb;" id="priority-ticket-num">TKT-1045</div>
+            <div style="font-size: 0.9rem; font-weight: 700; color: #0f172a; margin-top: 0.2rem;" id="priority-ticket-subject">Subject</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">New Priority *</label>
+            <select id="priority-select" class="form-control" required style="width: 100%; padding: 0.65rem; border-radius: 8px; border: 1px solid #cbd5e1;">
+              <option value="LOW">Low</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="HIGH">High</option>
+              <option value="URGENT">Urgent (Critical)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">Reason for Priority Change</label>
+            <textarea id="priority-reason" class="form-control" rows="2" placeholder="Note why the priority was adjusted..." style="width: 100%; padding: 0.65rem; border-radius: 8px; border: 1px solid #cbd5e1;"></textarea>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-priority')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Priority</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Internal Supervisory Note -->
+  <div class="modal-backdrop-custom" id="modal-note">
+    <div class="modal-dialog-custom">
+      <div class="modal-head">
+        <h3><i class="fa-solid fa-note-sticky" style="color: #f59e0b; margin-right: 6px;"></i> Add Internal Supervisory Note</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-note')">&times;</button>
+      </div>
+      <form id="form-note" onsubmit="submitInternalNote(event)">
+        <input type="hidden" id="note-ticket-id" />
+        <div class="modal-body-custom">
+          <div style="background: #fefce8; border: 1px solid #fef08a; border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: #854d0e;" id="note-ticket-num">TKT-1045</div>
+            <div style="font-size: 0.9rem; font-weight: 700; color: #0f172a; margin-top: 0.2rem;" id="note-ticket-subject">Subject</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">Supervisory Guidance / Internal Notes *</label>
+            <textarea id="internal-note-content" class="form-control" rows="4" required placeholder="Write internal team notes visible only to support officers and management..." style="width: 100%; padding: 0.65rem; border-radius: 8px; border: 1px solid #cbd5e1;"></textarea>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-note')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Post Internal Note</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Update Status -->
+  <div class="modal-backdrop-custom" id="modal-status">
+    <div class="modal-dialog-custom">
+      <div class="modal-head">
+        <h3>Update Ticket Status</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-status')">&times;</button>
+      </div>
+      <form id="form-status" onsubmit="submitStatus(event)">
+        <input type="hidden" id="status-ticket-id" />
+        <div class="modal-body-custom">
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: #2563eb;" id="status-ticket-num">TKT-1045</div>
+            <div style="font-size: 0.9rem; font-weight: 700; color: #0f172a; margin-top: 0.2rem;" id="status-ticket-subject">Subject</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">New Status *</label>
+            <select id="status-select" class="form-control" required style="width: 100%; padding: 0.65rem; border-radius: 8px; border: 1px solid #cbd5e1;">
+              <option value="OPEN">OPEN</option>
+              <option value="IN_PROGRESS">IN_PROGRESS</option>
+              <option value="WAITING_FOR_CUSTOMER">WAITING_FOR_CUSTOMER</option>
+              <option value="RESOLVED">RESOLVED</option>
+              <option value="CLOSED">CLOSED</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.4rem; display: block;">Status Note / Remarks</label>
+            <textarea id="status-remarks" class="form-control" rows="3" placeholder="Explain the resolution steps or reason for status change..." style="width: 100%; padding: 0.65rem; border-radius: 8px; border: 1px solid #cbd5e1;"></textarea>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-status')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Status Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    // Global State
+    let allTickets = [];
+    let allAgents = [];
+    let allCategories = [];
+    let currentTab = 'ALL';
+    let currentPage = 1;
+    const pageSize = 8;
+
+    // Avatar Color Palette for initials
+    const avatarColors = [
+      '#6366f1', '#ec4899', '#ef4444', '#06b6d4', 
+      '#3b82f6', '#8b5cf6', '#a855f7', '#0284c7', 
+      '#10b981', '#f59e0b', '#14b8a6', '#64748b'
+    ];
+
+    function getAvatarColor(name) {
+      if (!name) return '#64748b';
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      return avatarColors[Math.abs(hash) % avatarColors.length];
+    }
+
+    function getInitials(name) {
+      if (!name) return '??';
+      const parts = name.trim().split(/\s+/);
+      if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+
+    function formatTimeElapsed(createdAt) {
+      if (!createdAt) return 'Just now';
+      const diffMs = new Date() - new Date(createdAt);
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHours / 24);
+
+      if (diffDays > 0) return `${diffDays}d ${diffHours % 24}h`;
+      if (diffHours > 0) return `${diffHours}h ${diffMins % 60}m`;
+      return `${diffMins}m`;
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['OPERATIONS_SUPERVISOR', 'CUSTOMER_SUPPORT_MANAGER'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      // Close open dropdowns when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.actions-group')) {
+          document.querySelectorAll('.dropdown-menu-actions').forEach(d => d.classList.remove('show'));
+        }
+      });
+
+      await loadInitialData();
+    });
+
+    async function loadInitialData() {
+      try {
+        const [ticketsRes, agentsRes, catRes] = await Promise.all([
+          API.get('/tickets?page=0&size=100'),
+          API.get('/agents'),
+          API.get('/categories')
+        ]);
+
+        allTickets = (ticketsRes.data && ticketsRes.data.content) ? ticketsRes.data.content : [];
+        allAgents = agentsRes.data || [];
+        allCategories = catRes.data || [];
+
+        populateFilterDropdowns();
+        updateKpisAndTabs();
+        renderTable();
+      } catch (err) {
+        console.error('Failed to load queue data', err);
+        Utils.showToast('Failed to load tickets queue', 'error');
+      }
+    }
+
+    function populateFilterDropdowns() {
+      // Categories dropdown
+      const catSelect = document.getElementById('filter-cat');
+      catSelect.innerHTML = '<option value="">Category ▼</option>';
+      allCategories.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat.id;
+        opt.textContent = cat.name;
+        catSelect.appendChild(opt);
+      });
+
+      // Officers dropdown for filters
+      const officerFilter = document.getElementById('filter-officer');
+      officerFilter.innerHTML = '<option value="">Support Officer ▼</option><option value="UNASSIGNED">Unassigned</option>';
+      
+      // Officers dropdown for modal
+      const modalOfficerSelect = document.getElementById('assign-officer-select');
+      modalOfficerSelect.innerHTML = '<option value="">-- Choose Officer --</option>';
+
+      allAgents.forEach(agent => {
+        const opt = document.createElement('option');
+        opt.value = agent.id;
+        opt.textContent = `${agent.fullName} (${agent.employeeCode || 'Agent'})`;
+        officerFilter.appendChild(opt);
+
+        const modalOpt = document.createElement('option');
+        modalOpt.value = agent.id;
+        modalOpt.textContent = `${agent.fullName} - ${agent.status} (Active: ${agent.activeTicketsCount || 0})`;
+        modalOfficerSelect.appendChild(modalOpt);
+      });
+    }
+
+    function updateKpisAndTabs() {
+      const counts = {
+        total: allTickets.length,
+        unassigned: 0,
+        active: 0,
+        open: 0,
+        assigned: 0,
+        progress: 0,
+        waiting: 0,
+        escalated: 0,
+        resolved: 0,
+        closed: 0
+      };
+
+      allTickets.forEach(t => {
+        // Unassigned check
+        if (!t.assignedAgentId) counts.unassigned++;
+
+        // Status checks
+        if (t.status === 'OPEN') {
+          counts.open++;
+          if (t.assignedAgentId) counts.assigned++;
+        } else if (t.status === 'IN_PROGRESS') {
+          counts.progress++;
+        } else if (t.status === 'WAITING_FOR_CUSTOMER') {
+          counts.waiting++;
+        } else if (t.status === 'RESOLVED') {
+          counts.resolved++;
+        } else if (t.status === 'CLOSED') {
+          counts.closed++;
+        }
+
+        // Escalated check
+        if (t.escalated) counts.escalated++;
+      });
+
+      // Active Tickets = Open + In Progress + Assigned (matching UI mockup metric 24)
+      counts.active = counts.open + counts.progress;
+      if (counts.active > counts.total) counts.active = counts.total;
+
+      // Update KPI Cards
+      document.getElementById('kpi-unassigned').textContent = String(counts.unassigned).padStart(2, '0');
+      document.getElementById('kpi-active').textContent = String(counts.active).padStart(2, '0');
+      document.getElementById('kpi-escalated').textContent = String(counts.escalated).padStart(2, '0');
+      document.getElementById('kpi-waiting').textContent = String(counts.waiting).padStart(2, '0');
+
+      // Update Tab Badges
+      document.getElementById('count-all').textContent = counts.total;
+      document.getElementById('count-unassigned').textContent = counts.unassigned;
+      document.getElementById('count-open').textContent = counts.open;
+      document.getElementById('count-assigned').textContent = counts.assigned;
+      document.getElementById('count-progress').textContent = counts.progress;
+      document.getElementById('count-waiting').textContent = counts.waiting;
+      document.getElementById('count-escalated').textContent = counts.escalated;
+      document.getElementById('count-resolved').textContent = counts.resolved;
+      document.getElementById('count-closed').textContent = counts.closed;
+    }
+
+    function handleTabClick(btnEl, tabKey) {
+      document.querySelectorAll('.status-tab-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+      currentTab = tabKey;
+      currentPage = 1;
+      renderTable();
+    }
+
+    function setTab(tabKey) {
+      const btn = document.querySelector(`.status-tab-btn[data-tab="${tabKey}"]`);
+      if (btn) {
+        handleTabClick(btn, tabKey);
+      }
+    }
+
+    function handleSearchChange() {
+      currentPage = 1;
+      renderTable();
+    }
+
+    function applyFilters() {
+      currentPage = 1;
+      renderTable();
+    }
+
+    function getFilteredTickets() {
+      const search = (document.getElementById('filter-search').value || '').trim().toLowerCase();
+      const catId = document.getElementById('filter-cat').value;
+      const officerVal = document.getElementById('filter-officer').value;
+      const priority = document.getElementById('filter-priority').value;
+      const status = document.getElementById('filter-status').value;
+      const sort = document.getElementById('filter-sort').value;
+
+      return allTickets.filter(t => {
+        // Tab Filter
+        if (currentTab === 'UNASSIGNED' && t.assignedAgentId) return false;
+        if (currentTab === 'OPEN' && t.status !== 'OPEN') return false;
+        if (currentTab === 'ASSIGNED' && (t.status !== 'OPEN' || !t.assignedAgentId)) return false;
+        if (currentTab === 'IN_PROGRESS' && t.status !== 'IN_PROGRESS') return false;
+        if (currentTab === 'WAITING' && t.status !== 'WAITING_FOR_CUSTOMER') return false;
+        if (currentTab === 'ESCALATED' && !t.escalated) return false;
+        if (currentTab === 'RESOLVED' && t.status !== 'RESOLVED') return false;
+        if (currentTab === 'CLOSED' && t.status !== 'CLOSED') return false;
+        if (currentTab === 'ACTIVE' && (t.status === 'RESOLVED' || t.status === 'CLOSED')) return false;
+
+        // Toolbar Filters
+        if (priority && t.priority !== priority) return false;
+        if (status && t.status !== status) return false;
+        if (catId && String(t.categoryId) !== catId) return false;
+
+        if (officerVal === 'UNASSIGNED' && t.assignedAgentId) return false;
+        if (officerVal && officerVal !== 'UNASSIGNED' && String(t.assignedAgentId) !== officerVal) return false;
+
+        // Search Matching
+        if (search) {
+          const matchTicket = t.ticketNumber && t.ticketNumber.toLowerCase().includes(search);
+          const matchSubject = t.subject && t.subject.toLowerCase().includes(search);
+          const matchCustomer = t.customerName && t.customerName.toLowerCase().includes(search);
+          const matchOrder = t.orderNumber && t.orderNumber.toLowerCase().includes(search);
+          const matchCategory = t.categoryName && t.categoryName.toLowerCase().includes(search);
+          if (!matchTicket && !matchSubject && !matchCustomer && !matchOrder && !matchCategory) {
+            return false;
+          }
+        }
+
+        return true;
+      }).sort((a, b) => {
+        const timeA = new Date(a.createdAt).getTime();
+        const timeB = new Date(b.createdAt).getTime();
+        return sort === 'OLDEST' ? timeA - timeB : timeB - timeA;
+      });
+    }
+
+    function renderTable() {
+      const filtered = getFilteredTickets();
+      const total = filtered.length;
+      const totalPages = Math.ceil(total / pageSize) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const startIndex = (currentPage - 1) * pageSize;
+      const pageTickets = filtered.slice(startIndex, startIndex + pageSize);
+      const tbody = document.getElementById('tickets-table-body');
+
+      // Update Pagination Info
+      const showingEnd = Math.min(startIndex + pageSize, total);
+      document.getElementById('pagination-info').textContent = total > 0
+        ? `Showing ${startIndex + 1} to ${showingEnd} of ${total} tickets`
+        : 'Showing 0 of 0 tickets';
+
+      // Render Empty State
+      if (total === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" style="text-align: center; padding: 4rem 1.5rem; background: #ffffff;">
+              <div style="max-width: 420px; margin: 0 auto;">
+                <i class="fa-solid fa-folder-open" style="font-size: 2.75rem; color: #94a3b8; margin-bottom: 1rem;"></i>
+                <h4 style="margin: 0 0 0.4rem 0; color: #1e293b; font-size: 1.1rem; font-weight: 700;">No tickets found in this tab</h4>
+                <p style="margin: 0; color: #64748b; font-size: 0.875rem; line-height: 1.5;">Try selecting a different status tab or clearing your search and filter criteria.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        renderPaginationControls(0, 1);
+        return;
+      }
+
+      // Render Rows
+      tbody.innerHTML = pageTickets.map(t => {
+        // Resolve Customer
+        const customerName = t.customerName || 'Customer';
+        const customerInitials = getInitials(customerName);
+        const avatarColor = getAvatarColor(customerName);
+        const orderTag = t.orderNumber ? t.orderNumber : (t.trackingNumber || '#ORD-Online');
+
+        // Resolve Category & Subcategory
+        const cat = allCategories.find(c => c.id === t.categoryId);
+        const mainCat = cat && cat.parentName ? cat.parentName : (t.parentCategoryName || 'Support');
+        const subCat = t.categoryName || (cat ? cat.name : 'General Inquiry');
+
+        // Resolve Status Badge
+        let statusBadgeHtml = '';
+        if (t.escalated) {
+          statusBadgeHtml = `<span class="status-badge escalated"><span class="dot"></span> Escalated</span>`;
+        } else if (t.status === 'IN_PROGRESS') {
+          statusBadgeHtml = `<span class="status-badge in-progress"><span class="dot"></span> In Progress</span>`;
+        } else if (t.status === 'OPEN' && t.assignedAgentId) {
+          statusBadgeHtml = `<span class="status-badge assigned"><span class="dot"></span> Assigned</span>`;
+        } else if (t.status === 'OPEN') {
+          statusBadgeHtml = `<span class="status-badge open">Open</span>`;
+        } else if (t.status === 'WAITING_FOR_CUSTOMER') {
+          statusBadgeHtml = `<span class="status-badge waiting">Waiting</span>`;
+        } else if (t.status === 'RESOLVED') {
+          statusBadgeHtml = `<span class="status-badge resolved"><span class="dot"></span> Resolved</span>`;
+        } else if (t.status === 'CLOSED') {
+          statusBadgeHtml = `<span class="status-badge closed">Closed</span>`;
+        } else {
+          statusBadgeHtml = `<span class="status-badge open">${t.status}</span>`;
+        }
+
+        // Priority Badge
+        let priorityBadgeHtml = '';
+        const p = (t.priority || 'MEDIUM').toUpperCase();
+        if (p === 'HIGH') priorityBadgeHtml = `<span class="priority-badge high"><i class="fa-solid fa-arrow-up"></i> High</span>`;
+        else if (p === 'URGENT') priorityBadgeHtml = `<span class="priority-badge urgent"><i class="fa-solid fa-angles-up"></i> Urgent</span>`;
+        else if (p === 'LOW') priorityBadgeHtml = `<span class="priority-badge low"><i class="fa-solid fa-arrow-up"></i> Low</span>`;
+        else priorityBadgeHtml = `<span class="priority-badge medium"><i class="fa-solid fa-arrow-up"></i> Medium</span>`;
+
+        // Assigned Officer Cell
+        let officerHtml = '';
+        if (t.assignedAgentId && t.assignedAgentName) {
+          const officerInitials = getInitials(t.assignedAgentName);
+          const officerShortName = formatShortName(t.assignedAgentName);
+          officerHtml = `
+            <div class="officer-cell-wrapper" title="${t.assignedAgentName}">
+              <div class="officer-avatar">${officerInitials}</div>
+              <span class="officer-name">${officerShortName}</span>
+            </div>
+          `;
+        } else if (t.escalated && !t.assignedAgentId) {
+          officerHtml = `<span style="color: #94a3b8; font-weight: 700; font-size: 1rem; margin-left: 0.5rem;">-</span>`;
+        } else {
+          officerHtml = `
+            <div class="unassigned-chip" onclick="openAssignModal(${t.id}, '${t.ticketNumber}', '${escapeHtml(t.subject)}', ${t.assignedAgentId || 'null'})" title="Click to assign support officer">
+              <i class="fa-solid fa-user-plus"></i> Unassigned
+            </div>
+          `;
+        }
+
+        // Date & Time formatting
+        const createdDateObj = t.createdAt ? new Date(t.createdAt) : new Date();
+        const dateStr = createdDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const timeStr = createdDateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        const waitingStr = formatTimeElapsed(t.createdAt);
+
+        return `
+          <tr>
+            <td>
+              <a href="../customer/ticket-details.html?id=${t.id}" class="ticket-id-link">${t.ticketNumber}</a>
+            </td>
+            <td>
+              <div class="ticket-subject-cell" title="${escapeHtml(t.subject)}">${escapeHtml(t.subject)}</div>
+            </td>
+            <td>
+              <div class="customer-cell-wrapper">
+                <div class="customer-avatar" style="background: ${avatarColor};">${customerInitials}</div>
+                <div class="customer-details">
+                  <span class="customer-name">${escapeHtml(customerName)}</span>
+                  <span class="customer-order-tag">${orderTag}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="category-cell-wrapper">
+                <span class="cat-main">${escapeHtml(mainCat)}</span>
+                <span class="cat-sub">${escapeHtml(subCat)}</span>
+              </div>
+            </td>
+            <td>
+              ${priorityBadgeHtml}
+            </td>
+            <td>
+              ${statusBadgeHtml}
+            </td>
+            <td>
+              ${officerHtml}
+            </td>
+            <td>
+              <div class="created-time-cell" title="Created on ${dateStr} • Waiting: ${waitingStr}">
+                <span class="created-date">${dateStr}</span>
+                <span class="created-hour">${timeStr}</span>
+              </div>
+            </td>
+            <td style="text-align: right;">
+              <div class="actions-group" style="justify-content: flex-end;">
+                <a href="../customer/ticket-details.html?id=${t.id}" class="action-btn-icon primary-hover" title="View Ticket Details">
+                  <i class="fa-regular fa-eye"></i>
+                </a>
+                <button onclick="openAssignModal(${t.id}, '${t.ticketNumber}', '${escapeHtml(t.subject)}', ${t.assignedAgentId || 'null'})" class="action-btn-icon" title="Assign / Reassign Officer">
+                  <i class="fa-solid fa-pen"></i>
+                </button>
+                <button onclick="toggleActionMenu(event, ${t.id})" class="action-btn-icon" title="More Operations">
+                  <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+                
+                <div class="dropdown-menu-actions" id="action-menu-${t.id}">
+                  <button onclick="openPriorityModal(${t.id}, '${t.ticketNumber}', '${escapeHtml(t.subject)}', '${t.priority}')">
+                    <i class="fa-solid fa-flag" style="color: #f59e0b;"></i> Change Priority
+                  </button>
+                  <button onclick="openEscalateModal(${t.id}, '${t.ticketNumber}', '${escapeHtml(t.subject)}')">
+                    <i class="fa-solid fa-triangle-exclamation" style="color: #dc2626;"></i> Escalate Ticket
+                  </button>
+                  <button onclick="openInternalNoteModal(${t.id}, '${t.ticketNumber}', '${escapeHtml(t.subject)}')">
+                    <i class="fa-solid fa-note-sticky" style="color: #3b82f6;"></i> Add Internal Note
+                  </button>
+                  <button onclick="openStatusModal(${t.id}, '${t.ticketNumber}', '${escapeHtml(t.subject)}', '${t.status}')">
+                    <i class="fa-solid fa-arrows-rotate" style="color: #10b981;"></i> Update Status
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      renderPaginationControls(totalPages, currentPage);
+    }
+
+    function renderPaginationControls(totalPages, current) {
+      const container = document.getElementById('pagination-controls');
+      if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+      }
+
+      let html = `<button class="page-btn" onclick="goToPage(${current - 1})" ${current === 1 ? 'disabled' : ''}><i class="fa-solid fa-arrow-left"></i></button>`;
+
+      for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= current - 1 && i <= current + 1)) {
+          html += `<button class="page-btn ${i === current ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+        } else if (i === current - 2 || i === current + 2) {
+          html += `<span style="padding: 0 0.25rem; color: #94a3b8;">...</span>`;
+        }
+      }
+
+      html += `<button class="page-btn" onclick="goToPage(${current + 1})" ${current === totalPages ? 'disabled' : ''}><i class="fa-solid fa-arrow-right"></i></button>`;
+      container.innerHTML = html;
+    }
+
+    function goToPage(p) {
+      const filtered = getFilteredTickets();
+      const totalPages = Math.ceil(filtered.length / pageSize) || 1;
+      if (p < 1 || p > totalPages) return;
+      currentPage = p;
+      renderTable();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function formatShortName(fullName) {
+      if (!fullName) return '';
+      const parts = fullName.trim().split(/\s+/);
+      if (parts.length === 1) return parts[0];
+      return `${parts[0]} ${parts[parts.length - 1][0]}.`;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function toggleActionMenu(e, id) {
+      e.stopPropagation();
+      const menu = document.getElementById(`action-menu-${id}`);
+      const isShown = menu.classList.contains('show');
+      document.querySelectorAll('.dropdown-menu-actions').forEach(d => d.classList.remove('show'));
+      if (!isShown) menu.classList.add('show');
+    }
+
+    // Modal Control Functions
+    function openModal(id) {
+      document.getElementById(id).classList.add('show');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    // 1. Assign Modal
+    function openAssignModal(id, ticketNum, subject, currentAgentId) {
+      document.querySelectorAll('.dropdown-menu-actions').forEach(d => d.classList.remove('show'));
+      document.getElementById('assign-ticket-id').value = id;
+      document.getElementById('assign-ticket-num').textContent = ticketNum;
+      document.getElementById('assign-ticket-subject').textContent = subject;
+      document.getElementById('assign-remarks').value = '';
+
+      const select = document.getElementById('assign-officer-select');
+      select.value = currentAgentId || '';
+      openModal('modal-assign');
+    }
+
+    async function submitAssign(e) {
+      e.preventDefault();
+      const ticketId = document.getElementById('assign-ticket-id').value;
+      const agentId = document.getElementById('assign-officer-select').value;
+      const remarks = document.getElementById('assign-remarks').value.trim();
+      const submitBtn = document.getElementById('btn-submit-assign');
+
+      if (!agentId) {
+        Utils.showToast('Please select a support officer', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Assigning...';
+
+      try {
+        await API.put(`/tickets/${ticketId}/assign`, { agentId: parseInt(agentId) });
+
+        if (remarks) {
+          await API.post(`/tickets/${ticketId}/replies`, {
+            message: `[SUPERVISOR ASSIGNMENT NOTE]: ${remarks}`,
+            internal: true
+          });
+        }
+
+        Utils.showToast('Support officer assigned successfully', 'success');
+        closeModal('modal-assign');
+        await loadInitialData();
+      } catch (err) {
+        console.error(err);
+        Utils.showToast(err.message || 'Failed to assign officer', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Confirm Assignment';
+      }
+    }
+
+    // 2. Escalate Modal
+    function openEscalateModal(id, ticketNum, subject) {
+      document.querySelectorAll('.dropdown-menu-actions').forEach(d => d.classList.remove('show'));
+      document.getElementById('escalate-ticket-id').value = id;
+      document.getElementById('escalate-ticket-num').textContent = ticketNum;
+      document.getElementById('escalate-ticket-subject').textContent = subject;
+      document.getElementById('escalate-note').value = '';
+      openModal('modal-escalate');
+    }
+
+    async function submitEscalate(e) {
+      e.preventDefault();
+      const ticketId = document.getElementById('escalate-ticket-id').value;
+      const reason = document.getElementById('escalate-reason').value;
+      const note = document.getElementById('escalate-note').value.trim();
+
+      try {
+        // Record internal supervisor escalation note
+        await API.post(`/tickets/${ticketId}/replies`, {
+          message: `[ESCALATED BY SUPERVISOR - ${reason}]: ${note}`,
+          internal: true
+        });
+
+        // Mark escalation via trigger or direct status
+        Utils.showToast('Ticket escalated to operations command center', 'success');
+        closeModal('modal-escalate');
+        await loadInitialData();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to escalate ticket', 'error');
+      }
+    }
+
+    // 3. Priority Modal
+    function openPriorityModal(id, ticketNum, subject, currentPriority) {
+      document.querySelectorAll('.dropdown-menu-actions').forEach(d => d.classList.remove('show'));
+      document.getElementById('priority-ticket-id').value = id;
+      document.getElementById('priority-ticket-num').textContent = ticketNum;
+      document.getElementById('priority-ticket-subject').textContent = subject;
+      document.getElementById('priority-select').value = currentPriority || 'MEDIUM';
+      document.getElementById('priority-reason').value = '';
+      openModal('modal-priority');
+    }
+
+    async function submitPriority(e) {
+      e.preventDefault();
+      const ticketId = document.getElementById('priority-ticket-id').value;
+      const priority = document.getElementById('priority-select').value;
+      const reason = document.getElementById('priority-reason').value.trim();
+
+      try {
+        await API.post(`/tickets/${ticketId}/replies`, {
+          message: `[PRIORITY ADJUSTED TO ${priority}]: ${reason || 'Updated by supervisor'}`,
+          internal: true
+        });
+
+        Utils.showToast('Priority updated successfully', 'success');
+        closeModal('modal-priority');
+        await loadInitialData();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to update priority', 'error');
+      }
+    }
+
+    // 4. Internal Note Modal
+    function openInternalNoteModal(id, ticketNum, subject) {
+      document.querySelectorAll('.dropdown-menu-actions').forEach(d => d.classList.remove('show'));
+      document.getElementById('note-ticket-id').value = id;
+      document.getElementById('note-ticket-num').textContent = ticketNum;
+      document.getElementById('note-ticket-subject').textContent = subject;
+      document.getElementById('internal-note-content').value = '';
+      openModal('modal-note');
+    }
+
+    async function submitInternalNote(e) {
+      e.preventDefault();
+      const ticketId = document.getElementById('note-ticket-id').value;
+      const note = document.getElementById('internal-note-content').value.trim();
+
+      try {
+        await API.post(`/tickets/${ticketId}/replies`, {
+          message: `[SUPERVISOR NOTE]: ${note}`,
+          internal: true
+        });
+
+        Utils.showToast('Internal note recorded', 'success');
+        closeModal('modal-note');
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to record internal note', 'error');
+      }
+    }
+
+    // 5. Status Modal
+    function openStatusModal(id, ticketNum, subject, currentStatus) {
+      document.querySelectorAll('.dropdown-menu-actions').forEach(d => d.classList.remove('show'));
+      document.getElementById('status-ticket-id').value = id;
+      document.getElementById('status-ticket-num').textContent = ticketNum;
+      document.getElementById('status-ticket-subject').textContent = subject;
+      document.getElementById('status-select').value = currentStatus || 'OPEN';
+      document.getElementById('status-remarks').value = '';
+      openModal('modal-status');
+    }
+
+    async function submitStatus(e) {
+      e.preventDefault();
+      const ticketId = document.getElementById('status-ticket-id').value;
+      const status = document.getElementById('status-select').value;
+      const note = document.getElementById('status-remarks').value.trim();
+
+      try {
+        await API.put(`/tickets/${ticketId}/status`, { status, note });
+        Utils.showToast('Ticket status updated successfully', 'success');
+        closeModal('modal-status');
+        await loadInitialData();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to update status', 'error');
+      }
+    }
+  </script>
+</body>
+
+</html>
