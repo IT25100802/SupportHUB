@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Base & Help Center - SupportHUB</title>
+  <meta name="description" content="Explore SupportHUB Knowledge Base. Find step-by-step guides, solutions for order tracking, payments, refunds, and account management.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <style>
+    .kb-public-hero {
+      background: linear-gradient(135deg, #0b1329 0%, #1e293b 100%);
+      padding: 3.5rem 1.5rem 3rem 1.5rem;
+      text-align: center;
+      color: #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kb-public-hero::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0) 70%);
+      pointer-events: none;
+    }
+
+    .kb-hero-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .kb-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      color: #f59e0b;
+      padding: 0.35rem 0.95rem;
+      border-radius: 999px;
+      font-size: 0.785rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      margin-bottom: 1rem;
+    }
+
+    .kb-public-hero h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .kb-public-hero p {
+      font-size: 1rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    /* Public Search Bar */
+    .kb-public-search {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 0.45rem 0.6rem 0.45rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .kb-public-search input {
+      border: none;
+      outline: none;
+      flex: 1;
+      font-size: 0.925rem;
+      color: #0f172a;
+      background: transparent;
+    }
+
+    .btn-search-orange {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 0.875rem;
+      padding: 0.65rem 1.5rem;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-search-orange:hover {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* KB Main Section */
+    .kb-content-wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem 1.5rem;
+    }
+
+    /* Category Filter Pills */
+    .kb-category-pills {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.25rem;
+    }
+
+    .kb-cat-pill {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.5rem 1rem;
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .kb-cat-pill:hover {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+      transform: translateY(-1px);
+    }
+
+    .kb-cat-pill.active {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    }
+
+    .kb-cat-pill.active i {
+      color: #f59e0b !important;
+    }
+
+    /* Articles Grid */
+    .kb-articles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      .kb-articles-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .kb-articles-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kb-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .kb-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.08);
+      border-color: #cbd5e1;
+    }
+
+    .kb-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .kb-card-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .kb-card-cat-tag {
+      font-size: 0.725rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      margin-bottom: 0.25rem;
+    }
+
+    .kb-card-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    .kb-card-desc {
+      font-size: 0.85rem;
+      color: #475569;
+      line-height: 1.55;
+      margin: 0 0 1.25rem 0;
+    }
+
+    .kb-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 0.85rem;
+      border-top: 1px solid #f1f5f9;
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+
+    .kb-read-link {
+      font-weight: 700;
+      color: #2563eb;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: gap 0.15s ease, color 0.15s ease;
+    }
+
+    .kb-card:hover .kb-read-link {
+      color: #1d4ed8;
+      gap: 0.55rem;
+    }
+
+    /* Public Support CTA Banner */
+    .kb-public-cta {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border: 1px solid #bfdbfe;
+      border-radius: 16px;
+      padding: 2rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .kb-cta-left {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .kb-cta-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: #ffffff;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+      flex-shrink: 0;
+    }
+
+    .kb-cta-text h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 0.25rem 0;
+    }
+
+    .kb-cta-text p {
+      font-size: 0.875rem;
+      color: #475569;
+      margin: 0;
+    }
+
+    .kb-cta-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    /* Modal Backdrop & Content */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 640px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+      animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalPop {
+      0% {
+        opacity: 0;
+        transform: scale(0.96) translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      line-height: 1;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: color 0.15s ease;
+    }
+
+    .close-modal:hover {
+      color: #0f172a;
+    }
+  </style>
+</head>
+<body style="background-color: #f8fafc;">
+
+  <!-- 1. PUBLIC TOP NAVIGATION BAR -->
+  <header class="top-header">
+    <div class="top-header-inner">
+      <div class="header-left">
+        <a href="index.html" class="nav-logo">
+          <span class="logo-support">Support</span><span class="logo-hub">HUB</span>
+        </a>
+      </div>
+
+      <nav>
+        <ul class="nav-menu" id="nav-menu">
+          <li><a href="index.html#home" class="nav-link">Home</a></li>
+          <li><a href="index.html#features" class="nav-link">Features</a></li>
+          <li><a href="index.html#how-it-works" class="nav-link">How It Works</a></li>
+          <li><a href="knowledge-base.html" class="nav-link active">Knowledge Base</a></li>
+          <li><a href="index.html#faq" class="nav-link">FAQ</a></li>
+          <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-secondary" style="font-size: 0.875rem; padding: 0.5rem 1.15rem;">Sign In</a>
+        <a href="register.html" class="btn btn-accent" style="font-size: 0.875rem; padding: 0.5rem 1.15rem;">Register</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 2. PUBLIC HERO SECTION -->
+    <section class="kb-public-hero">
+      <div class="kb-hero-inner">
+        <div class="kb-badge-pill">
+          <i class="fa-solid fa-book-bookmark"></i> OFFICIAL SUPPORT RESOURCES & GUIDES
+        </div>
+        <h1>SupportHUB Knowledge Base</h1>
+        <p>Explore step-by-step guides, policies, and solutions for orders, deliveries, payments, returns, and account security.</p>
+
+        <!-- Search Bar -->
+        <div class="kb-public-search">
+          <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; font-size: 1rem;"></i>
+          <input type="text" id="kb-search-input" placeholder="Search guides, articles, keywords..." oninput="handleSearch(this.value)" />
+          <button class="btn-search-orange" onclick="handleSearch(document.getElementById('kb-search-input').value)">Search</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. MAIN KNOWLEDGE BASE CONTENT -->
+    <div class="kb-content-wrap">
+
+      <!-- Category Filter Pills -->
+      <div class="kb-category-pills">
+        <button class="kb-cat-pill active" onclick="switchCategoryFilter(this, '')">
+          <i class="fa-solid fa-table-cells-large"></i> All Guides
+        </button>
+        <button class="kb-cat-pill" onclick="switchCategoryFilter(this, 'Order Issues')">
+          <i class="fa-solid fa-cart-shopping" style="color: #ea580c;"></i> Order Issues
+        </button>
+        <button class="kb-cat-pill" onclick="switchCategoryFilter(this, 'Delivery Issues')">
+          <i class="fa-solid fa-truck" style="color: #2563eb;"></i> Delivery Issues
+        </button>
+        <button class="kb-cat-pill" onclick="switchCategoryFilter(this, 'Payment & Refunds')">
+          <i class="fa-solid fa-credit-card" style="color: #ec4899;"></i> Payment & Refunds
+        </button>
+        <button class="kb-cat-pill" onclick="switchCategoryFilter(this, 'Account Issues')">
+          <i class="fa-solid fa-user" style="color: #9333ea;"></i> Account Issues
+        </button>
+        <button class="kb-cat-pill" onclick="switchCategoryFilter(this, 'Product Information')">
+          <i class="fa-solid fa-box" style="color: #f59e0b;"></i> Product Information
+        </button>
+      </div>
+
+      <!-- Articles Grid (Populated Dynamically from Backend API) -->
+      <div class="kb-articles-grid" id="articles-grid-container">
+        <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem; color: #64748b;">
+          <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+          Loading knowledge base articles...
+        </div>
+      </div>
+
+      <!-- 4. PUBLIC CTA BANNER -->
+      <div class="kb-public-cta">
+        <div class="kb-cta-left">
+          <div class="kb-cta-icon">
+            <i class="fa-solid fa-headset"></i>
+          </div>
+          <div class="kb-cta-text">
+            <h3>Need Personalized Help from an Officer?</h3>
+            <p>If you can't find your answer in the knowledge base, sign in to submit a ticket directly to our support team.</p>
+          </div>
+        </div>
+        <div class="kb-cta-actions">
+          <a href="login.html" class="btn btn-primary" style="padding: 0.65rem 1.35rem; font-size: 0.875rem;">
+            <i class="fa-solid fa-right-to-bracket" style="margin-right: 0.35rem;"></i> Sign In to Open Ticket
+          </a>
+          <a href="register.html" class="btn btn-secondary" style="padding: 0.65rem 1.35rem; font-size: 0.875rem; background: #ffffff;">
+            Create Free Account
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 5. READ GUIDE DETAILED MODAL -->
+  <div class="modal-backdrop" id="guide-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="gm-title"><i class="fa-solid fa-book-open" style="color: #2563eb;"></i> Guide</h3>
+        <button onclick="closeGuideModal()" class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem 1.5rem; max-height: calc(85vh - 120px); overflow-y: auto;">
+        <div id="gm-meta" style="font-size: 0.775rem; color: #64748b; margin-bottom: 0.85rem; display: flex; gap: 1rem;"></div>
+        <div id="gm-content" style="font-size: 0.875rem; color: #334155; line-height: 1.6; white-space: pre-line;"></div>
+      </div>
+      <div class="modal-footer" style="padding: 0.85rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.775rem; color: #64748b;">Was this article helpful? <button class="btn btn-secondary btn-sm" onclick="alert('Thank you for your feedback!')">👍 Yes</button> <button class="btn btn-secondary btn-sm" onclick="alert('We will improve this guide.')">👎 No</button></span>
+        <button type="button" onclick="closeGuideModal()" class="btn btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. PUBLIC FOOTER -->
+  <footer class="footer-main">
+    <div class="footer-container">
+      <div>
+        <a href="index.html" class="nav-logo" style="margin-bottom: 1rem; display: inline-flex;">
+          <span class="logo-support" style="color: #ffffff; font-weight: 800;">Support</span><span class="logo-hub" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #0f172a; font-weight: 800; border-radius: 6px; padding: 0.15rem 0.6rem;">HUB</span>
+        </a>
+        <p style="font-size: 0.9rem; color: #94a3b8; font-weight: 400; line-height: 1.65; max-width: 340px; margin-top: 0.5rem;">
+          Web-Based Customer Support System. A centralized enterprise platform for customer ticketing, knowledge resources, and satisfaction management.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="index.html#how-it-works">How It Works</a></li>
+          <li><a href="knowledge-base.html">Knowledge Base</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="login.html">Get Support</a></li>
+          <li><a href="login.html">Create Ticket</a></li>
+          <li><a href="knowledge-base.html">Help Center</a></li>
+          <li><a href="index.html#contact">Direct Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Account</h4>
+        <ul>
+          <li><a href="login.html">Sign In</a></li>
+          <li><a href="register.html">Register</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2026 Web-Based Customer Support System. All rights reserved.</div>
+      <div style="display: flex; gap: 1.75rem;">
+        <a href="#" class="footer-bottom-link">Privacy</a>
+        <a href="#" class="footer-bottom-link">Terms</a>
+        <a href="#" class="footer-bottom-link">Accessibility</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script>
+    let currentCategory = '';
+    let allPublishedArticles = [];
+
+    const CAT_ICONS = {
+      'Order Issues': { icon: 'fa-box-open', bg: '#fff7ed', color: '#ea580c' },
+      'Delivery Issues': { icon: 'fa-truck', bg: '#eff6ff', color: '#2563eb' },
+      'Payment & Refunds': { icon: 'fa-credit-card', bg: '#fdf2f8', color: '#db2777' },
+      'Account Issues': { icon: 'fa-user-gear', bg: '#faf5ff', color: '#9333ea' },
+      'Product Information': { icon: 'fa-box', bg: '#ecfdf5', color: '#059669' }
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const q = urlParams.get('q');
+      if (q) {
+        document.getElementById('kb-search-input').value = q;
+      }
+
+      await loadKnowledgeBaseArticles();
+    });
+
+    async function loadKnowledgeBaseArticles() {
+      const container = document.getElementById('articles-grid-container');
+      try {
+        const res = await API.get('/knowledge-base/public');
+        allPublishedArticles = (res && res.data) ? res.data : [];
+        renderArticles();
+      } catch (err) {
+        console.error('Error fetching knowledge base articles:', err);
+        allPublishedArticles = [];
+        renderArticles();
+      }
+    }
+
+    function switchCategoryFilter(btnEl, category) {
+      document.querySelectorAll('.kb-cat-pill').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+      currentCategory = category;
+      renderArticles();
+    }
+
+    function handleSearch(query) {
+      renderArticles();
+    }
+
+    function renderArticles() {
+      const container = document.getElementById('articles-grid-container');
+      const q = (document.getElementById('kb-search-input').value || '').toLowerCase().trim();
+
+      const filtered = allPublishedArticles.filter(art => {
+        const cat = art.categoryName || 'General Support';
+        const title = (art.title || '').toLowerCase();
+        const content = (art.content || '').toLowerCase();
+        const tags = (art.tags || '').toLowerCase();
+
+        const matchCat = !currentCategory || cat === currentCategory;
+        const matchQuery = !q || title.includes(q) || content.includes(q) || tags.includes(q) || cat.toLowerCase().includes(q);
+
+        return matchCat && matchQuery;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 3.5rem 1.5rem; background: #ffffff; border-radius: 16px; border: 1px dashed #cbd5e1;">
+            <i class="fa-solid fa-book-open" style="font-size: 2.5rem; color: #94a3b8; margin-bottom: 0.75rem; display: block;"></i>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-bottom: 0.35rem;">
+              ${allPublishedArticles.length === 0 ? 'No Knowledge Base Articles Published Yet' : 'No Matching Articles Found'}
+            </h3>
+            <p style="font-size: 0.875rem; color: #64748b; margin: 0 0 1.25rem 0; max-width: 500px; margin-left: auto; margin-right: auto;">
+              ${allPublishedArticles.length === 0 ? 'Our support team is actively publishing verified guides. If you need help right away, sign in to submit a ticket.' : `No articles matching "${escapeHtml(q)}" in this category.`}
+            </p>
+            <a href="login.html" class="btn btn-primary" style="padding: 0.55rem 1.25rem; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.4rem;">
+              <i class="fa-solid fa-right-to-bracket"></i> Sign In to Open Ticket
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(art => {
+        const cat = art.categoryName || 'General Support';
+        const cfg = CAT_ICONS[cat] || { icon: 'fa-book-bookmark', bg: '#f1f5f9', color: '#475569' };
+        const cleanDesc = art.content ? (art.content.length > 130 ? art.content.substring(0, 130) + '...' : art.content) : 'Click to read full step-by-step guide.';
+        const dateStr = art.updatedAt ? new Date(art.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent';
+
+        return `
+          <div class="kb-card" data-id="${art.id}" onclick="openArticleModal(${art.id})">
+            <div>
+              <div class="kb-card-top">
+                <div class="kb-card-icon" style="background: ${cfg.bg}; color: ${cfg.color};">
+                  <i class="fa-solid ${cfg.icon}"></i>
+                </div>
+                <div>
+                  <div class="kb-card-cat-tag">${escapeHtml(cat)}</div>
+                  <h3 class="kb-card-title">${escapeHtml(art.title)}</h3>
+                </div>
+              </div>
+              <p class="kb-card-desc">${escapeHtml(cleanDesc)}</p>
+            </div>
+            <div class="kb-card-footer">
+              <div style="display: flex; gap: 0.65rem;">
+                <span><i class="fa-regular fa-eye"></i> ${(art.viewCount || 0).toLocaleString()} views</span>
+                <span><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+              </div>
+              <span class="kb-read-link">Read Guide →</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openArticleModal(id) {
+      const art = allPublishedArticles.find(a => a.id === id);
+      if (!art) return;
+
+      const dateStr = art.updatedAt ? new Date(art.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent';
+      document.getElementById('gm-title').innerHTML = `<i class="fa-solid fa-book-open" style="color: #2563eb;"></i> ${escapeHtml(art.title)}`;
+      document.getElementById('gm-meta').innerHTML = `
+        <span><i class="fa-regular fa-eye"></i> ${(art.viewCount || 0).toLocaleString()} views</span>
+        <span>Category: <strong>${escapeHtml(art.categoryName || 'General Support')}</strong></span>
+        <span>Updated: ${dateStr}</span>
+      `;
+      document.getElementById('gm-content').textContent = art.content || 'No detailed content available.';
+
+      document.getElementById('guide-modal').classList.add('show');
+    }
+
+    function closeGuideModal() {
+      document.getElementById('guide-modal').classList.remove('show');
+    }
+
+    window.addEventListener('click', (e) => {
+      const modal = document.getElementById('guide-modal');
+      if (e.target === modal) {
+        closeGuideModal();
+      }
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

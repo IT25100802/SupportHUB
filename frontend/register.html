@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <a href="index.html" class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></a>
+        <p>Create your customer account</p>
+      </div>
+
+      <form id="customer-register-form">
+        <div class="auth-form-scroll">
+          <div class="form-group">
+            <label class="form-label" for="reg-fullname">Full Name</label>
+            <input type="text" id="reg-fullname" class="form-control" placeholder="e.g. Kasun Perera" required autocomplete="name" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-email">Email Address</label>
+            <input type="email" id="reg-email" class="form-control" placeholder="name@example.com" required autocomplete="email" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-phone">Phone Number</label>
+            <input type="tel" id="reg-phone" class="form-control" placeholder="077 123 4567" required autocomplete="tel" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-address">Delivery Address (Optional)</label>
+            <input type="text" id="reg-address" class="form-control" placeholder="123 Galle Road, Colombo" autocomplete="street-address" />
+          </div>
+
+          <div class="form-row-2col">
+            <div class="form-group">
+              <label class="form-label" for="reg-password">Password</label>
+              <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required autocomplete="new-password" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reg-confirm-password">Confirm</label>
+              <input type="password" id="reg-confirm-password" class="form-control" placeholder="••••••••" required autocomplete="new-password" />
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="reg-submit-btn" class="btn btn-accent" style="width: 100%; margin-top: 0.75rem;">Create Account</button>
+
+        <div style="text-align: center; margin-top: 1.25rem; font-size: 0.85rem; color: #64748b;">
+          Already have an account? <a href="login.html" style="font-weight: 700; color: #1e3a8a; text-decoration: none;">Sign In</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Real-time Name validation
+      Validation.attachPersonNameLiveValidation('reg-fullname', 'Full name');
+
+      const form = document.getElementById('customer-register-form');
+      const submitBtn = document.getElementById('reg-submit-btn');
+
+      const fullNameInput = document.getElementById('reg-fullname');
+      const emailInput = document.getElementById('reg-email');
+      const phoneInput = document.getElementById('reg-phone');
+      const addressInput = document.getElementById('reg-address');
+      const passwordInput = document.getElementById('reg-password');
+      const confirmPasswordInput = document.getElementById('reg-confirm-password');
+
+      [fullNameInput, emailInput, phoneInput, addressInput, passwordInput, confirmPasswordInput].forEach(input => {
+        if (input) {
+          input.addEventListener('input', () => Validation.clearError(input));
+        }
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        Validation.resetForm('customer-register-form');
+
+        const fullName = fullNameInput.value.trim();
+        const email = emailInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const address = addressInput.value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        // 1. Full Name Validation
+        const nameVal = Validation.validatePersonName(fullName, 'Full name');
+        if (!nameVal.valid) {
+          Validation.showError('reg-fullname', nameVal.message);
+          fullNameInput.focus();
+          return;
+        }
+
+        // 2. Email Validation
+        const emailVal = Validation.validateEmail(email, 'Email address');
+        if (!emailVal.valid) {
+          Validation.showError('reg-email', emailVal.message);
+          emailInput.focus();
+          return;
+        }
+
+        // 3. Phone Validation
+        const phoneVal = Validation.validatePhone(phone, 'Phone number', true);
+        if (!phoneVal.valid) {
+          Validation.showError('reg-phone', phoneVal.message);
+          phoneInput.focus();
+          return;
+        }
+
+        // 4. Password Validation
+        const passVal = Validation.validatePassword(password, 6, 'Password');
+        if (!passVal.valid) {
+          Validation.showError('reg-password', passVal.message);
+          passwordInput.focus();
+          return;
+        }
+
+        // 5. Confirm Password Validation
+        if (password !== confirmPassword) {
+          Validation.showError('reg-confirm-password', 'Passwords do not match.');
+          confirmPasswordInput.focus();
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Creating Account...';
+
+        try {
+          const payload = {
+            fullName,
+            email,
+            phone,
+            address: address || null,
+            password,
+            confirmPassword
+          };
+
+          await API.post('/auth/register', payload);
+
+          Utils.showToast('Account created successfully! You can now sign in.', 'success');
+
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 800);
+        } catch (err) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Create Account';
+
+          const errorMsg = (err && (err.message || (err.data && err.data.message))) || 'Failed to create account. Please try again.';
+
+          if (err.status === 409 || /already exists|already registered/i.test(errorMsg)) {
+            Validation.showError('reg-email', 'An account with this email already exists.');
+            emailInput.focus();
+          } else if (err.status === 422 && err.data && err.data.errors) {
+            const errs = err.data.errors;
+            if (errs.fullName) Validation.showError('reg-fullname', errs.fullName);
+            if (errs.email) Validation.showError('reg-email', errs.email);
+            if (errs.phone) Validation.showError('reg-phone', errs.phone);
+            if (errs.password) Validation.showError('reg-password', errs.password);
+            if (errs.confirmPassword) Validation.showError('reg-confirm-password', errs.confirmPassword);
+          } else {
+            Utils.showToast(errorMsg, 'error');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <a href="index.html" class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></a>
+        <p>Sign in to access your role-based dashboard</p>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input type="email" id="email" class="form-control" placeholder="name@demo.com" required autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="current-password" />
+          <!-- Direct Under-Box Red Error Message for Incorrect Password -->
+          <div id="password-error-msg" style="display: none; color: #dc2626; font-size: 0.825rem; font-weight: 600; margin-top: 0.45rem; align-items: center; gap: 0.35rem;">
+            <i class="fa-solid fa-circle-exclamation"></i> <span>Password incorrect. Please try again.</span>
+          </div>
+          <div style="text-align: right; margin-top: 0.4rem;">
+            <a href="forgot-password.html" style="font-size: 0.825rem; font-weight: 600; color: #1e3a8a; text-decoration: none;">Forgot Password?</a>
+          </div>
+        </div>
+
+        <button type="submit" id="login-submit-btn" class="btn btn-accent" style="width: 100%; margin-top: 0.75rem;">Sign In</button>
+
+        <div style="text-align: center; margin-top: 1.25rem; font-size: 0.85rem; color: #64748b;">
+          Don't have an account? <a href="register.html" style="font-weight: 700; color: #1e3a8a; text-decoration: none;">Create Account</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const passwordErrorMsg = document.getElementById('password-error-msg');
+    const submitBtn = document.getElementById('login-submit-btn');
+
+    function clearPasswordError() {
+      if (passwordErrorMsg) {
+        passwordErrorMsg.style.display = 'none';
+      }
+      passwordInput.style.borderColor = '';
+      passwordInput.style.boxShadow = '';
+    }
+
+    emailInput.addEventListener('input', clearPasswordError);
+    passwordInput.addEventListener('input', clearPasswordError);
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearPasswordError();
+      Validation.resetForm('login-form');
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      const emailVal = Validation.validateEmail(email, 'Email address');
+      if (!emailVal.valid) {
+        Validation.showError('email', emailVal.message);
+        emailInput.focus();
+        return;
+      }
+
+      const pwdVal = Validation.validateRequired(password, 'Password');
+      if (!pwdVal.valid) {
+        Validation.showError('password', pwdVal.message);
+        passwordInput.focus();
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Signing in...';
+      }
+
+      try {
+        const res = await API.post('/auth/login', { email, password });
+        const data = res.data;
+        Auth.setSession(data.token, data);
+        Utils.showToast('Login successful! Redirecting...', 'success');
+
+        const basePath = Auth.getBasePath();
+
+        setTimeout(() => {
+          switch (data.role) {
+            case 'CUSTOMER':
+              window.location.href = `${basePath}/customer/customer-dashboard.html`;
+              break;
+            case 'CUSTOMER_SERVICE_OFFICER':
+              window.location.href = `${basePath}/officer/officer-dashboard.html`;
+              break;
+            case 'OPERATIONS_SUPERVISOR':
+              window.location.href = `${basePath}/supervisor/supervisor-dashboard.html`;
+              break;
+            case 'CUSTOMER_SUPPORT_MANAGER':
+              window.location.href = `${basePath}/manager/manager-dashboard.html`;
+              break;
+            case 'QA_EXECUTIVE':
+              window.location.href = `${basePath}/qa/qa-dashboard.html`;
+              break;
+            default:
+              window.location.href = `${basePath}/index.html`;
+          }
+        }, 500);
+      } catch (err) {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In';
+        }
+
+        const errorMsg = (err && (err.message || (err.data && err.data.message))) || '';
+        const isAuthError = err.status === 401 || /credential|password|invalid|unauthorized/i.test(errorMsg);
+
+        if (isAuthError) {
+          // Highlight password input box with red border and display clean message underneath
+          passwordInput.style.borderColor = '#dc2626';
+          passwordInput.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.15)';
+          if (passwordErrorMsg) {
+            passwordErrorMsg.style.display = 'flex';
+            passwordErrorMsg.querySelector('span').textContent = 'Password incorrect. Please try again.';
+          }
+          passwordInput.focus();
+        } else {
+          Utils.showToast(errorMsg || 'Unable to sign in. Please try again.', 'error');
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

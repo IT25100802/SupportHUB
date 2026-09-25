@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SupportHUB - Web-Based Customer Support System</title>
+  <meta name="description" content="Centralized enterprise customer support platform for managing support requests, FAQs, knowledge base resources, and service feedback.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- 1. NAVIGATION BAR -->
+  <header class="top-header">
+    <div class="top-header-inner">
+      <div class="header-left">
+        <a href="index.html" class="nav-logo">
+          <span class="logo-support">Support</span><span class="logo-hub">HUB</span>
+        </a>
+      </div>
+
+      <nav>
+        <ul class="nav-menu" id="nav-menu">
+          <li><a href="#home" class="nav-link active">Home</a></li>
+          <li><a href="#features" class="nav-link">Features</a></li>
+          <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+          <li><a href="#faq" class="nav-link">FAQ & Knowledge Base</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-secondary" style="font-size: 0.875rem; padding: 0.5rem 1.15rem;">Sign In</a>
+        <a href="register.html" class="btn btn-accent" style="font-size: 0.875rem; padding: 0.5rem 1.15rem;">Register</a>
+        <button class="hamburger-btn" id="hamburger-toggle" aria-label="Toggle Navigation Menu">
+          ☰
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 2. HERO SECTION -->
+    <section id="home" class="hero-section">
+      <div class="hero-content">
+        <div class="hero-badge">
+          ⚡ SMART CUSTOMER SUPPORT PLATFORM
+        </div>
+        <h1 class="hero-headline">
+          Smart Customer Support. <span class="highlight-navy">Faster Solutions.</span> Better Service.
+        </h1>
+        <p class="hero-subtext">
+          Manage support requests, track SLA resolutions, and empower customer service agents with one centralized enterprise support platform.
+        </p>
+        <div class="hero-ctas">
+          <a href="#quick-search" class="btn btn-primary" style="padding: 0.85rem 1.85rem; font-size: 1rem;">Get Support Now</a>
+          <a href="knowledge-base.html" class="btn btn-accent" style="padding: 0.85rem 1.85rem; font-size: 1rem;">Explore Knowledge Base</a>
+        </div>
+        <div class="hero-supporting-line">
+          <span>✓</span> <span class="pulse-green"></span> Live SLA Monitoring • Multi-Role Access • 24/7 Self-Service
+        </div>
+      </div>
+
+      <!-- Hero Visual Dashboard Mockup -->
+      <div class="hero-visual-wrapper">
+        <div class="floating-badge b1">
+          <span style="color: var(--success);">✓</span> Ticket Resolved
+        </div>
+        <div class="floating-badge b2">
+          <span style="color: var(--navy-primary);">💬</span> New Officer Response
+        </div>
+        <div class="floating-badge b3">
+          <span style="color: #d97706;">💡</span> KB Match Found
+        </div>
+
+        <div class="hero-mockup-card">
+          <div class="mockup-header">
+            <div class="dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-dim);">SupportHUB Command Dashboard</span>
+          </div>
+
+          <div class="mockup-grid">
+            <div class="mockup-kpi">
+              <div class="label">Open Tickets</div>
+              <div class="val" id="mockup-open-tickets">--</div>
+              <span class="badge badge-in_progress" style="margin-top: 0.5rem;">Active Queue</span>
+            </div>
+            <div class="mockup-kpi">
+              <div class="label">SLA Compliance</div>
+              <div class="val" id="mockup-sla-compliance" style="color: var(--success);">--</div>
+              <span class="badge badge-resolved" style="margin-top: 0.5rem;">On Track</span>
+            </div>
+          </div>
+
+          <!-- Activity List Live Database Queue -->
+          <div style="background-color: var(--bg-body); border-radius: var(--radius-sm); padding: 1rem; border: 1px solid var(--border-color);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <span style="font-size: 0.8rem; font-weight: 700; color: var(--navy-dark);">Recent Support Queue</span>
+              <span class="badge badge-resolved" style="font-size: 0.68rem; padding: 0.2rem 0.5rem;">Live Sync</span>
+            </div>
+            <div id="mockup-activity-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; background: #ffffff; padding: 0.5rem 0.75rem; border-radius: 4px; border: 1px solid var(--border-color);">
+                <span>Loading active queue...</span>
+                <span class="badge badge-open">Syncing</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ENTERPRISE METRIC STRIP (DYNAMIC DATABASE-BACKED VALUES) -->
+    <div style="max-width: 1280px; margin: 1rem auto 4rem auto; padding: 0 2rem;">
+      <div class="hero-stats-bar">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value" id="stat-resolved-tickets">--</div>
+            <div class="stat-label">Tickets Resolved</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-sla-rate">--</div>
+            <div class="stat-label">SLA Compliance Rate</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-csat-rating">--</div>
+            <div class="stat-label">Customer CSAT Rating</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="stat-kb-count">--</div>
+            <div class="stat-label">Knowledge Base Articles</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. QUICK SUPPORT SEARCH (UNIFIED HELP SEARCH ENTRY POINT) -->
+    <section id="quick-search" class="quick-search-section">
+      <div class="search-box-wrapper">
+        <div class="we-are-here-label">WE'RE HERE TO HELP</div>
+        <h2>How can we help you today?</h2>
+        <p class="search-subtitle">Search FAQs, ticket solutions, or knowledge base resources instantly.</p>
+        
+        <div class="search-bar">
+          <div class="search-bar-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+          <input type="text" id="home-search-input" placeholder="Search for a question, issue, or topic (e.g. login, payment, ticket)..." autocomplete="off" />
+          <button id="home-search-btn" class="btn-search-glow">Search</button>
+        </div>
+
+        <!-- Dynamic Live Search Results Dropdown Panel -->
+        <div id="home-search-results-panel" class="home-search-results-panel" style="display: none;">
+          <!-- Loaded dynamically by home.js via HelpSearch API -->
+        </div>
+
+        <!-- Quick Suggestion Popular Topic Tags -->
+        <div class="quick-topics-container">
+          <div class="quick-topics-wrapper">
+            <span style="font-size: 0.8rem; color: #94a3b8; font-weight: 600; margin-right: 0.25rem; flex-shrink: 0; white-space: nowrap;">Popular topics:</span>
+            <button class="quick-topic-tag" data-query="login"><i class="fa-solid fa-key" style="color: #f59e0b;"></i> Login & Password</button>
+            <button class="quick-topic-tag" data-query="payment"><i class="fa-solid fa-credit-card" style="color: #f59e0b;"></i> Payment & Billing</button>
+            <button class="quick-topic-tag" data-query="technical"><i class="fa-solid fa-laptop-code" style="color: #f59e0b;"></i> Technical Issues</button>
+            <button class="quick-topic-tag" data-query="verification"><i class="fa-solid fa-user-check" style="color: #f59e0b;"></i> Account Verification</button>
+            <button class="quick-topic-tag" data-query="ticket"><i class="fa-solid fa-headset" style="color: #f59e0b;"></i> Support Tickets</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. CORE FEATURES -->
+    <section id="features" class="section-wrapper bg-white">
+      <div class="section-container">
+        <div class="section-header">
+          <h2>Everything You Need for<br>Better Customer Support</h2>
+          <p>One centralized platform for managing support requests, information, communication, and self-service support.</p>
+        </div>
+
+        <!-- Interactive Category Filter Tabs -->
+        <div class="features-filter-tabs">
+          <button class="filter-tab-btn active" data-filter="all">All Modules</button>
+          <button class="filter-tab-btn" data-filter="ticketing">Ticket Management</button>
+          <button class="filter-tab-btn" data-filter="agents">Agent Routing</button>
+          <button class="filter-tab-btn" data-filter="ai">Knowledge & AI</button>
+          <button class="filter-tab-btn" data-filter="csat">CSAT & Analytics</button>
+        </div>
+
+        <div class="features-grid">
+          <!-- Card 01 -->
+          <div class="feature-card" data-category="ticketing">
+            <div class="feature-card-body">
+              <div class="feature-icon-box">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </div>
+              <h3>Customer Management</h3>
+              <p>Keep customer information organized, secure, and accessible in one centralized platform.</p>
+            </div>
+            <button type="button" onclick="openFeatureModal('customer-management')" class="feature-link" style="background: none; border: none; cursor: pointer; padding: 0; text-align: left;">Explore Module &rarr;</button>
+          </div>
+
+          <!-- Card 02 -->
+          <div class="feature-card" data-category="ticketing">
+            <div class="feature-card-body">
+              <div class="feature-icon-box">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path><path d="M13 5v2"></path><path d="M13 11v2"></path><path d="M13 17v2"></path></svg>
+              </div>
+              <h3>Support Tickets</h3>
+              <p>Create, track, prioritize, and manage customer support requests with full SLA accountability.</p>
+            </div>
+            <button type="button" onclick="openFeatureModal('support-tickets')" class="feature-link" style="background: none; border: none; cursor: pointer; padding: 0; text-align: left;">Explore Module &rarr;</button>
+          </div>
+
+          <!-- Card 03 -->
+          <div class="feature-card" data-category="agents">
+            <div class="feature-card-body">
+              <div class="feature-icon-box">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+              </div>
+              <h3>Ticket Categories</h3>
+              <p>Organize requests into hierarchical categories with configurable SLA turnaround thresholds.</p>
+            </div>
+            <button type="button" onclick="openFeatureModal('ticket-categories')" class="feature-link" style="background: none; border: none; cursor: pointer; padding: 0; text-align: left;">Explore Module &rarr;</button>
+          </div>
+
+          <!-- Card 04 -->
+          <div class="feature-card" data-category="agents">
+            <div class="feature-card-body">
+              <div class="feature-icon-box">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              </div>
+              <h3>Support Agents</h3>
+              <p>Connect customer issues directly with certified support personnel based on category specialization.</p>
+            </div>
+            <button type="button" onclick="openFeatureModal('support-agents')" class="feature-link" style="background: none; border: none; cursor: pointer; padding: 0; text-align: left;">Explore Module &rarr;</button>
+          </div>
+
+          <!-- Card 05 -->
+          <div class="feature-card" data-category="csat">
+            <div class="feature-card-body">
+              <div class="feature-icon-box">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              </div>
+              <h3>Feedback & Ratings</h3>
+              <p>Collect authentic customer CSAT ratings and feedback after each ticket is resolved.</p>
+            </div>
+            <button type="button" onclick="openFeatureModal('feedback-ratings')" class="feature-link" style="background: none; border: none; cursor: pointer; padding: 0; text-align: left;">Explore Module &rarr;</button>
+          </div>
+
+          <!-- Card 06 -->
+          <div class="feature-card" data-category="ai">
+            <div class="feature-card-body">
+              <div class="feature-icon-box">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              </div>
+              <h3>FAQ & Knowledge Base</h3>
+              <p>Find instant, verified answers and step-by-step guides 24/7 without waiting for an agent.</p>
+            </div>
+            <a href="knowledge-base.html" class="feature-link">Explore Knowledge Base &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. HOW IT WORKS -->
+    <section id="how-it-works" class="section-wrapper">
+      <div class="section-container">
+        <div class="section-header">
+          <div class="timeline-badge">⚡ Quick & Simple Process</div>
+          <h2>How It Works</h2>
+          <p>Four streamlined steps to receive fast, transparent enterprise customer support.</p>
+        </div>
+
+        <div class="timeline-container">
+          <!-- Step 01 -->
+          <div class="timeline-step-card">
+            <div class="step-num">01</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Access Your Account</h3>
+            <p style="font-size: 0.875rem;">Sign in or create your customer profile to manage your support history.</p>
+          </div>
+
+          <!-- Step 02 -->
+          <div class="timeline-step-card">
+            <div class="step-num">02</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Search or Open Ticket</h3>
+            <p style="font-size: 0.875rem;">Browse verified KB articles or submit a structured ticket with issue details.</p>
+          </div>
+
+          <!-- Step 03 -->
+          <div class="timeline-step-card">
+            <div class="step-num">03</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Get Real-Time Support</h3>
+            <p style="font-size: 0.875rem;">Dedicated officers handle your request with live status updates and SLA tracking.</p>
+          </div>
+
+          <!-- Step 04 -->
+          <div class="timeline-step-card">
+            <div class="step-num">04</div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Resolve & Rate Service</h3>
+            <p style="font-size: 0.875rem;">Confirm issue resolution and rate your experience to maintain service quality.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. WHY CHOOSE US -->
+    <section id="why-choose-us" class="section-wrapper bg-white">
+      <div class="section-container">
+        <div class="section-header">
+          <div class="why-badge">🌟 Key Platform Advantages</div>
+          <h2>Why Choose Our Support Platform?</h2>
+          <p>Enterprise-grade features engineered for speed, security, and exceptional support management.</p>
+        </div>
+
+        <div class="why-grid">
+          <!-- Card 1 -->
+          <div class="why-card">
+            <div class="why-icon-box why-icon-blue">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+            <h3>Secure & Role-Based</h3>
+            <p>Role-based access control ensuring total data security for customers and internal staff.</p>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="why-card">
+            <div class="why-icon-box why-icon-amber">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <h3>Centralized Queue</h3>
+            <p>Keep customer requests, communication history, and internal notes synchronized in one place.</p>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="why-card">
+            <div class="why-icon-box why-icon-purple">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <h3>SLA-Driven Efficiency</h3>
+            <p>Structured support workflows ensure fast response times and proactive escalation monitoring.</p>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="why-card">
+            <div class="why-icon-box why-icon-green">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/></svg>
+            </div>
+            <h3>24/7 Self-Service</h3>
+            <p>Access categorized FAQs, knowledge resources, and AI assistant whenever you need them.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALL TO ACTION BANNER -->
+    <section class="section-wrapper bg-white">
+      <div class="section-container">
+        <div class="final-cta-banner">
+          <h2>Ready to Get <span>Better Customer Support?</span></h2>
+          <p>
+            Experience a centralized support platform designed for speed, SLA compliance, and customer satisfaction.
+          </p>
+
+          <div class="final-cta-features">
+            <span>✓ Instant Account Access</span>
+            <span>✓ 24/7 Knowledge Base</span>
+            <span>✓ Automated SLA Ticket Tracking</span>
+          </div>
+
+          <div style="display: flex; justify-content: center; gap: 1.25rem; flex-wrap: wrap;">
+            <a href="login.html" class="final-cta-btn-accent">
+              <span>Sign In to Dashboard</span>
+              <span style="font-size: 1.1rem;">&rarr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. FAQ / KNOWLEDGE BASE PREVIEW -->
+    <section id="faq" class="section-wrapper bg-alt">
+      <div class="section-container">
+        <div class="section-header">
+          <h2>Find Answers Faster</h2>
+          <p>Explore frequently asked questions and helpful knowledge resources.</p>
+        </div>
+
+        <div class="faq-kb-grid">
+          <!-- Left Side FAQ Accordion -->
+          <div>
+            <h3 style="margin-bottom: 1.25rem;">Frequently Asked Questions</h3>
+            
+            <div id="home-faq-accordion-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <div class="accordion-item active">
+                <div class="accordion-header">
+                  <span style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span class="faq-number-badge">Q1</span>
+                    <span>How do I create a support ticket?</span>
+                  </span>
+                  <span class="accordion-icon">▼</span>
+                </div>
+                <div class="accordion-content">
+                  Log in to your customer account, navigate to the Create Ticket page, select the relevant category, fill in your issue description, and submit.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Side Knowledge Base Cards -->
+          <div id="knowledge-base">
+            <h3 style="margin-bottom: 1.25rem;">Knowledge Base</h3>
+            
+            <div id="home-kb-cards-list" style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+              <div class="panel-card" style="margin-bottom: 0; padding: 1.25rem; border-top: 3px solid #f59e0b;">
+                <h4 style="color: var(--navy-primary); margin-bottom: 0.25rem;">Getting Started</h4>
+                <p style="font-size: 0.875rem;">Learn how to use the support system and navigate your customer dashboard.</p>
+              </div>
+            </div>
+
+            <a href="knowledge-base.html" class="btn btn-secondary" style="width: 100%; text-align: center;">Explore Knowledge Base</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. FAQ CHATBOT PROMOTION -->
+    <section class="section-wrapper bg-white">
+      <div class="section-container">
+        <div class="chatbot-promo-banner">
+          <div>
+            <span class="badge" style="background-color: #f59e0b; color: #0f172a; font-weight: 800; margin-bottom: 1rem;">INSTANT AI ASSISTANT</span>
+            <h2 style="color: #ffffff; font-size: 2.25rem; margin-bottom: 1rem;">Need an Instant Answer?</h2>
+            <p style="color: #cbd5e1; font-size: 1.05rem; line-height: 1.6; margin-bottom: 2rem;">
+              Our AI Support Assistant answers questions in real time using verified solutions from our knowledge base.
+            </p>
+            <button onclick="document.getElementById('floating-chat-launcher').click()" class="btn btn-accent" style="padding: 0.85rem 2rem; font-size: 1rem; cursor: pointer;">
+              Try Support Assistant &rarr;
+            </button>
+          </div>
+
+          <!-- Chatbot Preview Mockup UI -->
+          <div class="chatbot-preview-box">
+            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 1.2rem;">🤖</span>
+                <strong style="color: var(--navy-dark); font-size: 0.9rem;">AI Assistant Preview</strong>
+              </div>
+              <span class="badge badge-resolved">Online</span>
+            </div>
+
+            <div class="chat-msg user" style="font-size: 0.825rem;">
+              How can I check my ticket status?
+            </div>
+            <div class="chat-msg bot" style="font-size: 0.825rem;">
+              You can check your ticket status at any time from your Customer Portal dashboard under My Tickets.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. CONTACT SECTION (PRODUCTION READY) -->
+    <section id="contact" class="section-wrapper bg-alt">
+      <div class="section-container">
+        <div class="section-header">
+          <h2>Need Direct Assistance?</h2>
+          <p>Reach out directly to our support operations team for technical support or service inquiries.</p>
+        </div>
+
+        <div class="contact-grid">
+          <!-- Card 01: Email -->
+          <div class="contact-card">
+            <div class="contact-icon-box">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </div>
+            <h4>Email Support</h4>
+            <p>support@supporthub.io</p>
+            <a href="mailto:support@supporthub.io" class="contact-action-link">Send Email &rarr;</a>
+          </div>
+
+          <!-- Card 02: Phone -->
+          <div class="contact-card">
+            <div class="contact-icon-box">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
+            <h4>Priority Hotline</h4>
+            <p>+94 11 234 5678</p>
+            <a href="tel:+94112345678" class="contact-action-link">Call Support &rarr;</a>
+          </div>
+
+          <!-- Card 03: Hours -->
+          <div class="contact-card">
+            <div class="contact-icon-box">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <h4>Support Hours</h4>
+            <p>Mon - Fri: 8:30 AM - 5:30 PM (SLST)</p>
+            <span class="contact-action-link" style="color: #10b981; font-weight: 800;">
+              <span class="pulse-green"></span> Live Team Online
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 13. FOOTER -->
+  <footer class="footer-main">
+    <div class="footer-container">
+      <div>
+        <a href="index.html" class="nav-logo" style="margin-bottom: 1rem; display: inline-flex;">
+          <span class="logo-support" style="color: #ffffff; font-weight: 800;">Support</span><span class="logo-hub" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #0f172a; font-weight: 800; border-radius: 6px; padding: 0.15rem 0.6rem;">HUB</span>
+        </a>
+        <p style="font-size: 0.9rem; color: #94a3b8; font-weight: 400; line-height: 1.65; max-width: 340px; margin-top: 0.5rem;">
+          Web-Based Customer Support System. A centralized enterprise platform for customer ticketing, knowledge resources, and satisfaction management.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#faq">FAQ & Knowledge Base</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#quick-search">Get Support</a></li>
+          <li><a href="knowledge-base.html">Knowledge Base</a></li>
+          <li><a href="#faq">FAQ & Answers</a></li>
+          <li><a href="#contact">Contact Team</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Account</h4>
+        <ul>
+          <li><a href="login.html">Sign In</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2026 Web-Based Customer Support System. All rights reserved.</div>
+      <div style="display: flex; gap: 1.75rem;">
+        <a href="#" class="footer-bottom-link">Privacy</a>
+        <a href="#" class="footer-bottom-link">Terms</a>
+        <a href="#" class="footer-bottom-link">Accessibility</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FLOATING CIRCULAR BOT LOGO LAUNCHER -->
+  <button id="floating-chat-launcher" class="floating-chat-launcher" title="Chat with AI Support Assistant" aria-label="Open Live AI Chat">
+    🤖
+    <span class="online-badge-dot"></span>
+  </button>
+
+  <div id="chat-widget-modal" class="chat-widget-modal">
+    <div class="chat-widget-header">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div class="bot-avatar-icon">🤖</div>
+        <div>
+          <div style="font-weight: 800; font-size: 0.95rem; color: #ffffff; letter-spacing: -0.01em;">SupportHUB AI Assistant</div>
+          <div style="font-size: 0.725rem; color: #93c5fd; display: flex; align-items: center; gap: 0.4rem; margin-top: 2px;">
+            <span class="online-dot-pulse"></span> Online • Instant Answers
+          </div>
+        </div>
+      </div>
+      <div class="chat-header-actions">
+        <button id="clear-chat-widget" class="chat-tool-btn" title="Clear Conversation" aria-label="Clear Conversation"><i class="fa-solid fa-rotate-left"></i></button>
+        <button id="min-chat-widget" class="chat-tool-btn" title="Minimize Chat" aria-label="Minimize Chat">&minus;</button>
+        <button id="close-chat-widget" class="chat-close-btn" title="Close Chat" aria-label="Close Chat">&times;</button>
+      </div>
+    </div>
+
+    <div id="widget-chat-body" class="chat-widget-body">
+      <!-- Suggested quick prompt chips -->
+      <div class="chat-quick-suggestions">
+        <button class="chat-prompt-pill" onclick="sendChatbotPrompt('How do I submit a support ticket?')">🎫 Create Ticket</button>
+        <button class="chat-prompt-pill" onclick="sendChatbotPrompt('How can I reset my password?')">🔑 Password Reset</button>
+        <button class="chat-prompt-pill" onclick="sendChatbotPrompt('What are the SLA response times?')">⏱️ SLA Response</button>
+        <button class="chat-prompt-pill" onclick="sendChatbotPrompt('How can I give feedback?')">⭐ Rate Service</button>
+      </div>
+
+      <div class="chat-msg bot">
+        Hello! 👋 How can I help you today with SupportHUB? Ask me about creating tickets, checking SLA status, or user registration.
+      </div>
+    </div>
+
+    <div class="chat-widget-footer">
+      <input type="text" id="widget-chat-input" placeholder="Ask a support question..." autocomplete="off" />
+      <button id="widget-send-btn" class="chat-send-btn">
+        <span>Send</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- FEATURE DETAIL INFORMATIONAL MODAL (GUEST SAFE ACCESS) -->
+  <div class="modal-backdrop" id="feature-detail-modal" style="display: none;">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 id="fdm-title"><i class="fa-solid fa-layer-group" style="color: #2563eb;"></i> Module Overview</h3>
+        <button onclick="closeFeatureModal()" class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.35rem 1.5rem;">
+        <div id="fdm-role-badge" style="display: inline-block; font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 999px; margin-bottom: 0.85rem;"></div>
+        <p id="fdm-desc" style="font-size: 0.925rem; color: #334155; line-height: 1.6; margin-bottom: 1.25rem;"></p>
+        
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.15rem; margin-bottom: 1rem;">
+          <h5 style="margin: 0 0 0.5rem 0; color: #0f172a; font-weight: 700; font-size: 0.85rem;">Key Capabilities:</h5>
+          <ul id="fdm-capabilities" style="margin: 0; padding-left: 1.25rem; font-size: 0.85rem; color: #475569; line-height: 1.6;"></ul>
+        </div>
+      </div>
+      <div class="modal-footer" style="padding: 1rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button type="button" onclick="closeFeatureModal()" class="btn btn-secondary">Close</button>
+        <a id="fdm-action-btn" href="login.html" class="btn btn-primary">Sign In to Access &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- READ GUIDE DETAILED MODAL -->
+  <div class="modal-backdrop" id="home-guide-modal" style="display: none;">
+    <div class="modal-content" style="max-width: 640px;">
+      <div class="modal-header">
+        <h3 id="hgm-title"><i class="fa-solid fa-book-open" style="color: #2563eb;"></i> Guide</h3>
+        <button onclick="closeHomeGuideModal()" class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem 1.5rem; max-height: calc(85vh - 120px); overflow-y: auto;">
+        <div id="hgm-meta" style="font-size: 0.775rem; color: #64748b; margin-bottom: 0.85rem; display: flex; gap: 1rem;"></div>
+        <div id="hgm-content" style="font-size: 0.85rem; color: #334155; line-height: 1.6;"></div>
+      </div>
+      <div class="modal-footer" style="padding: 0.85rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.775rem; color: #64748b;">Was this article helpful? <button class="btn btn-secondary btn-sm" onclick="alert('Thank you for your feedback!')">👍 Yes</button> <button class="btn btn-secondary btn-sm" onclick="alert('We will improve this guide.')">👎 No</button></span>
+        <button type="button" onclick="closeHomeGuideModal()" class="btn btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>
