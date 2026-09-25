@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Support Manager Overview - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css?v=13.0">
+  <link rel="stylesheet" href="../css/components.css?v=13.0">
+  <link rel="stylesheet" href="../css/dashboard.css?v=13.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* ==========================================================================
+       Customer Support Manager Overview Dashboard
+       Enterprise Palette: Navy #0f172a, Amber Gold #f59e0b, Blue #2563eb
+       High-Density 15.6" Screen Optimization
+       ========================================================================== */
+
+    .page-body {
+      padding: 1rem 1.35rem !important;
+    }
+
+    /* Page Header */
+    .mgr-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+      gap: 1rem;
+    }
+
+    .mgr-title h1 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 0.15rem 0;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .mgr-title p {
+      font-size: 0.825rem;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .mgr-header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .mgr-date-badge {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.785rem;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .mgr-date-badge i {
+      color: #2563eb;
+    }
+
+    /* 8 Top Summary KPI Cards (2 rows of 4) */
+    .mgr-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+
+    @media (max-width: 1200px) {
+      .mgr-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .mgr-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mgr-kpi-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.75rem 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      cursor: pointer;
+    }
+
+    .mgr-kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.08);
+      border-color: #cbd5e1;
+    }
+
+    .mgr-kpi-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .mgr-kpi-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    .mgr-kpi-icon.blue { background: #eff6ff; color: #2563eb; }
+    .mgr-kpi-icon.green { background: #f0fdf4; color: #16a34a; }
+    .mgr-kpi-icon.amber { background: #fefce8; color: #f59e0b; }
+    .mgr-kpi-icon.red { background: #fef2f2; color: #dc2626; }
+    .mgr-kpi-icon.purple { background: #faf5ff; color: #9333ea; }
+    .mgr-kpi-icon.orange { background: #fff7ed; color: #ea580c; }
+
+    .mgr-kpi-meta h4 {
+      font-size: 0.7rem;
+      color: #64748b;
+      font-weight: 700;
+      margin: 0 0 0.15rem 0;
+      text-transform: capitalize;
+      letter-spacing: 0.02em;
+    }
+
+    .mgr-kpi-meta .value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1;
+      margin: 0;
+    }
+
+    .mgr-kpi-trend {
+      text-align: right;
+      font-size: 0.725rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .mgr-kpi-trend.positive { color: #16a34a; }
+    .mgr-kpi-trend.warning { color: #ea580c; }
+    .mgr-kpi-trend.danger { color: #dc2626; }
+
+    .mgr-kpi-trend .sub {
+      font-size: 0.625rem;
+      color: #94a3b8;
+      font-weight: 500;
+      display: block;
+    }
+
+    /* 2-Column Section Layouts */
+    .mgr-row-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      margin-bottom: 0.85rem;
+    }
+
+    @media (max-width: 1040px) {
+      .mgr-row-2col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mgr-panel {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.85rem 1.15rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mgr-panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .mgr-panel-head h3 {
+      font-size: 0.925rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+
+    .mgr-panel-head .link-view-all {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #2563eb;
+      text-decoration: none;
+      transition: color 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .mgr-panel-head .link-view-all:hover {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
+
+    .mgr-filter-select {
+      padding: 0.25rem 0.55rem;
+      font-size: 0.725rem;
+      font-weight: 600;
+      color: #334155;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* Donut Chart and Legend */
+    .donut-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      flex: 1;
+    }
+
+    .donut-canvas-container {
+      position: relative;
+      width: 155px;
+      height: 155px;
+      flex-shrink: 0;
+      margin: 0 auto;
+    }
+
+    .donut-center-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .donut-center-text .num {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1;
+    }
+
+    .donut-center-text .lbl {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .donut-legend-list {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .donut-legend-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.775rem;
+      padding: 0.2rem 0;
+    }
+
+    .donut-legend-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .donut-legend-val {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* Tickets by Category Horizontal Bars */
+    .cat-bar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.48rem;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .cat-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      padding: 0.2rem 0.35rem;
+      border-radius: 6px;
+      transition: background 0.15s ease;
+    }
+
+    .cat-bar-row:hover {
+      background: #f8fafc;
+    }
+
+    .cat-bar-icon {
+      width: 20px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .cat-bar-name {
+      width: 145px;
+      font-size: 0.775rem;
+      font-weight: 600;
+      color: #1e293b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-shrink: 0;
+    }
+
+    .cat-progress-track {
+      flex: 1;
+      height: 10px;
+      background: #f1f5f9;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cat-progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .cat-bar-value {
+      width: 58px;
+      text-align: right;
+      font-size: 0.775rem;
+      font-weight: 700;
+      color: #0f172a;
+      flex-shrink: 0;
+    }
+
+    /* Officers Workload Table */
+    .mgr-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.775rem;
+    }
+
+    .mgr-table thead th {
+      text-align: left;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      padding: 0.35rem 0.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      white-space: nowrap;
+    }
+
+    .mgr-table tbody td {
+      padding: 0.4rem 0.5rem;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+      vertical-align: middle;
+    }
+
+    .mgr-table tbody tr:hover td {
+      background: #f8fafc;
+    }
+
+    .officer-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .officer-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #0f172a;
+      color: #ffffff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .badge-priority-high {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .badge-priority-medium {
+      background: #fefce8;
+      color: #ca8a04;
+      border: 1px solid #fef08a;
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+
+    .ticket-tkt-link {
+      color: #2563eb;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .ticket-tkt-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Recently Published Content List */
+    .recent-content-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .recent-content-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.65rem;
+      background: #ffffff;
+      border: 1px solid #f1f5f9;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      gap: 0.75rem;
+    }
+
+    .recent-content-item:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    .recent-content-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .recent-content-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: #eff6ff;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .recent-content-title {
+      font-size: 0.785rem;
+      font-weight: 600;
+      color: #0f172a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .recent-content-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .badge-faq-pill {
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+      border-radius: 999px;
+      padding: 0.15rem 0.55rem;
+      font-size: 0.675rem;
+      font-weight: 700;
+    }
+
+    .recent-content-date {
+      font-size: 0.725rem;
+      color: #64748b;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* Subcategory Breakdown Modal */
+    .subcat-modal-card {
+      background: #ffffff;
+      border-radius: 16px;
+      max-width: 540px;
+      width: 100%;
+      max-height: calc(100vh - 5rem);
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.25);
+    }
+
+    .subcat-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0.85rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      font-size: 0.825rem;
+    }
+
+    .subcat-item-left {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .subcat-item-badge {
+      background: #eff6ff;
+      color: #2563eb;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div>
+      </div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Page Title & Date Filter Header -->
+        <div class="mgr-header-row">
+          <div class="mgr-title">
+            <h1>Customer Support Manager Overview</h1>
+            <p>Monitor operations, manage your team, and ensure excellent customer support.</p>
+          </div>
+          <div class="mgr-header-right">
+            <div class="live-datetime-badge" id="live-datetime">
+              <i class="fa-regular fa-calendar-days" style="color: var(--navy-primary);"></i>
+              <span id="live-date-text">Loading date...</span>
+              <span class="datetime-divider">|</span>
+              <i class="fa-regular fa-clock" style="color: var(--yellow-accent);"></i>
+              <span id="live-time-text">Loading time...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8 Top Summary KPI Cards (Row 1: Operational Tickets & CSAT | Row 2: Content & Performance) -->
+        <div class="mgr-kpi-grid">
+          <!-- Card 1: Total Tickets -->
+          <div class="mgr-kpi-card" onclick="window.location.href='../supervisor/team-tickets.html'">
+            <div class="mgr-kpi-left">
+              <div class="mgr-kpi-icon blue"><i class="fa-solid fa-ticket"></i></div>
+              <div class="mgr-kpi-meta">
+                <h4>Total Tickets</h4>
+                <div class="value" id="kpi-total-tickets">0</div>
+              </div>
+            </div>
+            <div class="mgr-kpi-trend positive">
+              0%
+              <span class="sub">vs last month</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Active Tickets -->
+          <div class="mgr-kpi-card" onclick="window.location.href='../supervisor/team-tickets.html?status=OPEN'">
+            <div class="mgr-kpi-left">
+              <div class="mgr-kpi-icon green"><i class="fa-solid fa-comments"></i></div>
+              <div class="mgr-kpi-meta">
+                <h4>Active Tickets</h4>
+                <div class="value" id="kpi-active-tickets">0</div>
+              </div>
+            </div>
+            <div class="mgr-kpi-trend danger">
+              0
+              <span class="sub">waiting for response</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Escalated Tickets -->
+          <div class="mgr-kpi-card" onclick="window.location.href='../supervisor/team-tickets.html?status=ESCALATED'">
+            <div class="mgr-kpi-left">
+              <div class="mgr-kpi-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div class="mgr-kpi-meta">
+                <h4>Escalated Tickets</h4>
+                <div class="value" id="kpi-escalated-tickets">0</div>
+              </div>
+            </div>
+            <div class="mgr-kpi-trend positive">
+              0%
+              <span class="sub">vs last month</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Average CSAT -->
+          <div class="mgr-kpi-card" onclick="window.location.href='../qa/satisfaction-analysis.html'">
+            <div class="mgr-kpi-left">
+              <div class="mgr-kpi-icon amber"><i class="fa-solid fa-star"></i></div>
+              <div class="mgr-kpi-meta">
+                <h4>Average CSAT</h4>
+                <div class="value" id="kpi-avg-csat">0.0 / 5</div>
+              </div>
+            </div>
+            <div class="mgr-kpi-trend positive">
+              0%
+              <span class="sub">vs last month</span>
+            </div>
+          </div>
+
+          <!-- Card 5: Published FAQs -->
+          <div class="mgr-kpi-card" onclick="window.location.href='faqs-management.html'">
+            <div class="mgr-kpi-left">
+              <div class="mgr-kpi-icon purple"><i class="fa-solid fa-circle-question"></i></div>
+              <div class="mgr-kpi-meta">
+                <h4>Published FAQs</h4>
+                <div class="value" id="kpi-published-faqs">0</div>
+              </div>
+            </div>
+            <div class="mgr-kpi-trend positive">
+              0%
+              <span class="sub">vs last month</span>
+            </div>
+          </div>
+
+          <!-- Card 6: Knowledge Articles -->
+          <div class="mgr-kpi-card" onclick="window.location.href='knowledge-base-management.html'">
+            <div class="mgr-kpi-left">
+              <div class="mgr-kpi-icon green"><i class="fa-solid fa-book-bookmark"></i></div>
+              <div class="mgr-kpi-meta">
+                <h4>Knowledge Articles</h4>
+                <div class="value" id="kpi-kb-articles">0</div>
+              </div>
+            </div>
+            <div class="mgr-kpi-trend positive">
+              0%
+              <span class="sub">vs last month</span>
+            </div>
+          </div>
+
+          <!-- Card 7: Resolution Rate -->
+          <div class="mgr-kpi-card" onclick="window.location.href='../qa/satisfaction-analysis.html'">
+            <div class="mgr-kpi-left">
+              <div class="mgr-kpi-icon orange"><i class="fa-solid fa-bullseye"></i></div>
+              <div class="mgr-kpi-meta">
+                <h4>Resolution Rate</h4>
+                <div class="value" id="kpi-resolution-rate">0%</div>
+              </div>
+            </div>
+            <div class="mgr-kpi-trend positive">
+              0%
+              <span class="sub">vs last month</span>
+            </div>
+          </div>
+
+          <!-- Card 8: Avg. Resolution Time -->
+          <div class="mgr-kpi-card" onclick="window.location.href='../qa/satisfaction-analysis.html'">
+            <div class="mgr-kpi-left">
+              <div class="mgr-kpi-icon blue"><i class="fa-regular fa-clock"></i></div>
+              <div class="mgr-kpi-meta">
+                <h4>Avg. Resolution Time</h4>
+                <div class="value" id="kpi-avg-res-time">0 days</div>
+              </div>
+            </div>
+            <div class="mgr-kpi-trend positive">
+              0%
+              <span class="sub">vs last month</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 1: Ticket Status Overview & Tickets by Category (Clean Main Categories) -->
+        <div class="mgr-row-2col">
+          <!-- Left: Ticket Status Overview (Donut Chart) -->
+          <div class="mgr-panel">
+            <div class="mgr-panel-head">
+              <h3>Ticket Status Overview</h3>
+              <select class="mgr-filter-select" id="filter-status-range" onchange="updateStatusChart()">
+                <option value="30">Last 30 Days ▼</option>
+                <option value="7">Last 7 Days</option>
+                <option value="90">Last 3 Months</option>
+              </select>
+            </div>
+            <div class="donut-wrap">
+              <div class="donut-canvas-container">
+                <canvas id="ticketStatusChart"></canvas>
+                <div class="donut-center-text">
+                  <span class="num" id="donut-center-num">0</span>
+                  <span class="lbl">Total Tickets</span>
+                </div>
+              </div>
+              <div class="donut-legend-list" id="donut-legend-container">
+                <!-- Dynamically populated from API -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Tickets by Category (6 Main Clean Categories with Click-to-Drilldown) -->
+          <div class="mgr-panel">
+            <div class="mgr-panel-head">
+              <h3>Tickets by Category</h3>
+              <a href="../supervisor/team-tickets.html" class="link-view-all">View All</a>
+            </div>
+            <div class="cat-bar-list" id="category-bars-container">
+              <!-- Dynamically populated from API -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Support Officers Workload & CSAT Trend -->
+        <div class="mgr-row-2col">
+          <!-- Left: Support Officers Workload -->
+          <div class="mgr-panel">
+            <div class="mgr-panel-head">
+              <h3>Support Officers Workload</h3>
+              <a href="../supervisor/agents.html" class="link-view-all">View All</a>
+            </div>
+            <div style="overflow-x: auto;">
+              <table class="mgr-table">
+                <thead>
+                  <tr>
+                    <th>OFFICER</th>
+                    <th>OPEN</th>
+                    <th>IN PROGRESS</th>
+                    <th>WAITING</th>
+                    <th>ESCALATED</th>
+                    <th>TOTAL</th>
+                  </tr>
+                </thead>
+                <tbody id="workload-table-body">
+                  <!-- Dynamically populated from API -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Right: CSAT Trend (Line Chart) -->
+          <div class="mgr-panel">
+            <div class="mgr-panel-head">
+              <h3>CSAT Trend</h3>
+              <select class="mgr-filter-select" id="filter-csat-range" onchange="updateCsatChart()">
+                <option value="30">Last 30 Days ▼</option>
+                <option value="7">Last 7 Days</option>
+                <option value="90">Last 3 Months</option>
+              </select>
+            </div>
+            <div style="position: relative; height: 165px; width: 100%;">
+              <canvas id="csatTrendChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Recent Escalations & Recently Published Content -->
+        <div class="mgr-row-2col">
+          <!-- Left: Recent Escalations Table -->
+          <div class="mgr-panel">
+            <div class="mgr-panel-head">
+              <h3>Recent Escalations</h3>
+              <a href="../supervisor/team-tickets.html?status=ESCALATED" class="link-view-all">View All</a>
+            </div>
+            <div style="overflow-x: auto;">
+              <table class="mgr-table">
+                <thead>
+                  <tr>
+                    <th>TICKET #</th>
+                    <th>CUSTOMER</th>
+                    <th>CATEGORY</th>
+                    <th>ASSIGNED TO</th>
+                    <th>PRIORITY</th>
+                    <th>DATE</th>
+                  </tr>
+                </thead>
+                <tbody id="escalations-table-body">
+                  <!-- Dynamically populated from API -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Right: Recently Published Content (3 compact FAQs/KB with View All) -->
+          <div class="mgr-panel">
+            <div class="mgr-panel-head">
+              <h3>Recently Published Content</h3>
+              <a href="faqs-management.html" class="link-view-all">View All</a>
+            </div>
+            <div class="recent-content-list" id="recent-content-container">
+              <!-- Dynamically populated from API -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Subcategory Breakdown (Drill-Down on Category Click) -->
+  <div class="modal-backdrop" id="modal-subcategory-breakdown">
+    <div class="subcat-modal-card">
+      <div class="modal-header" style="padding: 1.15rem 1.5rem; margin-bottom: 0; border-bottom: 2px solid #f59e0b; background: #ffffff;">
+        <div>
+          <h3 id="subcat-modal-title" style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #0f172a;">Order Issues - Subcategory Breakdown</h3>
+          <p id="subcat-modal-subtitle" style="margin: 0.15rem 0 0 0; font-size: 0.8rem; color: #64748b;">Detailed ticket distribution across granular sub-topics.</p>
+        </div>
+        <button onclick="closeModal('modal-subcategory-breakdown')" class="close-modal">&times;</button>
+      </div>
+      <div style="padding: 1.25rem 1.5rem; overflow-y: auto; flex: 1;">
+        <div id="subcat-items-list">
+          <!-- Populated dynamically based on clicked category -->
+        </div>
+
+        <div style="margin-top: 1.25rem; display: flex; justify-content: flex-end; gap: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #f1f5f9;">
+          <button class="btn btn-secondary" onclick="closeModal('modal-subcategory-breakdown')">Close</button>
+          <button class="btn btn-primary" id="btn-view-category-tickets" onclick="viewCategoryInQueue()" style="background: #2563eb; border-color: #2563eb;">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open in Team Queue
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js?v=13.0"></script>
+  <script src="../js/auth.js?v=13.0"></script>
+  <script src="../js/utils.js?v=13.0"></script>
+  <script src="../js/notifications.js?v=13.0"></script>
+  <script>
+    let statusChartInstance = null;
+    let csatChartInstance = null;
+    let dashboardDataCache = null;
+    let allTicketsCache = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['CUSTOMER_SUPPORT_MANAGER'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      await loadManagerData();
+    });
+
+    function getCategoryIcon(catName) {
+      const lower = (catName || '').toLowerCase();
+      if (lower.includes('order')) return 'fa-cart-shopping';
+      if (lower.includes('deliver') || lower.includes('shipping')) return 'fa-truck';
+      if (lower.includes('pay') || lower.includes('refund')) return 'fa-credit-card';
+      if (lower.includes('account') || lower.includes('login')) return 'fa-user';
+      if (lower.includes('product') || lower.includes('item')) return 'fa-box-open';
+      if (lower.includes('complaint') || lower.includes('escalat')) return 'fa-triangle-exclamation';
+      return 'fa-folder';
+    }
+
+    function getCategoryColor(catName, idx) {
+      const colors = ['#3b82f6', '#22c55e', '#f97316', '#a855f7', '#ec4899', '#ef4444', '#06b6d4', '#eab308'];
+      return colors[idx % colors.length];
+    }
+
+    async function loadManagerData() {
+      try {
+        const [reportRes, escalatedRes, faqsRes, kbRes, ticketsRes] = await Promise.all([
+          API.get('/reports/dashboard').catch(() => ({ data: null })),
+          API.get('/tickets/escalated').catch(() => ({ data: [] })),
+          API.get('/faqs').catch(() => ({ data: [] })),
+          API.get('/knowledge-base').catch(() => ({ data: [] })),
+          API.get('/tickets?page=0&size=100').catch(() => ({ data: [] }))
+        ]);
+
+        const r = reportRes && reportRes.data ? reportRes.data : null;
+        dashboardDataCache = r;
+        allTicketsCache = ticketsRes.data && ticketsRes.data.content ? ticketsRes.data.content : (Array.isArray(ticketsRes.data) ? ticketsRes.data : []);
+
+        // 1. KPI Cards
+        if (r) {
+          if (r.totalTickets != null) {
+            const el = document.getElementById('kpi-total-tickets');
+            if (el) el.textContent = r.totalTickets;
+          }
+          if (r.activeTickets != null) {
+            const el = document.getElementById('kpi-active-tickets');
+            if (el) el.textContent = r.activeTickets;
+          }
+          if (r.escalatedTickets != null) {
+            const el = document.getElementById('kpi-escalated-tickets');
+            if (el) el.textContent = r.escalatedTickets;
+          }
+          if (r.averageRating != null) {
+            const el = document.getElementById('kpi-avg-csat');
+            if (el) el.textContent = `${Number(r.averageRating).toFixed(1)} / 5`;
+          }
+          if (r.publishedFaqs != null) {
+            const el = document.getElementById('kpi-published-faqs');
+            if (el) el.textContent = r.publishedFaqs;
+          }
+          if (r.knowledgeArticles != null) {
+            const el = document.getElementById('kpi-kb-articles');
+            if (el) el.textContent = r.knowledgeArticles;
+          }
+          if (r.resolutionRate != null) {
+            const el = document.getElementById('kpi-resolution-rate');
+            if (el) el.textContent = `${Math.round(r.resolutionRate)}%`;
+          }
+          if (r.avgResolutionTimeDays != null) {
+            const el = document.getElementById('kpi-avg-res-time');
+            if (el) el.textContent = `${Number(r.avgResolutionTimeDays).toFixed(1)} days`;
+          }
+        }
+
+        // 2. Status Donut Chart & Legend
+        renderStatusDonut(r);
+
+        // 3. Tickets by Category Progress Bars
+        renderCategoryBars(r);
+
+        // 4. Officer Workload Table
+        renderOfficerWorkload(r, allTicketsCache);
+
+        // 5. CSAT Trend Chart
+        renderCsatTrend(r);
+
+        // 6. Recent Escalations Table
+        const escItems = Array.isArray(escalatedRes.data) ? escalatedRes.data : (escalatedRes.data && escalatedRes.data.content ? escalatedRes.data.content : []);
+        renderRecentEscalations(escItems);
+
+        // 7. Recently Published Content
+        const faqs = Array.isArray(faqsRes.data) ? faqsRes.data : [];
+        const kbs = Array.isArray(kbRes.data) ? kbRes.data : [];
+        renderRecentContent(faqs, kbs);
+
+      } catch (err) {
+        console.error('Error loading manager dashboard data', err);
+      }
+    }
+
+    function renderStatusDonut(r) {
+      const ctx = document.getElementById('ticketStatusChart');
+      if (!ctx) return;
+
+      const byStatus = (r && r.ticketsByStatus) ? r.ticketsByStatus : {};
+      const openCount = byStatus['OPEN'] || 0;
+      const inProgCount = byStatus['IN_PROGRESS'] || 0;
+      const waitCount = byStatus['WAITING_FOR_CUSTOMER'] || 0;
+      const resolvedCount = byStatus['RESOLVED'] || 0;
+      const closedCount = byStatus['CLOSED'] || 0;
+      const total = r ? (r.totalTickets || (openCount + inProgCount + waitCount + resolvedCount + closedCount)) : 0;
+
+      const centerNumEl = document.getElementById('donut-center-num');
+      if (centerNumEl) centerNumEl.textContent = total;
+
+      const labels = ['Open', 'In Progress', 'Waiting for Customer', 'Resolved', 'Closed'];
+      const data = [openCount, inProgCount, waitCount, resolvedCount, closedCount];
+      const bgColors = ['#3b82f6', '#f97316', '#eab308', '#22c55e', '#64748b'];
+
+      if (statusChartInstance) {
+        statusChartInstance.destroy();
+      }
+
+      statusChartInstance = new Chart(ctx.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: total > 0 ? data : [1],
+            backgroundColor: total > 0 ? bgColors : ['#e2e8f0'],
+            borderWidth: 2,
+            borderColor: '#ffffff',
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '72%',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  if (total === 0) return ' No tickets';
+                  const val = context.raw;
+                  const pct = total > 0 ? Math.round((val / total) * 100) : 0;
+                  return ` ${context.label}: ${val} (${pct}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // Update HTML Legend
+      const legendContainer = document.getElementById('donut-legend-container');
+      if (legendContainer) {
+        legendContainer.innerHTML = labels.map((lbl, idx) => {
+          const count = data[idx];
+          const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+          return `
+            <div class="donut-legend-row">
+              <div class="donut-legend-label"><span class="legend-dot" style="background: ${bgColors[idx]};"></span> ${lbl}</div>
+              <div class="donut-legend-val">${count} (${pct}%)</div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function renderCategoryBars(r) {
+      const container = document.getElementById('category-bars-container');
+      if (!container) return;
+
+      const byCat = (r && r.ticketsByCategory) ? r.ticketsByCategory : {};
+      const catEntries = Object.entries(byCat);
+      const total = r ? (r.totalTickets || 1) : 1;
+
+      if (catEntries.length === 0) {
+        container.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: #94a3b8;">No category data available</div>';
+        return;
+      }
+
+      // Sort by ticket count descending
+      catEntries.sort((a, b) => b[1] - a[1]);
+
+      container.innerHTML = catEntries.map(([catName, count], idx) => {
+        const pct = Math.round((count / (total || 1)) * 100);
+        const color = getCategoryColor(catName, idx);
+        const icon = getCategoryIcon(catName);
+        return `
+          <div class="cat-bar-row" onclick="openSubcategoryBreakdown('${catName.replace(/'/g, "\\'")}', ${count}, '${pct}%')">
+            <div class="cat-bar-icon" style="color: ${color};"><i class="fa-solid ${icon}"></i></div>
+            <div class="cat-bar-name" title="${catName}">${catName}</div>
+            <div class="cat-progress-track">
+              <div class="cat-progress-fill" style="width: ${pct}%; background: ${color};"></div>
+            </div>
+            <div class="cat-bar-value">${count} (${pct}%)</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderOfficerWorkload(r, tickets) {
+      const tbody = document.getElementById('workload-table-body');
+      if (!tbody) return;
+
+      const details = (r && r.agentWorkloadDetails) ? r.agentWorkloadDetails : [];
+      if (details.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 1.5rem;">No active support officers found.</td></tr>';
+        return;
+      }
+
+      const safeTickets = Array.isArray(tickets) ? tickets : [];
+
+      tbody.innerHTML = details.map(ag => {
+        const initials = ag.name ? ag.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'AG';
+        
+        // Match agent tickets safely by ID or Full Name
+        const agentTickets = safeTickets.filter(t => t && (
+          t.assignedAgentId === ag.id ||
+          (t.assignedAgent && t.assignedAgent.id === ag.id) ||
+          t.assignedAgentName === ag.name ||
+          (t.assignedAgent && t.assignedAgent.fullName === ag.name)
+        ));
+
+        const open = agentTickets.filter(t => t.status === 'OPEN').length;
+        const inProg = agentTickets.filter(t => t.status === 'IN_PROGRESS').length;
+        const waiting = agentTickets.filter(t => t.status === 'WAITING_FOR_CUSTOMER').length;
+        const escalated = agentTickets.filter(t => t.isEscalated || t.escalated).length;
+        const total = agentTickets.length || ag.totalTickets || (open + inProg + waiting);
+
+        return `
+          <tr>
+            <td>
+              <div class="officer-cell">
+                <div class="officer-avatar" style="background: #1e3a8a;">${initials}</div>
+                <span>${ag.name}</span>
+              </div>
+            </td>
+            <td>${open}</td>
+            <td>${inProg}</td>
+            <td>${waiting}</td>
+            <td>${escalated}</td>
+            <td><strong>${total}</strong></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderCsatTrend(r) {
+      const ctx = document.getElementById('csatTrendChart');
+      if (!ctx) return;
+
+      const trendPoints = (r && r.csatTrend && r.csatTrend.length > 0) ? r.csatTrend : [];
+
+      let labels = [];
+      let data = [];
+
+      if (trendPoints.length > 0) {
+        labels = trendPoints.map(p => p.date || p.period || 'Month');
+        data = trendPoints.map(p => p.avgRating != null ? p.avgRating : (p.csat != null ? p.csat / 20.0 : 4.0));
+      } else {
+        const avg = (r && r.averageRating) ? r.averageRating : 3.9;
+        labels = ['Past Month', 'Current Period'];
+        data = [3.6, avg];
+      }
+
+      if (csatChartInstance) {
+        csatChartInstance.destroy();
+      }
+
+      csatChartInstance = new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'CSAT Rating',
+            data: data,
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.08)',
+            borderWidth: 2.5,
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: '#2563eb',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'bottom',
+              labels: {
+                boxWidth: 10,
+                boxHeight: 10,
+                font: { size: 11, weight: '600' },
+                color: '#475569'
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function (ctx) {
+                  return ` CSAT Rating: ${Number(ctx.raw).toFixed(1)} / 5.0`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              min: 0,
+              max: 5,
+              ticks: {
+                stepSize: 1.0,
+                font: { size: 10, weight: '600' },
+                color: '#94a3b8'
+              },
+              grid: { color: '#f1f5f9' }
+            },
+            x: {
+              ticks: {
+                font: { size: 10, weight: '600' },
+                color: '#64748b'
+              },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    function renderRecentEscalations(escalatedTickets) {
+      const tbody = document.getElementById('escalations-table-body');
+      if (!tbody) return;
+
+      const items = Array.isArray(escalatedTickets) ? escalatedTickets : [];
+
+      if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 1.25rem;">No active escalations.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = items.slice(0, 5).map(t => {
+        const ticketNum = t.ticketNumber || ('TCK-' + t.id);
+        const custName = t.customerName || (t.customer ? t.customer.fullName : 'Customer');
+        const catName = t.categoryName || (t.category ? t.category.name : 'General');
+        const agentName = t.assignedAgentName || (t.assignedAgent ? t.assignedAgent.fullName : 'Unassigned');
+        const priorityClass = t.priority === 'CRITICAL' || t.priority === 'HIGH' || t.priority === 'URGENT' ? 'badge-priority-high' : 'badge-priority-medium';
+
+        return `
+          <tr>
+            <td><a href="../customer/ticket-details.html?id=${encodeURIComponent(ticketNum)}" class="ticket-tkt-link">${ticketNum}</a></td>
+            <td><strong>${custName}</strong></td>
+            <td>${catName}</td>
+            <td>${agentName}</td>
+            <td><span class="${priorityClass}">${t.priority || 'NORMAL'}</span></td>
+            <td style="color: #64748b; white-space: nowrap;">${Utils.formatDate(t.createdAt)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderRecentContent(faqs, kbs) {
+      const container = document.getElementById('recent-content-container');
+      if (!container) return;
+
+      const items = [];
+      (faqs || []).forEach(f => {
+        items.push({
+          title: f.question,
+          type: 'FAQ',
+          date: f.updatedAt || f.createdAt,
+          link: 'faqs-management.html'
+        });
+      });
+      (kbs || []).forEach(k => {
+        items.push({
+          title: k.title,
+          type: 'KB',
+          date: k.updatedAt || k.createdAt,
+          link: 'faqs-management.html'
+        });
+      });
+
+      if (items.length === 0) {
+        container.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: #94a3b8;">No published content yet.</div>';
+        return;
+      }
+
+      // Sort by date desc
+      items.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+      container.innerHTML = items.slice(0, 3).map(item => `
+        <div class="recent-content-item" onclick="window.location.href='${item.link}'">
+          <div class="recent-content-left">
+            <div class="recent-content-icon"><i class="fa-solid fa-file-lines"></i></div>
+            <span class="recent-content-title" title="${item.title}">${item.title}</span>
+          </div>
+          <div class="recent-content-meta">
+            <span class="badge-faq-pill">${item.type}</span>
+            <span class="recent-content-date">${Utils.formatDate(item.date)}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateStatusChart() {
+      // Re-render based on selected filter range from live data cache
+      renderStatusDonut(dashboardDataCache);
+    }
+
+    function updateCsatChart() {
+      renderCsatTrend(dashboardDataCache);
+    }
+
+    function openSubcategoryBreakdown(categoryName, count, pct) {
+      document.getElementById('subcat-modal-title').textContent = `${categoryName} - Overview`;
+      document.getElementById('subcat-modal-subtitle').textContent = `Total Tickets: ${count} (${pct} of all inquiries)`;
+
+      const container = document.getElementById('subcat-items-list');
+      const catTickets = allTicketsCache.filter(t => t.category && t.category.name === categoryName);
+
+      if (catTickets.length > 0) {
+        container.innerHTML = catTickets.map(t => `
+          <div class="subcat-item-row">
+            <div class="subcat-item-left">
+              <i class="fa-solid fa-chevron-right" style="color: #2563eb; font-size: 0.75rem;"></i>
+              <span>${t.subject || ('Ticket #' + (t.ticketNumber || t.id))}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.65rem;">
+              <span style="font-size: 0.75rem; color: #64748b; font-weight: 500;">${t.status}</span>
+              <span class="subcat-item-badge">${t.ticketNumber || ('TCK-' + t.id)}</span>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        container.innerHTML = `<div style="padding: 1rem; text-align: center; color: #64748b;">${count} tickets logged under ${categoryName}</div>`;
+      }
+
+      openModal('modal-subcategory-breakdown');
+    }
+
+    function viewCategoryInQueue() {
+      window.location.href = `../supervisor/team-tickets.html`;
+    }
+
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('show');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('show');
+    }
+  </script>
+</body>
+</html>

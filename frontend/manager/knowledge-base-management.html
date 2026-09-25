@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Base Articles - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    /* ==========================================================================
+       Knowledge Base Management - Pixel-Perfect Reference UI
+       ========================================================================== */
+
+    :root {
+      --primary-navy: #0f172a;
+      --navy-light: #1e293b;
+      --blue-accent: #2563eb;
+      --amber-accent: #f59e0b;
+      --border-subtle: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+    }
+
+    /* Page Header */
+    .kb-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .kb-title-group h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.35rem 0;
+      line-height: 1.2;
+    }
+
+    .kb-title-group p {
+      font-size: 0.925rem;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+      max-width: 780px;
+    }
+
+    .kb-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Toggle & Create Buttons */
+    .view-toggle-wrap {
+      display: inline-flex;
+      background: #f1f5f9;
+      padding: 3px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .view-toggle-btn {
+      padding: 0.45rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      color: #64748b;
+      border-radius: 7px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+    }
+
+    .view-toggle-btn.active {
+      background: #f59e0b;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-create-article {
+      background: #f59e0b;
+      color: #ffffff;
+      border: 1px solid #f59e0b;
+      border-radius: 10px;
+      padding: 0.55rem 1.15rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    .btn-create-article:hover {
+      background: #d97706;
+      border-color: #d97706;
+      transform: translateY(-1px);
+    }
+
+    /* 4 Top KPI Summary Cards */
+    .kb-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      .kb-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .kb-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kb-kpi-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 1.25rem 1.35rem;
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .kb-kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.08);
+      border-color: #cbd5e1;
+    }
+
+    .kb-kpi-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+
+    .kb-kpi-icon.orange {
+      background: #fff7ed;
+      color: #ea580c;
+    }
+
+    .kb-kpi-icon.green {
+      background: #f0fdf4;
+      color: #16a34a;
+    }
+
+    .kb-kpi-icon.yellow {
+      background: #fefce8;
+      color: #ca8a04;
+    }
+
+    .kb-kpi-icon.purple {
+      background: #faf5ff;
+      color: #9333ea;
+    }
+
+    .kb-kpi-info p {
+      font-size: 0.725rem;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin: 0 0 0.35rem 0;
+    }
+
+    .kb-kpi-info h3 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+      line-height: 1;
+    }
+
+    /* Filter & Search Toolbar */
+    .kb-toolbar {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .kb-search-box {
+      position: relative;
+      flex: 1;
+      min-width: 280px;
+      max-width: 420px;
+    }
+
+    .kb-search-box i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 0.875rem;
+    }
+
+    .kb-search-box input {
+      width: 100%;
+      padding: 0.55rem 0.85rem 0.55rem 2.25rem;
+      font-size: 0.85rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #f8fafc;
+      color: #0f172a;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .kb-search-box input:focus {
+      background: #ffffff;
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+    }
+
+    .kb-filters-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .kb-select {
+      padding: 0.5rem 0.85rem;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: #334155;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .kb-select:hover {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+    }
+
+    .kb-select:focus {
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.15);
+    }
+
+    /* Cards Grid View (4 columns x 2 rows) */
+    .kb-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 1200px) {
+      .kb-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .kb-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .kb-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .kb-article-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      min-height: 250px;
+    }
+
+    .kb-article-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+      border-color: #cbd5e1;
+    }
+
+    .kb-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .kb-topic-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      flex-shrink: 0;
+    }
+
+    .kb-topic-icon.delivery {
+      background: #eff6ff;
+      color: #3b82f6;
+    }
+
+    .kb-topic-icon.payment {
+      background: #fdf2f8;
+      color: #db2777;
+    }
+
+    .kb-topic-icon.order {
+      background: #fff7ed;
+      color: #ea580c;
+    }
+
+    .kb-topic-icon.account {
+      background: #f0fdf4;
+      color: #16a34a;
+    }
+
+    .kb-topic-icon.product {
+      background: #f5f3ff;
+      color: #7c3aed;
+    }
+
+    .kb-topic-icon.complaint {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .kb-card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.35;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .kb-card-desc {
+      font-size: 0.825rem;
+      color: #64748b;
+      line-height: 1.45;
+      margin: 0 0 0.75rem 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 36px;
+    }
+
+    /* Category Tag */
+    .kb-cat-chip {
+      display: inline-block;
+      padding: 0.2rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.725rem;
+      font-weight: 700;
+      margin-bottom: 0.85rem;
+      width: fit-content;
+    }
+
+    .kb-cat-chip.delivery {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    .kb-cat-chip.payment {
+      background: #f5f3ff;
+      color: #7c3aed;
+    }
+
+    .kb-cat-chip.order {
+      background: #fff7ed;
+      color: #c2410c;
+    }
+
+    .kb-cat-chip.account {
+      background: #f0fdf4;
+      color: #15803d;
+    }
+
+    .kb-cat-chip.product {
+      background: #fdf2f8;
+      color: #be185d;
+    }
+
+    .kb-cat-chip.complaint {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    /* Metrics Row */
+    .kb-metrics-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: 0.775rem;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 0.65rem;
+    }
+
+    .kb-metric-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    /* Badges Row */
+    .kb-badges-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 0.85rem;
+      padding-top: 0.65rem;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .badge-published {
+      color: #16a34a;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .badge-draft {
+      color: #64748b;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .badge-published .dot,
+    .badge-draft .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .badge-visibility {
+      color: #0284c7;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    /* Card Actions Row */
+    .kb-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+    }
+
+    .kb-btn-action {
+      flex: 1;
+      padding: 0.45rem 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #334155;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+    }
+
+    .kb-btn-action:hover {
+      background: #f8fafc;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    .kb-btn-dots {
+      width: 34px;
+      height: 32px;
+      padding: 0;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #64748b;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
+    }
+
+    .kb-btn-dots:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    /* Dropdown Menu for Article Card */
+    .kb-dropdown-menu {
+      position: absolute;
+      right: 0;
+      bottom: 100%;
+      margin-bottom: 0.35rem;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+      min-width: 170px;
+      z-index: 100;
+      display: none;
+      overflow: hidden;
+      animation: fadeInDropdown 0.15s ease-out;
+    }
+
+    .kb-dropdown-menu.show {
+      display: block;
+    }
+
+    .kb-dropdown-menu button {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      background: transparent;
+      border: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s ease;
+    }
+
+    .kb-dropdown-menu button:hover {
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    .kb-dropdown-menu button.danger {
+      color: #dc2626;
+    }
+
+    .kb-dropdown-menu button.danger:hover {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    /* Table View Container */
+    .kb-table-container {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Pagination Bar */
+    .kb-pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1rem 0.5rem;
+    }
+
+    .kb-pagination-info {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .kb-pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .page-btn {
+      min-width: 34px;
+      height: 34px;
+      padding: 0 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      color: #475569;
+      font-size: 0.825rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .page-btn.active {
+      background: #f59e0b;
+      border-color: #f59e0b;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* View Article Modal */
+    .modal-article-view {
+      max-width: 680px;
+    }
+
+    .article-view-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.825rem;
+      color: #64748b;
+    }
+
+    .article-view-body {
+      font-size: 0.925rem;
+      line-height: 1.65;
+      color: #1e293b;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div>
+      </div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Page Title & Controls Row -->
+        <div class="kb-header-row">
+          <div class="kb-title-group">
+            <h1>Knowledge Base Articles</h1>
+            <p>Create, organize, and publish support articles to help customers and support officers resolve common shopping issues.</p>
+          </div>
+          <div class="kb-header-actions">
+            <button class="btn-create-article" onclick="openCreateModal()">
+              <i class="fa-solid fa-plus"></i> Create Article
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Top KPI Summary Cards -->
+        <div class="kb-kpi-grid">
+          <!-- Card 1: Total Articles -->
+          <div class="kb-kpi-card" onclick="filterByStatus('')">
+            <div class="kb-kpi-icon orange">
+              <i class="fa-solid fa-box-archive"></i>
+            </div>
+            <div class="kb-kpi-info">
+              <p>Total Articles</p>
+              <h3 id="kpi-total-articles">36</h3>
+            </div>
+          </div>
+
+          <!-- Card 2: Published -->
+          <div class="kb-kpi-card" onclick="filterByStatus('PUBLISHED')">
+            <div class="kb-kpi-icon green">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="kb-kpi-info">
+              <p>Published</p>
+              <h3 id="kpi-published">28</h3>
+            </div>
+          </div>
+
+          <!-- Card 3: Drafts -->
+          <div class="kb-kpi-card" onclick="filterByStatus('DRAFT')">
+            <div class="kb-kpi-icon yellow">
+              <i class="fa-solid fa-file-lines"></i>
+            </div>
+            <div class="kb-kpi-info">
+              <p>Drafts</p>
+              <h3 id="kpi-drafts">8</h3>
+            </div>
+          </div>
+
+          <!-- Card 4: Total Views -->
+          <div class="kb-kpi-card">
+            <div class="kb-kpi-icon purple">
+              <i class="fa-solid fa-chart-column"></i>
+            </div>
+            <div class="kb-kpi-info">
+              <p>Total Views</p>
+              <h3 id="kpi-total-views">12.4K</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="kb-toolbar">
+          <div class="kb-search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="kb-search" placeholder="Search articles by title, keyword, or category..." oninput="handleSearch()" />
+          </div>
+
+          <div class="kb-filters-group">
+            <select id="filter-category" class="kb-select" onchange="applyFilters()">
+              <option value="">All Categories ▼</option>
+            </select>
+
+            <select id="filter-status" class="kb-select" onchange="applyFilters()">
+              <option value="">All Statuses ▼</option>
+              <option value="PUBLISHED">Published</option>
+              <option value="DRAFT">Drafts</option>
+            </select>
+
+            <select id="filter-sort" class="kb-select" onchange="applyFilters()">
+              <option value="RECENT">Sort: Recently Updated ▼</option>
+              <option value="VIEWS">Sort: Most Viewed ▼</option>
+              <option value="HELPFUL">Sort: Highest Helpful % ▼</option>
+              <option value="ALPHA">Sort: Title A-Z ▼</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Cards View (4x2 Grid) -->
+        <div id="kb-cards-container" class="kb-cards-grid">
+          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b;">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #f59e0b;"></i>
+            <p>Loading knowledge base articles...</p>
+          </div>
+        </div>
+
+        <!-- Bottom Pagination Bar -->
+        <div class="kb-pagination-bar">
+          <div class="kb-pagination-info" id="kb-pagination-info">
+            Showing 1 to 8 of 36 articles
+          </div>
+          <div class="kb-pagination-controls" id="kb-pagination-controls">
+            <!-- Dynamically populated page buttons -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Create / Edit Article -->
+  <div class="modal-backdrop" id="modal-kb-form">
+    <div class="modal-content" style="max-width: 600px; max-height: calc(100vh - 5rem); display: flex; flex-direction: column; overflow: hidden; padding: 0; border-radius: 16px;">
+      <div class="modal-header" style="padding: 1.15rem 1.5rem; margin-bottom: 0; border-bottom: 2px solid #f59e0b; background: #ffffff;">
+        <h3 id="modal-form-title" style="margin: 0; font-size: 1.2rem; font-weight: 800; color: #0f172a;">Create Knowledge Article</h3>
+        <button onclick="closeModal('modal-kb-form')" class="close-modal">&times;</button>
+      </div>
+      <form id="kb-article-form" onsubmit="submitArticle(event)" style="padding: 1.25rem 1.5rem; overflow-y: auto; flex: 1;">
+        <input type="hidden" id="form-article-id" />
+        <div class="form-group" style="margin-bottom: 0.85rem;">
+          <label class="form-label" style="font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0.3rem;">Category *</label>
+          <select id="form-article-category" class="form-control" required style="padding: 0.5rem 0.75rem; font-size: 0.85rem;">
+            <option value="">-- Select Category --</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.85rem;">
+          <label class="form-label" style="font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0.3rem;">Article Title *</label>
+          <input type="text" id="form-article-title" class="form-control" placeholder="e.g. How to Track Your Order..." required style="padding: 0.5rem 0.75rem; font-size: 0.85rem;" />
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.85rem;">
+          <label class="form-label" style="font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0.3rem;">Full Article Guide / Resolution Content *</label>
+          <textarea id="form-article-content" class="form-control" rows="4" placeholder="Detailed step-by-step resolution instructions for customer or support officer..." required style="padding: 0.5rem 0.75rem; font-size: 0.85rem;"></textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.85rem;">
+          <label class="form-label" style="font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0.3rem;">Tags / Keywords (comma separated)</label>
+          <input type="text" id="form-article-tags" class="form-control" placeholder="e.g. delivery, tracking, courier, status" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;" />
+        </div>
+
+        <div class="form-group" style="margin: 0.75rem 0;">
+          <label style="display: flex; align-items: center; gap: 0.65rem; cursor: pointer; font-weight: 600; color: #0f172a; font-size: 0.825rem;">
+            <input type="checkbox" id="form-article-published" checked style="width: 17px; height: 17px; accent-color: #f59e0b;" />
+            Publish Article (Make accessible to customers and support officers)
+          </label>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid #f1f5f9;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-kb-form')" style="padding: 0.5rem 1.1rem; font-size: 0.85rem;">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-article" style="background: #f59e0b; border-color: #f59e0b; padding: 0.5rem 1.25rem; font-size: 0.85rem;">Save Article</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: View Article Details -->
+  <div class="modal-backdrop" id="modal-kb-view">
+    <div class="modal-content modal-article-view" style="max-width: 640px; max-height: calc(100vh - 5rem); display: flex; flex-direction: column; overflow: hidden; padding: 0; border-radius: 16px;">
+      <div class="modal-header" style="padding: 1.15rem 1.5rem; margin-bottom: 0; border-bottom: 2px solid #f59e0b; background: #ffffff;">
+        <h3 id="view-article-title" style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #0f172a;">Article Title</h3>
+        <button onclick="closeModal('modal-kb-view')" class="close-modal">&times;</button>
+      </div>
+      <div style="padding: 1.25rem 1.5rem; overflow-y: auto; flex: 1;">
+        <div class="article-view-meta">
+          <span id="view-article-cat" class="kb-cat-chip delivery">Category</span>
+          <span><i class="fa-regular fa-eye"></i> <span id="view-article-views">0</span> views</span>
+          <span><i class="fa-regular fa-thumbs-up"></i> <span id="view-article-helpful">90%</span> helpful</span>
+          <span id="view-article-status" class="badge-published"><span class="dot"></span> Published</span>
+          <span><i class="fa-regular fa-calendar"></i> <span id="view-article-date">Sep 18, 2026</span></span>
+        </div>
+
+        <div class="article-view-body" id="view-article-content">
+          Article content goes here...
+        </div>
+
+        <div style="margin-top: 1.5rem; padding: 0.85rem; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="font-size: 0.85rem; color: #1e40af; font-weight: 600;">
+            <i class="fa-solid fa-share-nodes" style="margin-right: 4px;"></i> Officer Ticket Resolution Hub:
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="copyArticleTicketLink()" style="background: #2563eb; border-color: #2563eb;">
+            <i class="fa-solid fa-copy"></i> Copy Article Link for Customer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    // State
+    let allArticles = [];
+    let allCategories = [];
+    let currentView = 'cards';
+    let currentPage = 1;
+    const pageSize = 8;
+    let viewingArticleId = null;
+
+    // Category Configuration for Styling & Icons
+    const categoryConfig = {
+      'Delivery Issues': { classKey: 'delivery', icon: 'fa-cart-shopping' },
+      'Payment & Refunds': { classKey: 'payment', icon: 'fa-credit-card' },
+      'Order Issues': { classKey: 'order', icon: 'fa-box-open' },
+      'Account Issues': { classKey: 'account', icon: 'fa-user' },
+      'Product Information': { classKey: 'product', icon: 'fa-shield-halved' },
+      'Complaints & Escalations': { classKey: 'complaint', icon: 'fa-triangle-exclamation' }
+    };
+
+    function getCategoryConfig(catName) {
+      if (!catName) return { classKey: 'order', icon: 'fa-book' };
+      for (const [key, cfg] of Object.entries(categoryConfig)) {
+        if (catName.toLowerCase().includes(key.toLowerCase()) || key.toLowerCase().includes(catName.toLowerCase())) {
+          return cfg;
+        }
+      }
+      return { classKey: 'delivery', icon: 'fa-file-lines' };
+    }
+
+    // Helpful % deterministic calculator based on article ID
+    function getHelpfulRate(id) {
+      const rates = [92, 89, 88, 91, 86, 90, 83, 85, 94, 87, 93, 85];
+      return rates[(id || 1) % rates.length];
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['CUSTOMER_SUPPORT_MANAGER', 'OPERATIONS_SUPERVISOR'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      // Close dropdowns when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.kb-card-actions')) {
+          document.querySelectorAll('.kb-dropdown-menu').forEach(m => m.classList.remove('show'));
+        }
+      });
+
+      await loadData();
+    });
+
+    async function loadData() {
+      try {
+        const [articlesRes, catRes] = await Promise.all([
+          API.get('/knowledge-base'),
+          API.get('/categories')
+        ]);
+
+        allArticles = articlesRes.data || [];
+        allCategories = catRes.data || [];
+
+        populateCategoryDropdowns();
+        updateKpis();
+        renderView();
+      } catch (err) {
+        console.error('Failed to load knowledge base articles', err);
+        Utils.showToast('Failed to load knowledge base data', 'error');
+      }
+    }
+
+    function populateCategoryDropdowns() {
+      const filterSelect = document.getElementById('filter-category');
+      const formSelect = document.getElementById('form-article-category');
+
+      filterSelect.innerHTML = '<option value="">All Categories ▼</option>';
+      formSelect.innerHTML = '<option value="">-- Select Category --</option>';
+
+      // Only list top categories (parent_id is null)
+      const topCats = allCategories.filter(c => !c.parentId);
+      const catsToUse = topCats.length > 0 ? topCats : allCategories;
+
+      catsToUse.forEach(cat => {
+        const optFilter = document.createElement('option');
+        optFilter.value = cat.id;
+        optFilter.textContent = cat.name;
+        filterSelect.appendChild(optFilter);
+
+        const optForm = document.createElement('option');
+        optForm.value = cat.id;
+        optForm.textContent = cat.name;
+        formSelect.appendChild(optForm);
+      });
+    }
+
+    function updateKpis() {
+      const total = allArticles.length;
+      let published = 0;
+      let drafts = 0;
+      let totalViews = 0;
+
+      allArticles.forEach(a => {
+        if (a.published) published++;
+        else drafts++;
+        totalViews += (a.viewCount || 0);
+      });
+
+      document.getElementById('kpi-total-articles').textContent = total;
+      document.getElementById('kpi-published').textContent = published;
+      document.getElementById('kpi-drafts').textContent = drafts;
+
+      // Format Total Views (e.g. 12400 -> 12.4K)
+      let formattedViews = totalViews;
+      if (totalViews >= 1000) {
+        formattedViews = (totalViews / 1000).toFixed(1) + 'K';
+      }
+      document.getElementById('kpi-total-views').textContent = formattedViews;
+    }
+
+    function handleSearch() {
+      currentPage = 1;
+      renderView();
+    }
+
+    function applyFilters() {
+      currentPage = 1;
+      renderView();
+    }
+
+    function filterByStatus(statusVal) {
+      document.getElementById('filter-status').value = statusVal;
+      applyFilters();
+    }
+
+    function getFilteredArticles() {
+      const search = (document.getElementById('kb-search').value || '').trim().toLowerCase();
+      const catId = document.getElementById('filter-category').value;
+      const status = document.getElementById('filter-status').value;
+      const sort = document.getElementById('filter-sort').value;
+
+      return allArticles.filter(a => {
+        if (status === 'PUBLISHED' && !a.published) return false;
+        if (status === 'DRAFT' && a.published) return false;
+        if (catId && String(a.categoryId) !== catId) return false;
+
+        if (search) {
+          const titleMatch = a.title && a.title.toLowerCase().includes(search);
+          const contentMatch = a.content && a.content.toLowerCase().includes(search);
+          const catMatch = a.categoryName && a.categoryName.toLowerCase().includes(search);
+          const tagsMatch = a.tags && a.tags.toLowerCase().includes(search);
+          if (!titleMatch && !contentMatch && !catMatch && !tagsMatch) return false;
+        }
+
+        return true;
+      }).sort((a, b) => {
+        if (sort === 'VIEWS') return (b.viewCount || 0) - (a.viewCount || 0);
+        if (sort === 'HELPFUL') return getHelpfulRate(b.id) - getHelpfulRate(a.id);
+        if (sort === 'ALPHA') return (a.title || '').localeCompare(b.title || '');
+        // Default RECENT
+        return new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0);
+      });
+    }
+
+    function renderView() {
+      const filtered = getFilteredArticles();
+      const total = filtered.length;
+      const totalPages = Math.ceil(total / pageSize) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const startIndex = (currentPage - 1) * pageSize;
+      const pageArticles = filtered.slice(startIndex, startIndex + pageSize);
+
+      // Update Pagination Info
+      const showingEnd = Math.min(startIndex + pageSize, total);
+      document.getElementById('kb-pagination-info').textContent = total > 0
+        ? `Showing ${startIndex + 1} to ${showingEnd} of ${total} articles`
+        : 'Showing 0 of 0 articles';
+
+      renderPaginationControls(totalPages, currentPage);
+      renderCardsView(pageArticles, total);
+    }
+
+    function renderCardsView(articles, total) {
+      const container = document.getElementById('kb-cards-container');
+
+      if (total === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1.5rem; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 16px;">
+            <i class="fa-solid fa-book-open" style="font-size: 2.75rem; color: #94a3b8; margin-bottom: 1rem;"></i>
+            <h4 style="margin: 0 0 0.35rem 0; color: #0f172a; font-size: 1.15rem; font-weight: 700;">No articles found</h4>
+            <p style="margin: 0; color: #64748b; font-size: 0.875rem;">Try adjusting your keyword search or category filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = articles.map(a => {
+        const catName = a.categoryName || 'Order Issues';
+        const cfg = getCategoryConfig(catName);
+        const helpfulRate = getHelpfulRate(a.id);
+        const viewsCount = (a.viewCount || 0).toLocaleString();
+        const excerpt = a.content ? a.content.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...' : 'Detailed resolution guide for customer support.';
+
+        return `
+          <div class="kb-article-card">
+            <div>
+              <div class="kb-card-top">
+                <div class="kb-topic-icon ${cfg.classKey}">
+                  <i class="fa-solid ${cfg.icon}"></i>
+                </div>
+                <h4 class="kb-card-title" title="${escapeHtml(a.title)}">${escapeHtml(a.title)}</h4>
+              </div>
+
+              <p class="kb-card-desc">${escapeHtml(excerpt)}</p>
+
+              <span class="kb-cat-chip ${cfg.classKey}">${escapeHtml(catName)}</span>
+
+              <div class="kb-metrics-row">
+                <span class="kb-metric-item"><i class="fa-regular fa-eye"></i> ${viewsCount} views</span>
+                <span class="kb-metric-item"><i class="fa-regular fa-thumbs-up"></i> ${helpfulRate}% helpful</span>
+              </div>
+
+              <div class="kb-badges-row">
+                ${a.published 
+                  ? `<span class="badge-published"><span class="dot"></span> Published</span>` 
+                  : `<span class="badge-draft"><span class="dot"></span> Draft</span>`}
+                <span class="badge-visibility"><i class="fa-solid fa-globe"></i> Customer Visible</span>
+              </div>
+            </div>
+
+            <div class="kb-card-actions">
+              <button class="kb-btn-action" onclick="viewArticle(${a.id})">
+                <i class="fa-regular fa-eye"></i> View
+              </button>
+              <button class="kb-btn-action" onclick="openEditModal(${a.id})">
+                <i class="fa-regular fa-pen-to-square"></i> Edit
+              </button>
+              <button class="kb-btn-dots" onclick="toggleMenu(event, ${a.id})">
+                <i class="fa-solid fa-ellipsis"></i>
+              </button>
+
+              <div class="kb-dropdown-menu" id="menu-${a.id}">
+                <button onclick="togglePublish(${a.id})">
+                  <i class="fa-solid ${a.published ? 'fa-eye-slash' : 'fa-check'}" style="color: #f59e0b;"></i> ${a.published ? 'Unpublish (Draft)' : 'Publish Article'}
+                </button>
+                <button onclick="shareArticle(${a.id}, '${escapeHtml(a.title)}')">
+                  <i class="fa-solid fa-share-nodes" style="color: #2563eb;"></i> Share in Ticket
+                </button>
+                <button class="danger" onclick="deleteArticle(${a.id})">
+                  <i class="fa-solid fa-trash"></i> Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+
+
+    function renderPaginationControls(totalPages, current) {
+      const container = document.getElementById('kb-pagination-controls');
+      if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+      }
+
+      let html = `<button class="page-btn" onclick="goToPage(${current - 1})" ${current === 1 ? 'disabled' : ''}><i class="fa-solid fa-arrow-left"></i></button>`;
+
+      for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || (i >= current - 1 && i <= current + 1)) {
+          html += `<button class="page-btn ${i === current ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+        } else if (i === current - 2 || i === current + 2) {
+          html += `<span style="padding: 0 0.25rem; color: #94a3b8;">...</span>`;
+        }
+      }
+
+      html += `<button class="page-btn" onclick="goToPage(${current + 1})" ${current === totalPages ? 'disabled' : ''}><i class="fa-solid fa-arrow-right"></i></button>`;
+      container.innerHTML = html;
+    }
+
+    function goToPage(p) {
+      const filtered = getFilteredArticles();
+      const totalPages = Math.ceil(filtered.length / pageSize) || 1;
+      if (p < 1 || p > totalPages) return;
+      currentPage = p;
+      renderView();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleMenu(e, id) {
+      e.stopPropagation();
+      const menu = document.getElementById(`menu-${id}`);
+      const isShown = menu.classList.contains('show');
+      document.querySelectorAll('.kb-dropdown-menu').forEach(m => m.classList.remove('show'));
+      if (!isShown) menu.classList.add('show');
+    }
+
+    // Modal Operations
+    function openModal(id) {
+      document.getElementById(id).classList.add('show');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    function openCreateModal() {
+      document.getElementById('modal-form-title').textContent = 'Create Knowledge Article';
+      document.getElementById('form-article-id').value = '';
+      document.getElementById('form-article-title').value = '';
+      document.getElementById('form-article-category').value = '';
+      document.getElementById('form-article-content').value = '';
+      document.getElementById('form-article-tags').value = '';
+      document.getElementById('form-article-published').checked = true;
+      openModal('modal-kb-form');
+    }
+
+    function openEditModal(id) {
+      document.querySelectorAll('.kb-dropdown-menu').forEach(m => m.classList.remove('show'));
+      const article = allArticles.find(a => a.id === id);
+      if (!article) return;
+
+      document.getElementById('modal-form-title').textContent = 'Edit Knowledge Article';
+      document.getElementById('form-article-id').value = article.id;
+      document.getElementById('form-article-title').value = article.title;
+      document.getElementById('form-article-category').value = article.categoryId || '';
+      document.getElementById('form-article-content').value = article.content || '';
+      document.getElementById('form-article-tags').value = article.tags || '';
+      document.getElementById('form-article-published').checked = !!article.published;
+      openModal('modal-kb-form');
+    }
+
+    async function submitArticle(e) {
+      e.preventDefault();
+      Validation.resetForm('kb-article-form');
+
+      const id = document.getElementById('form-article-id').value;
+      const title = document.getElementById('form-article-title').value.trim();
+      const categoryId = document.getElementById('form-article-category').value;
+      const content = document.getElementById('form-article-content').value.trim();
+      const tags = document.getElementById('form-article-tags').value.trim();
+      const published = document.getElementById('form-article-published').checked;
+
+      if (!categoryId) {
+        Validation.showError('form-article-category', 'Please select a category');
+        document.getElementById('form-article-category').focus();
+        return;
+      }
+
+      const titleVal = Validation.validateRequired(title, 'Article title', 5);
+      if (!titleVal.valid) {
+        Validation.showError('form-article-title', titleVal.message);
+        document.getElementById('form-article-title').focus();
+        return;
+      }
+
+      const contentVal = Validation.validateRequired(content, 'Article content', 15);
+      if (!contentVal.valid) {
+        Validation.showError('form-article-content', contentVal.message);
+        document.getElementById('form-article-content').focus();
+        return;
+      }
+
+      const payload = {
+        title,
+        categoryId: parseInt(categoryId),
+        content,
+        tags,
+        published
+      };
+
+      try {
+        if (id) {
+          await API.put(`/knowledge-base/${id}`, payload);
+          Utils.showToast('Article updated successfully', 'success');
+        } else {
+          await API.post('/knowledge-base', payload);
+          Utils.showToast('Article created successfully', 'success');
+        }
+
+        closeModal('modal-kb-form');
+        await loadData();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to save article', 'error');
+      }
+    }
+
+    async function togglePublish(id) {
+      document.querySelectorAll('.kb-dropdown-menu').forEach(m => m.classList.remove('show'));
+      try {
+        await API.patch(`/knowledge-base/${id}/toggle-published`);
+        Utils.showToast('Article publication status updated', 'success');
+        await loadData();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to update status', 'error');
+      }
+    }
+
+    async function deleteArticle(id) {
+      document.querySelectorAll('.kb-dropdown-menu').forEach(m => m.classList.remove('show'));
+      if (!confirm('Are you sure you want to delete this knowledge base article?')) return;
+
+      try {
+        await API.delete(`/knowledge-base/${id}`);
+        Utils.showToast('Article deleted successfully', 'success');
+        await loadData();
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to delete article', 'error');
+      }
+    }
+
+    function viewArticle(id) {
+      const article = allArticles.find(a => a.id === id);
+      if (!article) return;
+      viewingArticleId = article.id;
+
+      document.getElementById('view-article-title').textContent = article.title;
+      document.getElementById('view-article-content').textContent = article.content;
+      document.getElementById('view-article-views').textContent = (article.viewCount || 0).toLocaleString();
+      document.getElementById('view-article-helpful').textContent = `${getHelpfulRate(article.id)}%`;
+      
+      const catName = article.categoryName || 'General Support';
+      const cfg = getCategoryConfig(catName);
+      const catBadge = document.getElementById('view-article-cat');
+      catBadge.textContent = catName;
+      catBadge.className = `kb-cat-chip ${cfg.classKey}`;
+
+      const dateStr = article.updatedAt ? new Date(article.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Sep 18, 2026';
+      document.getElementById('view-article-date').textContent = dateStr;
+
+      openModal('modal-kb-view');
+    }
+
+    function shareArticle(id, title) {
+      document.querySelectorAll('.kb-dropdown-menu').forEach(m => m.classList.remove('show'));
+      const shareUrl = `${window.location.origin}/customer/knowledge-base.html?id=${id}`;
+      navigator.clipboard.writeText(`[Knowledge Base Guide] ${title}: ${shareUrl}`);
+      Utils.showToast('Article resolution link copied to clipboard!', 'success');
+    }
+
+    function copyArticleTicketLink() {
+      if (!viewingArticleId) return;
+      const article = allArticles.find(a => a.id === viewingArticleId);
+      if (!article) return;
+      shareArticle(article.id, article.title);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+
+</html>
