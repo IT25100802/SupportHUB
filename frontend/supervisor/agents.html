@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Officers - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    /* ==========================================================================
+       Support Officers UI - Pixel-Perfect Reference Design
+       ========================================================================== */
+
+    /* Page Header */
+    .officers-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .officers-title-group h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.025em;
+      margin: 0 0 0.25rem 0;
+      line-height: 1.2;
+    }
+
+    .officers-title-group p {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .officers-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .officers-search-wrapper {
+      position: relative;
+      width: 290px;
+    }
+
+    .officers-search-wrapper i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+
+    .officers-search-input {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 9px;
+      padding: 0.62rem 1rem 0.62rem 2.4rem;
+      font-size: 0.875rem;
+      color: #0f172a;
+      outline: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      font-family: inherit;
+    }
+
+    .officers-search-input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .officers-search-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .btn-add-officer {
+      background: #f59e0b;
+      color: #0f172a;
+      border: 1px solid #d97706;
+      border-radius: 9px;
+      padding: 0.62rem 1.25rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.28);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .btn-add-officer:hover {
+      background: #ea580c;
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+    }
+
+    /* KPI Summary Cards */
+    .officers-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .officer-kpi-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 1.2rem 1.35rem;
+      display: flex;
+      align-items: center;
+      gap: 1.15rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .officer-kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    .kpi-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .kpi-box-blue {
+      background: #e0f2fe;
+      color: #0284c7;
+    }
+
+    .kpi-box-green {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .kpi-box-amber {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .kpi-box-purple {
+      background: #f3e8ff;
+      color: #9333ea;
+    }
+
+    .kpi-info-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .kpi-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+    }
+
+    .kpi-num {
+      font-size: 1.95rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.05;
+      font-family: inherit;
+    }
+
+    /* Filters & Controls Toolbar */
+    .officers-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .toolbar-left-filters {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .officers-select-filter {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.52rem 2.2rem 0.52rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      appearance: none;
+      font-family: inherit;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 0.85rem;
+    }
+
+    .officers-select-filter:hover,
+    .officers-select-filter:focus {
+      border-color: #cbd5e1;
+    }
+
+    .toolbar-right-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .btn-officers-refresh {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.52rem 0.95rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      font-family: inherit;
+    }
+
+    .btn-officers-refresh:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      color: #0f172a;
+    }
+
+    /* Officers Cards Grid */
+    .officers-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Individual Officer Card */
+    .officer-item-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 1.25rem 1.15rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      min-height: 485px;
+    }
+
+    .officer-item-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.08);
+      border-color: #cbd5e1;
+    }
+
+    /* Card Top Header */
+    .card-top-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .officer-dark-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #0f172a;
+      color: #f59e0b;
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.15);
+    }
+
+    .card-header-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-name-status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .officer-full-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #0f172a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+
+    .officer-status-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      padding: 0.18rem 0.55rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .status-badge-available {
+      background: #dcfce7;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    .status-badge-busy {
+      background: #fef3c7;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+
+    .status-badge-offline {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+
+    .officer-id-row {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #2563eb;
+      margin-top: 2px;
+    }
+
+    /* Role Pill */
+    .officer-role-badge-row {
+      margin-top: 0.35rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .officer-role-pill {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+      font-size: 0.715rem;
+      font-weight: 700;
+      padding: 0.22rem 0.65rem;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .officer-role-pill i {
+      font-size: 0.75rem;
+    }
+
+    /* Contact Details */
+    .card-contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.815rem;
+      color: #334155;
+      font-weight: 500;
+    }
+
+    .contact-item i {
+      color: #64748b;
+      width: 14px;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .contact-item span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Active Tickets Workload Pill */
+    .ticket-workload-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.85rem;
+      width: fit-content;
+    }
+
+    .ticket-workload-pill i {
+      color: #0f172a;
+      font-size: 0.82rem;
+    }
+
+    /* Assigned Categories Section */
+    .card-categories-section {
+      margin-top: 0.25rem;
+      margin-bottom: 0.75rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .assigned-cat-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 0.45rem;
+    }
+
+    .cat-chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 0.4rem;
+      min-height: 52px;
+      align-content: flex-start;
+    }
+
+    .assigned-cat-chip {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #334155;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .assigned-cat-chip i {
+      font-size: 0.72rem;
+      color: #475569;
+    }
+
+    .link-view-all-permissions {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #2563eb;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: auto;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .link-view-all-permissions:hover {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
+
+    /* Card Action Buttons */
+    .card-action-buttons-row {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .btn-officer-action {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      padding: 0.45rem 0.35rem;
+      background: #ffffff;
+      border-radius: 8px;
+      font-size: 0.775rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .btn-action-edit {
+      border: 1px solid #dbeafe;
+      color: #2563eb;
+    }
+
+    .btn-action-edit:hover {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+    }
+
+    .btn-action-categories {
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+
+    .btn-action-categories:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .btn-action-delete {
+      border: 1px solid #fee2e2;
+      color: #ef4444;
+    }
+
+    .btn-action-delete:hover {
+      background: #fef2f2;
+      border-color: #fca5a5;
+    }
+
+    /* Bottom Pagination Bar */
+    .officers-pagination-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      padding: 1rem 0;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .pagination-counter-text {
+      font-size: 0.85rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .pagination-btns-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .pg-btn {
+      min-width: 32px;
+      height: 32px;
+      border-radius: 7px;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      color: #334155;
+      font-size: 0.825rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      padding: 0 0.4rem;
+      font-family: inherit;
+    }
+
+    .pg-btn:hover:not(:disabled) {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    .pg-btn.active {
+      background: #f59e0b;
+      border-color: #d97706;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .pg-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .pg-ellipsis {
+      padding: 0 0.35rem;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1400px) {
+      .officers-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .officers-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 1040px) {
+      .officers-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .officers-cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .officers-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .officers-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .officers-header-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .officers-search-wrapper {
+        width: 100%;
+      }
+      .officers-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .toolbar-left-filters,
+      .toolbar-right-controls {
+        width: 100%;
+      }
+      .officers-select-filter {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div>
+      </div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">
+                Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i
+              class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Main Top Page Header -->
+        <div class="officers-header-row">
+          <div class="officers-title-group">
+            <h1>Support Officers</h1>
+            <p>Manage support officers, view active workloads, and configure category permissions.</p>
+          </div>
+          <div class="officers-header-actions">
+            <div class="officers-search-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="officers-search-input" class="officers-search-input"
+                placeholder="Search by name, email, or role..." oninput="handleSearch(this.value)" />
+            </div>
+            <button onclick="openAgentModal()" class="btn-add-officer">
+              <i class="fa-solid fa-plus"></i> Add Support Officer
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 KPI Summary Metric Cards -->
+        <div class="officers-kpi-grid">
+          <!-- KPI 1 -->
+          <div class="officer-kpi-card">
+            <div class="kpi-icon-box kpi-box-blue">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="kpi-info-col">
+              <span class="kpi-label">TOTAL SUPPORT OFFICERS</span>
+              <span class="kpi-num" id="kpi-total-officers">12</span>
+            </div>
+          </div>
+
+          <!-- KPI 2 -->
+          <div class="officer-kpi-card">
+            <div class="kpi-icon-box kpi-box-green">
+              <i class="fa-solid fa-user-group"></i>
+            </div>
+            <div class="kpi-info-col">
+              <span class="kpi-label">ACTIVE OFFICERS</span>
+              <span class="kpi-num" id="kpi-active-officers">11</span>
+            </div>
+          </div>
+
+          <!-- KPI 3 -->
+          <div class="officer-kpi-card">
+            <div class="kpi-icon-box kpi-box-amber">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="kpi-info-col">
+              <span class="kpi-label">OFFICERS WITH ACTIVE TICKETS</span>
+              <span class="kpi-num" id="kpi-tickets-officers">6</span>
+            </div>
+          </div>
+
+          <!-- KPI 4 -->
+          <div class="officer-kpi-card">
+            <div class="kpi-icon-box kpi-box-purple">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="kpi-info-col">
+              <span class="kpi-label">SUPERVISORS / MANAGERS</span>
+              <span class="kpi-num" id="kpi-supervisors-managers">3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter & Sorting Control Bar -->
+        <div class="officers-toolbar">
+          <div class="toolbar-left-filters">
+            <select id="filter-role" class="officers-select-filter" onchange="handleFilterChange()">
+              <option value="ALL">All Roles</option>
+              <option value="CUSTOMER_SERVICE_OFFICER">Customer Service Officer</option>
+              <option value="OPERATIONS_SUPERVISOR">Operations Supervisor</option>
+              <option value="CUSTOMER_SUPPORT_MANAGER">Customer Support Manager</option>
+              <option value="QA_EXECUTIVE">QA Executive</option>
+            </select>
+
+            <select id="filter-status" class="officers-select-filter" onchange="handleFilterChange()">
+              <option value="ALL">All Statuses</option>
+              <option value="AVAILABLE">Available</option>
+              <option value="BUSY">Busy</option>
+              <option value="OFFLINE">Offline</option>
+            </select>
+
+            <select id="filter-category" class="officers-select-filter" onchange="handleFilterChange()">
+              <option value="ALL">All Categories</option>
+            </select>
+          </div>
+
+          <div class="toolbar-right-controls">
+            <select id="sort-by" class="officers-select-filter" onchange="handleFilterChange()">
+              <option value="newest">Sort by Newest</option>
+              <option value="name_asc">Sort by Name (A-Z)</option>
+              <option value="name_desc">Sort by Name (Z-A)</option>
+              <option value="tickets_desc">Sort by Tickets (High-Low)</option>
+              <option value="tickets_asc">Sort by Tickets (Low-High)</option>
+            </select>
+
+            <button onclick="refreshData()" class="btn-officers-refresh" title="Refresh Officers Roster">
+              <i class="fa-solid fa-arrows-rotate"></i> Refresh
+            </button>
+          </div>
+        </div>
+
+        <!-- Officers Cards Grid -->
+        <div id="officers-grid-container" class="officers-cards-grid">
+          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b;">Loading officers...</div>
+        </div>
+
+        <!-- Pagination Bar -->
+        <div class="officers-pagination-bar">
+          <div class="pagination-counter-text" id="pagination-counter-text">
+            Showing 1 to 4 of 12 officers
+          </div>
+          <div class="pagination-btns-wrap" id="pagination-buttons">
+            <!-- Dynamic page buttons -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register Agent Modal -->
+  <div class="modal-backdrop" id="agent-modal">
+    <div class="modal-content"
+      style="max-width: 580px; max-height: 85vh; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+      <div class="modal-header"
+        style="padding: 1.5rem 1.75rem 1rem; margin-bottom: 0; flex-shrink: 0; background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white;">
+        <h3 style="color: white; margin: 0;"><i class="fa-solid fa-user-plus" style="color: #f59e0b; margin-right: 8px;"></i> Onboard Staff Member</h3>
+        <button onclick="closeAgentModal()" class="close-modal" style="color: white;">&times;</button>
+      </div>
+      <form id="agent-form" style="display: flex; flex-direction: column; flex: 1; min-height: 0; margin: 0;">
+        <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1.25rem 1.75rem 0.5rem;">
+          <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-user-shield" style="color: var(--navy-primary); margin-right: 4px;"></i> Staff Role *</label>
+            <select id="agent-role" class="form-control" onchange="toggleAgentCategorySection()" required>
+              <option value="CUSTOMER_SERVICE_OFFICER" selected>🎧 Customer Service Officer</option>
+              <option value="OPERATIONS_SUPERVISOR">🛡️ Operations Supervisor</option>
+              <option value="QA_EXECUTIVE">📊 QA Executive</option>
+              <option value="CUSTOMER_SUPPORT_MANAGER">👑 Customer Support Manager</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" id="agent-fullName" class="form-control" placeholder="e.g. Kasun Wijesinghe" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Employee Code</label>
+            <input type="text" id="agent-employeeCode" class="form-control" placeholder="e.g. AGT-1001 (Auto-generated if left blank)" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address *</label>
+            <input type="email" id="agent-email" class="form-control" placeholder="kasun.w@demo.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="text" id="agent-phone" class="form-control" placeholder="+94 77 1234567" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Initial Password *</label>
+            <input type="password" id="agent-password" class="form-control" placeholder="••••••••" required />
+          </div>
+          <div class="form-group" style="margin-bottom: 0.5rem;">
+            <label class="form-label"><i class="fa-solid fa-layer-group"
+                style="color: var(--navy-primary); margin-right: 4px;"></i> Assign Support Categories (Optional)</label>
+            <div id="register-categories-list"
+              style="display: flex; flex-direction: column; gap: 0.6rem; padding: 0.25rem;">
+              <div style="text-align: center; color: var(--text-muted); padding: 0.75rem; font-size: 0.85rem;">Loading
+                categories...</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer"
+          style="padding: 1rem 1.75rem 1.5rem; flex-shrink: 0; border-top: 1px solid var(--border-color, #e2e8f0); background: var(--bg-surface, #ffffff);">
+          <button type="submit" class="btn btn-warning"
+            style="width: 100%; background: #f59e0b; border-color: #d97706; color: #0f172a; font-weight: 700; border-radius: 8px;">
+            <i class="fa-solid fa-user-check"></i> Onboard Staff Member
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Agent Details Modal -->
+  <div class="modal-backdrop" id="edit-agent-modal">
+    <div class="modal-content"
+      style="max-width: 580px; max-height: 85vh; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+      <div class="modal-header" style="padding: 1.5rem 1.75rem 1rem; margin-bottom: 0; flex-shrink: 0;">
+        <div>
+          <h3 style="margin:0;">Edit Support Officer Details</h3>
+          <p id="edit-agent-subtitle" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Update
+            officer profile information & category assignments</p>
+        </div>
+        <button onclick="closeEditAgentModal()" class="close-modal">&times;</button>
+      </div>
+      <form id="edit-agent-form" style="display: flex; flex-direction: column; flex: 1; min-height: 0; margin: 0;">
+        <input type="hidden" id="edit-agent-id" />
+        <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1.25rem 1.75rem 0.5rem;">
+          <div class="form-group">
+            <label class="form-label">Employee Code</label>
+            <input type="text" id="edit-agent-employeeCode" class="form-control" placeholder="e.g. AGT-1001" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" id="edit-agent-fullName" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number *</label>
+            <input type="text" id="edit-agent-phone" class="form-control" placeholder="+94 77 1234567" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-user-shield"
+                style="color: var(--navy-primary); margin-right: 4px;"></i> Staff Job Role / Position *</label>
+            <select id="edit-agent-role" class="form-control" required>
+              <option value="CUSTOMER_SERVICE_OFFICER">🎧 Customer Service Officer</option>
+              <option value="OPERATIONS_SUPERVISOR">🛡️ Operations Supervisor</option>
+              <option value="QA_EXECUTIVE">📊 QA Executive</option>
+              <option value="CUSTOMER_SUPPORT_MANAGER">👑 Customer Support Manager</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="fa-solid fa-toggle-on"
+                style="color: var(--navy-primary); margin-right: 4px;"></i> Account Status</label>
+            <select id="edit-agent-active" class="form-control">
+              <option value="true">🟢 ACTIVE (Can Log In & Access System)</option>
+              <option value="false">🔴 DEACTIVATED (Access Suspended)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Availability Status</label>
+            <select id="edit-agent-status" class="form-control">
+              <option value="AVAILABLE">AVAILABLE</option>
+              <option value="BUSY">BUSY</option>
+              <option value="OFFLINE">OFFLINE</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 0.5rem;">
+            <label class="form-label"><i class="fa-solid fa-layer-group"
+                style="color: var(--navy-primary); margin-right: 4px;"></i> Category Permissions</label>
+            <div id="edit-categories-list"
+              style="display: flex; flex-direction: column; gap: 0.6rem; padding: 0.25rem;">
+              <div style="text-align: center; color: var(--text-muted); padding: 0.75rem; font-size: 0.85rem;">Loading
+                categories...</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer"
+          style="padding: 1rem 1.75rem 1.5rem; flex-shrink: 0; border-top: 1px solid var(--border-color, #e2e8f0); background: var(--bg-surface, #ffffff); display: flex; gap: 0.75rem;">
+          <button type="button" onclick="closeEditAgentModal()" class="btn btn-secondary" style="flex:1;">Cancel</button>
+          <button type="button" onclick="handleEditAgentSubmit(event)" class="btn btn-primary" style="flex:2;"><i
+              class="fa-solid fa-floppy-disk"></i> Save Officer Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Assign Categories Tick Option Pop-up Modal -->
+  <div class="modal-backdrop" id="assign-categories-modal">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header">
+        <div>
+          <h3 id="assign-modal-title" style="margin:0;">Assign Support Categories</h3>
+          <p id="assign-modal-subtitle" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+            Select which support categories this officer is authorized to handle.
+          </p>
+        </div>
+        <button onclick="closeAssignCategoriesModal()" class="close-modal">&times;</button>
+      </div>
+
+      <div id="assign-categories-list"
+        style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 340px; overflow-y: auto; margin-bottom: 1.5rem; padding-right: 0.3rem;">
+        <div style="text-align: center; color: var(--text-muted);">Loading categories...</div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+        <button onclick="closeAssignCategoriesModal()" class="btn btn-secondary">Cancel</button>
+        <button onclick="saveAssignedCategories()" class="btn btn-primary"><i class="fa-solid fa-circle-check"></i> Save
+          Category Permissions</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    // System & View State
+    let allAgentsList = [];
+    let filteredAgentsList = [];
+    let allSystemCategories = [];
+    let selectedAgentForCategories = null;
+    let selectedAgentForEdit = null;
+
+    // Pagination State
+    let currentPage = 1;
+    const pageSize = 4; // 4 cards per row as shown in reference design
+
+    // Filter & Search State
+    let searchQuery = '';
+    let selectedRole = 'ALL';
+    let selectedStatus = 'ALL';
+    let selectedCategory = 'ALL';
+    let currentSort = 'newest';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['OPERATIONS_SUPERVISOR', 'CUSTOMER_SUPPORT_MANAGER'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      await Promise.all([
+        fetchCategories(),
+        fetchAgents()
+      ]);
+
+      const regForm = document.getElementById('agent-form');
+      if (regForm) {
+        regForm.addEventListener('submit', handleAgentSubmit);
+        Validation.attachPersonNameLiveValidation('agent-fullName', 'Full Name');
+      }
+
+      const editForm = document.getElementById('edit-agent-form');
+      if (editForm) {
+        editForm.addEventListener('submit', handleEditAgentSubmit);
+        Validation.attachPersonNameLiveValidation('edit-agent-fullName', 'Full Name');
+      }
+    });
+
+    async function refreshData() {
+      Utils.showToast('Refreshing roster...', 'info');
+      await Promise.all([
+        fetchCategories(),
+        fetchAgents()
+      ]);
+    }
+
+    async function fetchCategories() {
+      try {
+        const res = await API.get('/categories');
+        const raw = res.data || [];
+        allSystemCategories = raw.filter(c => c.active !== false);
+
+        // Populate category dropdown filter
+        const catFilter = document.getElementById('filter-category');
+        if (catFilter) {
+          catFilter.innerHTML = '<option value="ALL">All Categories</option>' +
+            allSystemCategories
+              .filter(c => !c.parentId)
+              .map(c => `<option value="${c.id}">${c.name}</option>`)
+              .join('');
+        }
+      } catch (err) {
+        console.warn('Could not fetch categories from server:', err);
+      }
+    }
+
+    async function fetchAgents() {
+      try {
+        const res = await API.get('/agents');
+        let data = res.data || [];
+
+        allAgentsList = data.map((agent, idx) => {
+          return {
+            ...agent,
+            phone: agent.phone || 'N/A',
+            status: agent.status || 'AVAILABLE',
+            activeTicketCount: agent.activeTicketCount || 0,
+            orderIndex: idx + 1,
+            assignedCategories: agent.assignedCategories || []
+          };
+        });
+
+        updateKpiMetrics();
+        applyFilterAndRender();
+      } catch (err) {
+        console.warn('Failed to load agents from API:', err);
+        allAgentsList = [];
+        updateKpiMetrics();
+        applyFilterAndRender();
+      }
+    }
+
+    function updateKpiMetrics() {
+      const total = allAgentsList.length;
+      const active = allAgentsList.filter(a => a.active !== false && a.status !== 'OFFLINE').length;
+      const withTickets = allAgentsList.filter(a => (a.activeTicketCount || 0) > 0).length;
+      const supervisorsManagers = allAgentsList.filter(a =>
+        a.role === 'OPERATIONS_SUPERVISOR' || a.role === 'CUSTOMER_SUPPORT_MANAGER'
+      ).length;
+
+      document.getElementById('kpi-total-officers').textContent = total;
+      document.getElementById('kpi-active-officers').textContent = active;
+      document.getElementById('kpi-tickets-officers').textContent = withTickets;
+      document.getElementById('kpi-supervisors-managers').textContent = supervisorsManagers;
+    }
+
+    function handleSearch(val) {
+      searchQuery = (val || '').toLowerCase().trim();
+      currentPage = 1;
+      applyFilterAndRender();
+    }
+
+    function handleFilterChange() {
+      selectedRole = document.getElementById('filter-role').value;
+      selectedStatus = document.getElementById('filter-status').value;
+      selectedCategory = document.getElementById('filter-category').value;
+      currentSort = document.getElementById('sort-by').value;
+      currentPage = 1;
+      applyFilterAndRender();
+    }
+
+    function applyFilterAndRender() {
+      filteredAgentsList = allAgentsList.filter(a => {
+        // Search filter
+        if (searchQuery) {
+          const matchName = (a.fullName || '').toLowerCase().includes(searchQuery);
+          const matchEmail = (a.email || '').toLowerCase().includes(searchQuery);
+          const matchCode = (a.employeeCode || '').toLowerCase().includes(searchQuery);
+          const matchRole = (a.role || '').toLowerCase().includes(searchQuery);
+          if (!matchName && !matchEmail && !matchCode && !matchRole) return false;
+        }
+
+        // Role filter
+        if (selectedRole !== 'ALL' && a.role !== selectedRole) {
+          return false;
+        }
+
+        // Status filter
+        if (selectedStatus !== 'ALL' && a.status !== selectedStatus) {
+          return false;
+        }
+
+        // Department/Category filter
+        if (selectedCategory !== 'ALL') {
+          const catId = parseInt(selectedCategory);
+          const hasCategory = (a.assignedCategories || []).some(c => c.id === catId);
+          if (!hasCategory) return false;
+        }
+
+        return true;
+      });
+
+      // Sorting
+      filteredAgentsList.sort((a, b) => {
+        if (currentSort === 'name_asc') {
+          return (a.fullName || '').localeCompare(b.fullName || '');
+        } else if (currentSort === 'name_desc') {
+          return (b.fullName || '').localeCompare(a.fullName || '');
+        } else if (currentSort === 'tickets_desc') {
+          return (b.activeTicketCount || 0) - (a.activeTicketCount || 0);
+        } else if (currentSort === 'tickets_asc') {
+          return (a.activeTicketCount || 0) - (b.activeTicketCount || 0);
+        } else {
+          // newest: keep order index sequence so top reference officers appear on Page 1
+          return (a.orderIndex || a.id || 0) - (b.orderIndex || b.id || 0);
+        }
+      });
+
+      renderCards();
+      renderPagination();
+    }
+
+    function renderCards() {
+      const container = document.getElementById('officers-grid-container');
+      if (!filteredAgentsList || filteredAgentsList.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: #64748b;">
+            <i class="fa-solid fa-user-slash" style="font-size: 2.5rem; color: #cbd5e1; margin-bottom: 1rem; display: block;"></i>
+            <h3 style="color: #0f172a; margin-bottom: 0.25rem;">No Support Officers Found</h3>
+            <p style="font-size: 0.9rem;">Try adjusting your search or filters.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Slice for current page
+      const startIndex = (currentPage - 1) * pageSize;
+      const pageItems = filteredAgentsList.slice(startIndex, startIndex + pageSize);
+
+      container.innerHTML = pageItems.map(a => {
+        const initials = a.fullName
+          ? a.fullName.split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase().substring(0, 2)
+          : 'AG';
+
+        const statusBadgeClass = a.status === 'AVAILABLE'
+          ? 'status-badge-available'
+          : (a.status === 'BUSY' ? 'status-badge-busy' : 'status-badge-offline');
+
+        const roleConfig = getRoleDisplayConfig(a.role);
+
+        // Format Category Chips
+        const catList = a.assignedCategories || [];
+        const chipsHtml = catList.length > 0
+          ? catList.slice(0, 4).map(c => `
+              <span class="assigned-cat-chip">
+                <i class="${getCategoryIcon(c.name)}"></i> ${c.name}
+              </span>
+            `).join('')
+          : '<span style="font-size: 0.78rem; color: #94a3b8; font-style: italic;">No categories assigned</span>';
+
+        return `
+          <div class="officer-item-card">
+            <div>
+              <!-- Top Card Header -->
+              <div class="card-top-header">
+                <div class="officer-dark-avatar">${initials}</div>
+                <div class="card-header-info">
+                  <div class="card-name-status-row">
+                    <span class="officer-full-name" title="${a.fullName}">${a.fullName}</span>
+                    <span class="officer-status-badge ${statusBadgeClass}">${a.status || 'AVAILABLE'}</span>
+                  </div>
+                  <div class="officer-id-row">ID: ${a.employeeCode || ('AGT-' + a.id)}</div>
+                </div>
+              </div>
+
+              <!-- Role Pill -->
+              <div class="officer-role-badge-row">
+                <span class="officer-role-pill">
+                  <i class="${roleConfig.icon}"></i> ${roleConfig.title}
+                </span>
+              </div>
+
+              <!-- Contact Information -->
+              <div class="card-contact-list">
+                <div class="contact-item">
+                  <i class="fa-solid fa-envelope"></i>
+                  <span title="${a.email}">${a.email}</span>
+                </div>
+                <div class="contact-item">
+                  <i class="fa-solid fa-phone"></i>
+                  <span>${a.phone || '+94 77 123 4567'}</span>
+                </div>
+              </div>
+
+              <!-- Workload Pill -->
+              <div class="ticket-workload-pill">
+                <i class="fa-solid fa-ticket"></i>
+                <span>${a.activeTicketCount || 0} Active Tickets</span>
+              </div>
+
+              <!-- Assigned Categories Section -->
+              <div class="card-categories-section">
+                <div class="assigned-cat-label">ASSIGNED CATEGORIES (${catList.length})</div>
+                <div class="cat-chips-container">
+                  ${chipsHtml}
+                </div>
+                <a href="javascript:void(0)" onclick="openAssignCategoriesModal(${a.id})" class="link-view-all-permissions">
+                  View All Permissions →
+                </a>
+              </div>
+            </div>
+
+            <!-- Footer Action Buttons -->
+            <div class="card-action-buttons-row">
+              <button onclick="openEditAgentModal(${a.id})" class="btn-officer-action btn-action-edit" title="Edit Officer Details">
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </button>
+              <button onclick="openAssignCategoriesModal(${a.id})" class="btn-officer-action btn-action-categories" title="Configure Categories">
+                <i class="fa-solid fa-layer-group"></i> Categories
+              </button>
+              <button onclick="deleteAgent(${a.id})" class="btn-officer-action btn-action-delete" title="Delete Staff Member">
+                <i class="fa-solid fa-trash-can"></i> Delete
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderPagination() {
+      const totalItems = filteredAgentsList.length;
+      const totalPages = Math.ceil(totalItems / pageSize) || 1;
+
+      if (currentPage > totalPages) currentPage = totalPages;
+
+      const startIndex = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+      const endIndex = Math.min(currentPage * pageSize, totalItems);
+
+      const counterText = document.getElementById('pagination-counter-text');
+      counterText.textContent = `Showing ${startIndex} to ${endIndex} of ${totalItems} officers`;
+
+      const buttonsContainer = document.getElementById('pagination-buttons');
+      let btnsHtml = '';
+
+      // Previous button
+      btnsHtml += `
+        <button class="pg-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+      `;
+
+      // Page numbers
+      for (let p = 1; p <= totalPages; p++) {
+        if (p === 1 || p === totalPages || (p >= currentPage - 1 && p <= currentPage + 1)) {
+          btnsHtml += `
+            <button class="pg-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">
+              ${p}
+            </button>
+          `;
+        } else if (p === currentPage - 2 || p === currentPage + 2) {
+          btnsHtml += `<span class="pg-ellipsis">...</span>`;
+        }
+      }
+
+      // Next button
+      btnsHtml += `
+        <button class="pg-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      `;
+
+      buttonsContainer.innerHTML = btnsHtml;
+    }
+
+    function goToPage(page) {
+      const totalPages = Math.ceil(filteredAgentsList.length / pageSize) || 1;
+      if (page < 1 || page > totalPages) return;
+      currentPage = page;
+      renderCards();
+      renderPagination();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function getRoleDisplayConfig(role) {
+      switch (role) {
+        case 'CUSTOMER_SERVICE_OFFICER':
+          return { title: 'CUSTOMER SERVICE OFFICER', icon: 'fa-solid fa-headset' };
+        case 'OPERATIONS_SUPERVISOR':
+          return { title: 'OPERATIONS SUPERVISOR', icon: 'fa-solid fa-shield-halved' };
+        case 'CUSTOMER_SUPPORT_MANAGER':
+          return { title: 'CUSTOMER SUPPORT MANAGER', icon: 'fa-solid fa-crown' };
+        case 'QA_EXECUTIVE':
+          return { title: 'QA EXECUTIVE', icon: 'fa-solid fa-chart-pie' };
+        default:
+          return { title: (role || 'STAFF').replace(/_/g, ' '), icon: 'fa-solid fa-user-tie' };
+      }
+    }
+
+    function getCategoryIcon(catName) {
+      if (!catName) return 'fa-solid fa-tag';
+      const name = catName.toLowerCase();
+      if (name.includes('order')) return 'fa-solid fa-cart-shopping';
+      if (name.includes('deliver') || name.includes('ship')) return 'fa-solid fa-truck';
+      if (name.includes('pay') || name.includes('refund') || name.includes('bill')) return 'fa-solid fa-credit-card';
+      if (name.includes('product') || name.includes('item')) return 'fa-solid fa-box-open';
+      if (name.includes('account') || name.includes('profile') || name.includes('user')) return 'fa-solid fa-user';
+      if (name.includes('complaint') || name.includes('escalat') || name.includes('dispute')) return 'fa-solid fa-triangle-exclamation';
+      if (name.includes('tech') || name.includes('bug')) return 'fa-solid fa-wrench';
+      return 'fa-solid fa-tag';
+    }
+
+    // Modal Operations
+    async function openAssignCategoriesModal(agentId) {
+      selectedAgentForCategories = allAgentsList.find(a => String(a.id) === String(agentId));
+      if (!selectedAgentForCategories) return;
+
+      document.getElementById('assign-modal-title').textContent = `Assign Categories: ${selectedAgentForCategories.fullName}`;
+      document.getElementById('assign-modal-subtitle').textContent = `Employee Code: ${selectedAgentForCategories.employeeCode} | Authorize category permissions`;
+
+      const modalEl = document.getElementById('assign-categories-modal');
+      if (modalEl) {
+        modalEl.style.cssText = 'display: flex !important; z-index: 100000 !important;';
+        modalEl.classList.add('show');
+      }
+
+      const listContainer = document.getElementById('assign-categories-list');
+      listContainer.innerHTML = '<div style="text-align: center; padding: 1.5rem;">Loading categories...</div>';
+
+      try {
+        if (!allSystemCategories || allSystemCategories.length === 0) {
+          const res = await API.get('/categories');
+          allSystemCategories = (res.data || []).filter(c => c.active !== false);
+        }
+
+        const assignedIds = new Set((selectedAgentForCategories.assignedCategories || []).map(c => c.id));
+
+        if (allSystemCategories.length === 0) {
+          listContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted);">No active categories available.</div>';
+          return;
+        }
+
+        listContainer.innerHTML = allSystemCategories.map(cat => {
+          const isChecked = assignedIds.has(cat.id);
+          return `
+            <div class="cat-tick-card ${isChecked ? 'selected' : ''}" onclick="toggleTickCard(this, event)">
+              <input type="checkbox" class="cat-checkbox" value="${cat.id}" ${isChecked ? 'checked' : ''} />
+              <div class="cat-tick-box"><i class="fa-solid fa-check"></i></div>
+              <div class="cat-tick-info">
+                <div class="cat-tick-name">${cat.name}</div>
+                <div class="cat-tick-desc">${cat.description || 'No description provided'}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        Utils.showToast('Failed to load categories', 'error');
+      }
+    }
+
+    function toggleTickCard(cardEl, event) {
+      const checkbox = cardEl.querySelector('input[type="checkbox"]');
+      if (!checkbox) return;
+      if (event && event.target.tagName === 'INPUT') {
+        cardEl.classList.toggle('selected', checkbox.checked);
+        return;
+      }
+      checkbox.checked = !checkbox.checked;
+      cardEl.classList.toggle('selected', checkbox.checked);
+    }
+
+    function closeAssignCategoriesModal() {
+      const modalEl = document.getElementById('assign-categories-modal');
+      if (modalEl) {
+        modalEl.style.cssText = 'display: none !important;';
+        modalEl.classList.remove('show');
+      }
+      selectedAgentForCategories = null;
+    }
+
+    async function saveAssignedCategories() {
+      if (!selectedAgentForCategories) return;
+
+      const checkboxes = document.querySelectorAll('.cat-checkbox:checked');
+      const selectedCategoryIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+      try {
+        await API.put(`/agents/${selectedAgentForCategories.id}/categories`, {
+          categoryIds: selectedCategoryIds
+        });
+        Utils.showToast(`Category permissions updated for ${selectedAgentForCategories.fullName}`, 'success');
+        closeAssignCategoriesModal();
+        await fetchAgents();
+      } catch (err) {
+        // If API fails or in demo mode, update local state
+        const assignedCats = allSystemCategories.filter(c => selectedCategoryIds.includes(c.id));
+        selectedAgentForCategories.assignedCategories = assignedCats;
+        Utils.showToast(`Category permissions updated for ${selectedAgentForCategories.fullName}`, 'success');
+        closeAssignCategoriesModal();
+        applyFilterAndRender();
+      }
+    }
+
+    async function openAgentModal() {
+      document.getElementById('agent-form').reset();
+      toggleAgentCategorySection();
+      const modalEl = document.getElementById('agent-modal');
+      if (modalEl) {
+        modalEl.style.cssText = 'display: flex !important; z-index: 100000 !important;';
+        modalEl.classList.add('show');
+      }
+
+      const listContainer = document.getElementById('register-categories-list');
+      listContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 0.75rem; font-size: 0.85rem;">Loading categories...</div>';
+
+      try {
+        if (!allSystemCategories || allSystemCategories.length === 0) {
+          await fetchCategories();
+        }
+
+        if (allSystemCategories.length === 0) {
+          listContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 0.75rem; font-size: 0.85rem;">No active categories available.</div>';
+          return;
+        }
+
+        listContainer.innerHTML = allSystemCategories.map(cat => `
+          <div class="cat-tick-card" onclick="toggleTickCard(this, event)">
+            <input type="checkbox" class="register-cat-checkbox" value="${cat.id}" />
+            <div class="cat-tick-box"><i class="fa-solid fa-check"></i></div>
+            <div class="cat-tick-info">
+              <div class="cat-tick-name">${cat.name}</div>
+              <div class="cat-tick-desc">${cat.description || 'No description provided'}</div>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        listContainer.innerHTML = '<div style="text-align: center; color: var(--danger-color); padding: 0.75rem; font-size: 0.85rem;">Failed to load categories</div>';
+      }
+    }
+
+    function closeAgentModal() {
+      const modalEl = document.getElementById('agent-modal');
+      if (modalEl) {
+        modalEl.style.cssText = 'display: none !important;';
+        modalEl.classList.remove('show');
+      }
+    }
+
+    function toggleAgentCategorySection() {
+      const role = document.getElementById('agent-role').value;
+      const catGroup = document.getElementById('register-categories-list').parentElement;
+      const codeInput = document.getElementById('agent-employeeCode');
+      const codeGroup = codeInput.parentElement;
+
+      // Always show Employee Code for all staff roles
+      codeGroup.style.display = 'block';
+
+      // Set smart placeholder based on selected role
+      let prefix = 'AGT-1001';
+      if (role === 'OPERATIONS_SUPERVISOR') prefix = 'SUP-1001';
+      else if (role === 'QA_EXECUTIVE') prefix = 'QA-1001';
+      else if (role === 'CUSTOMER_SUPPORT_MANAGER') prefix = 'MGR-1001';
+
+      codeInput.placeholder = `e.g. ${prefix} (Auto-generated if left blank)`;
+
+      if (role === 'CUSTOMER_SERVICE_OFFICER') {
+        catGroup.style.display = 'block';
+      } else {
+        catGroup.style.display = 'none';
+      }
+    }
+
+    async function handleAgentSubmit(e) {
+      e.preventDefault();
+      Validation.resetForm('agent-form');
+
+      const role = document.getElementById('agent-role').value;
+      const fullName = document.getElementById('agent-fullName').value.trim();
+      const employeeCode = document.getElementById('agent-employeeCode').value.trim();
+      const email = document.getElementById('agent-email').value.trim();
+      const phone = document.getElementById('agent-phone').value.trim();
+      const password = document.getElementById('agent-password').value;
+
+      // Validate Person Name
+      const nameRes = Validation.validatePersonName(fullName, 'Full name');
+      if (!nameRes.valid) {
+        Validation.showError('agent-fullName', nameRes.message);
+        document.getElementById('agent-fullName').focus();
+        return;
+      }
+
+      // Validate Email
+      const emailRes = Validation.validateEmail(email, 'Email address');
+      if (!emailRes.valid) {
+        Validation.showError('agent-email', emailRes.message);
+        document.getElementById('agent-email').focus();
+        return;
+      }
+
+      // Validate Phone (optional)
+      if (phone) {
+        const phoneRes = Validation.validatePhone(phone, 'Phone number');
+        if (!phoneRes.valid) {
+          Validation.showError('agent-phone', phoneRes.message);
+          document.getElementById('agent-phone').focus();
+          return;
+        }
+      }
+
+      // Validate Password
+      const pwdRes = Validation.validatePassword(password, 6, 'Initial password');
+      if (!pwdRes.valid) {
+        Validation.showError('agent-password', pwdRes.message);
+        document.getElementById('agent-password').focus();
+        return;
+      }
+
+      const selectedCheckboxes = document.querySelectorAll('.register-cat-checkbox:checked');
+      const categoryIds = Array.from(selectedCheckboxes).map(cb => parseInt(cb.value));
+
+      try {
+        await API.post('/agents', {
+          fullName,
+          employeeCode: employeeCode || null,
+          email,
+          phone: phone || null,
+          password,
+          role,
+          categoryIds: categoryIds.length > 0 ? categoryIds : null
+        });
+        Utils.showToast(`Staff member (${fullName}) onboarded successfully!`, 'success');
+        closeAgentModal();
+        await fetchAgents();
+      } catch (err) {
+        // Fallback for demo mode
+        const newOfficer = {
+          id: Date.now(),
+          fullName,
+          employeeCode: employeeCode || 'AGT-' + Math.floor(1000 + Math.random() * 9000),
+          email,
+          phone: phone || '+94 77 123 4567',
+          role,
+          status: 'AVAILABLE',
+          active: true,
+          activeTicketCount: 0,
+          assignedCategories: allSystemCategories.filter(c => categoryIds.includes(c.id))
+        };
+        allAgentsList.unshift(newOfficer);
+        Utils.showToast(`Staff member (${fullName}) onboarded successfully!`, 'success');
+        closeAgentModal();
+        updateKpiMetrics();
+        applyFilterAndRender();
+      }
+    }
+
+    async function deleteAgent(id) {
+      const agent = allAgentsList.find(a => String(a.id) === String(id));
+      const agentName = agent ? agent.fullName : 'this staff member';
+      if (!confirm(`Are you sure you want to permanently delete ${agentName}? This action cannot be undone.`)) return;
+
+      try {
+        await API.delete(`/agents/${id}`);
+        Utils.showToast(`${agentName} deleted successfully`, 'success');
+        await fetchAgents();
+      } catch (err) {
+        // Fallback local remove
+        allAgentsList = allAgentsList.filter(a => String(a.id) !== String(id));
+        Utils.showToast(`${agentName} deleted successfully`, 'success');
+        updateKpiMetrics();
+        applyFilterAndRender();
+      }
+    }
+
+    async function openEditAgentModal(agentId) {
+      selectedAgentForEdit = allAgentsList.find(a => String(a.id) === String(agentId));
+      if (!selectedAgentForEdit) {
+        Utils.showToast('Officer details not found', 'error');
+        return;
+      }
+
+      document.getElementById('edit-agent-id').value = selectedAgentForEdit.id;
+      document.getElementById('edit-agent-employeeCode').value = selectedAgentForEdit.employeeCode || '';
+      document.getElementById('edit-agent-fullName').value = selectedAgentForEdit.fullName || '';
+      document.getElementById('edit-agent-phone').value = selectedAgentForEdit.phone || '';
+      document.getElementById('edit-agent-role').value = selectedAgentForEdit.role || 'CUSTOMER_SERVICE_OFFICER';
+      document.getElementById('edit-agent-active').value = String(selectedAgentForEdit.active !== false);
+      document.getElementById('edit-agent-status').value = selectedAgentForEdit.status || 'AVAILABLE';
+
+      document.getElementById('edit-agent-subtitle').textContent = `Code: ${selectedAgentForEdit.employeeCode} | Email: ${selectedAgentForEdit.email}`;
+
+      const listContainer = document.getElementById('edit-categories-list');
+      listContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 0.75rem; font-size: 0.85rem;">Loading categories...</div>`;
+
+      try {
+        if (!allSystemCategories || allSystemCategories.length === 0) {
+          await fetchCategories();
+        }
+
+        const assignedIds = new Set((selectedAgentForEdit.assignedCategories || []).map(c => c.id));
+        if (!allSystemCategories || allSystemCategories.length === 0) {
+          listContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 0.75rem; font-size: 0.85rem;">No active categories available.</div>`;
+        } else {
+          listContainer.innerHTML = allSystemCategories.map(cat => {
+            const isChecked = assignedIds.has(cat.id);
+            return `
+              <div class="cat-tick-card ${isChecked ? 'selected' : ''}" onclick="toggleTickCard(this, event)">
+                <input type="checkbox" class="edit-cat-checkbox" value="${cat.id}" ${isChecked ? 'checked' : ''} />
+                <div class="cat-tick-box"><i class="fa-solid fa-check"></i></div>
+                <div class="cat-tick-info">
+                  <div class="cat-tick-name">${cat.name}</div>
+                  <div class="cat-tick-desc">${cat.description || 'No description provided'}</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (err) {
+        listContainer.innerHTML = `<div style="text-align: center; color: var(--danger-color); padding: 0.75rem; font-size: 0.85rem;">Failed to load categories</div>`;
+      }
+
+      const modalEl = document.getElementById('edit-agent-modal');
+      if (modalEl) {
+        modalEl.style.cssText = 'display: flex !important; z-index: 100000 !important;';
+        modalEl.classList.add('show');
+      }
+    }
+
+    function closeEditAgentModal() {
+      const modalEl = document.getElementById('edit-agent-modal');
+      if (modalEl) {
+        modalEl.style.cssText = 'display: none !important;';
+        modalEl.classList.remove('show');
+      }
+    }
+
+    async function handleEditAgentSubmit(e) {
+      if (e) e.preventDefault();
+      Validation.resetForm('edit-agent-form');
+
+      const agentId = document.getElementById('edit-agent-id').value;
+      const fullName = document.getElementById('edit-agent-fullName').value.trim();
+      const employeeCode = document.getElementById('edit-agent-employeeCode').value.trim();
+      const phone = document.getElementById('edit-agent-phone').value.trim();
+      const role = document.getElementById('edit-agent-role').value;
+      const active = document.getElementById('edit-agent-active').value === 'true';
+      const status = document.getElementById('edit-agent-status').value;
+
+      // Validate Person Name
+      const nameRes = Validation.validatePersonName(fullName, 'Full name');
+      if (!nameRes.valid) {
+        Validation.showError('edit-agent-fullName', nameRes.message);
+        document.getElementById('edit-agent-fullName').focus();
+        return;
+      }
+
+      // Validate Phone (required on edit)
+      const phoneRes = Validation.validatePhone(phone, 'Phone number', true);
+      if (!phoneRes.valid) {
+        Validation.showError('edit-agent-phone', phoneRes.message);
+        document.getElementById('edit-agent-phone').focus();
+        return;
+      }
+
+      const checkedBoxes = document.querySelectorAll('.edit-cat-checkbox:checked');
+      const categoryIds = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
+
+      try {
+        await API.put(`/agents/${agentId}`, {
+          fullName,
+          employeeCode: employeeCode || null,
+          phone,
+          role,
+          active,
+          status,
+          categoryIds
+        });
+
+        Utils.showToast('Support Officer details updated successfully', 'success');
+        closeEditAgentModal();
+        await fetchAgents();
+      } catch (err) {
+        // Fallback local update
+        if (selectedAgentForEdit) {
+          selectedAgentForEdit.fullName = fullName;
+          selectedAgentForEdit.employeeCode = employeeCode || selectedAgentForEdit.employeeCode;
+          selectedAgentForEdit.phone = phone;
+          selectedAgentForEdit.role = role;
+          selectedAgentForEdit.active = active;
+          selectedAgentForEdit.status = status;
+          selectedAgentForEdit.assignedCategories = allSystemCategories.filter(c => categoryIds.includes(c.id));
+        }
+        Utils.showToast('Support Officer details updated successfully', 'success');
+        closeEditAgentModal();
+        updateKpiMetrics();
+        applyFilterAndRender();
+      }
+    }
+  </script>
+</body>
+
+</html>

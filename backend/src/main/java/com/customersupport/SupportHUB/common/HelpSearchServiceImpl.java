@@ -4,6 +4,7 @@ import com.customersupport.SupportHUB.category.TicketCategory;
 import com.customersupport.SupportHUB.category.TicketCategoryDto;
 import com.customersupport.SupportHUB.category.TicketCategoryRepository;
 import com.customersupport.SupportHUB.faq.*;
+import com.customersupport.SupportHUB.feedback.FeedbackRepository;
 import com.customersupport.SupportHUB.ticket.TicketRepository;
 import com.customersupport.SupportHUB.ticket.TicketStatus;
 import org.springframework.stereotype.Service;

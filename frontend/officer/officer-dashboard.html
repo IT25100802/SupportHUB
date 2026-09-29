@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Officer Command Center - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css?v=13.0">
+  <link rel="stylesheet" href="../css/components.css?v=13.0">
+  <link rel="stylesheet" href="../css/dashboard.css?v=13.0">
+
+  <style>
+    /* ==========================================================================
+       Officer Command Center - High-Fidelity Enterprise Design
+       High-Density 15.6" Screen Optimization
+       ========================================================================== */
+
+    .page-body {
+      padding: 1rem 1.35rem !important;
+    }
+
+    /* Page Header */
+    .cmd-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+      gap: 1rem;
+    }
+
+    .cmd-title h1 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 0.15rem 0;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .cmd-title p {
+      font-size: 0.825rem;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .cmd-header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .cmd-live-clock {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.785rem;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .cmd-live-clock i {
+      color: #2563eb;
+    }
+
+    /* Top 4 KPI Cards Layout */
+    .cmd-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 0.95rem;
+    }
+
+    @media (max-width: 1280px) {
+      .cmd-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .cmd-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .cmd-kpi-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+    }
+
+    .cmd-kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.08);
+    }
+
+    .cmd-kpi-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .cmd-kpi-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    .cmd-kpi-icon.blue { background: #eff6ff; color: #2563eb; }
+    .cmd-kpi-icon.orange { background: #fff7ed; color: #ea580c; }
+    .cmd-kpi-icon.red { background: #fef2f2; color: #dc2626; }
+    .cmd-kpi-icon.green { background: #f0fdf4; color: #16a34a; }
+
+    .cmd-kpi-meta h4 {
+      font-size: 0.725rem;
+      color: #64748b;
+      font-weight: 700;
+      margin: 0 0 0.15rem 0;
+      letter-spacing: 0.02em;
+    }
+
+    .cmd-kpi-meta .value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1;
+      margin: 0;
+    }
+
+    .cmd-kpi-trend {
+      text-align: right;
+      font-size: 0.725rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: #16a34a;
+    }
+
+    .cmd-kpi-trend .sub {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      font-weight: 500;
+      display: block;
+    }
+
+    /* 2-Column Main Workspace Layout */
+    .cmd-workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 330px;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1120px) {
+      .cmd-workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Priority Feed Cards */
+    .panel-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.95rem 1.15rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      margin-bottom: 0.95rem;
+    }
+
+    .panel-box-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+    }
+
+    .panel-box-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin: 0;
+    }
+
+    .panel-box-sub {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin: 0.15rem 0 0 0;
+      font-weight: 500;
+    }
+
+    .btn-view-all-link {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #2563eb;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      transition: color 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-view-all-link:hover {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
+
+    /* Stacked Priority Ticket Card */
+    .priority-ticket-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #ef4444;
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.65rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      cursor: pointer;
+    }
+
+    .priority-ticket-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+      border-color: #cbd5e1;
+    }
+
+    .priority-ticket-card.border-orange {
+      border-left-color: #f59e0b;
+    }
+
+    .pt-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.35rem;
+      gap: 0.5rem;
+    }
+
+    .pt-left-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .pt-id {
+      font-size: 0.825rem;
+      font-weight: 800;
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    .pt-badge-priority {
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      font-size: 0.675rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .pt-badge-priority.high {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .pt-badge-priority.medium {
+      background: #fff7ed;
+      color: #ea580c;
+      border: 1px solid #ffedd5;
+    }
+
+    .pt-subject-title {
+      font-size: 0.885rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0;
+      display: inline-block;
+    }
+
+    .pt-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-shrink: 0;
+    }
+
+    .pt-status-pill {
+      padding: 0.18rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .pt-status-pill.progress {
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+    }
+
+    .pt-status-pill.assigned {
+      background: #fefce8;
+      color: #ca8a04;
+      border: 1px solid #fef08a;
+    }
+
+    .pt-status-pill.waiting {
+      background: #faf5ff;
+      color: #9333ea;
+      border: 1px solid #f3e8ff;
+    }
+
+    .pt-status-pill.escalated {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    .pt-status-pill.resolved {
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    .btn-open-ticket {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 0.25rem 0.65rem;
+      font-size: 0.725rem;
+      font-weight: 700;
+      color: #0f172a;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-open-ticket:hover {
+      background: #f8fafc;
+      border-color: #2563eb;
+      color: #2563eb;
+    }
+
+    .pt-description {
+      font-size: 0.785rem;
+      color: #475569;
+      margin: 0 0 0.55rem 0;
+      line-height: 1.4;
+    }
+
+    .pt-bottom-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.735rem;
+      color: #64748b;
+      padding-top: 0.35rem;
+      border-top: 1px solid #f8fafc;
+    }
+
+    .pt-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .pt-cust-avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #3b82f6;
+      color: #ffffff;
+      font-size: 0.6rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pt-waiting-time {
+      color: #dc2626;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    /* Recent Tickets Table */
+    .cmd-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.775rem;
+    }
+
+    .cmd-table thead th {
+      text-align: left;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      padding: 0.35rem 0.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      white-space: nowrap;
+    }
+
+    .cmd-table tbody td {
+      padding: 0.45rem 0.5rem;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+      vertical-align: middle;
+    }
+
+    .cmd-table tbody tr:hover td {
+      background: #f8fafc;
+    }
+
+    /* Right Sidebar Widgets */
+    .officer-status-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      margin-bottom: 0.95rem;
+    }
+
+    .officer-info-header {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .officer-verified-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .officer-name-title {
+      margin: 0;
+      font-size: 0.925rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .officer-code-sub {
+      margin: 0.1rem 0 0 0;
+      font-size: 0.75rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .status-toggle-label {
+      font-size: 0.675rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+      display: block;
+    }
+
+    .status-btn-group {
+      display: flex;
+      gap: 0.35rem;
+      background: #f1f5f9;
+      padding: 0.25rem;
+      border-radius: 8px;
+      margin-bottom: 0.85rem;
+    }
+
+    .status-btn-pill {
+      flex: 1;
+      font-size: 0.725rem;
+      font-weight: 700;
+      padding: 0.35rem 0.2rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+      color: #64748b;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    .status-btn-pill.active-available {
+      background: #dcfce7;
+      color: #15803d;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .status-btn-pill.active-busy {
+      background: #fef9c3;
+      color: #a16207;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .status-btn-pill.active-offline {
+      background: #e2e8f0;
+      color: #475569;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .capacity-bar-track {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .capacity-bar-fill {
+      height: 100%;
+      background: #10b981;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    /* Assigned Categories List */
+    .assigned-cat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.4rem 0.2rem;
+      border-bottom: 1px solid #f8fafc;
+      font-size: 0.775rem;
+    }
+
+    .assigned-cat-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .assigned-cat-val {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* Today's Activity Box */
+    .activity-metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      text-align: center;
+      padding-top: 0.35rem;
+    }
+
+    .activity-metric-item {
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 8px;
+      padding: 0.55rem 0.35rem;
+    }
+
+    .activity-metric-num {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+    }
+
+    .activity-metric-label {
+      font-size: 0.65rem;
+      color: #64748b;
+      margin-top: 0.15rem;
+      font-weight: 600;
+    }
+
+    /* Quick Action Tiles */
+    .quick-actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+
+    .qa-tile {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.65rem 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      color: #0f172a;
+    }
+
+    .qa-tile:hover {
+      background: #ffffff;
+      border-color: #2563eb;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.06);
+    }
+
+    .qa-tile-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: #eff6ff;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .qa-tile-text {
+      font-size: 0.725rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div>
+      </div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Page Title Row -->
+        <div class="cmd-header-row">
+          <div class="cmd-title">
+            <h1 id="welcome-greeting">Officer Command Center</h1>
+            <p>Manage assigned tickets, respond to customers, and track your daily support workload.</p>
+          </div>
+          <div class="cmd-header-right">
+            <div class="live-datetime-badge" id="live-datetime">
+              <i class="fa-regular fa-calendar-days" style="color: var(--navy-primary);"></i>
+              <span id="live-date-text">Loading date...</span>
+              <span class="datetime-divider">|</span>
+              <i class="fa-regular fa-clock" style="color: var(--yellow-accent);"></i>
+              <span id="live-time-text">Loading time...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-Column Split Command Layout -->
+        <div class="cmd-workspace-grid">
+
+          <!-- Left Column: Top KPIs + Priority Feed + Recent Tickets -->
+          <div>
+            <!-- Top 4 Summary KPI Cards -->
+            <div class="cmd-kpi-grid">
+              <!-- Card 1: Assigned Queue -->
+              <div class="cmd-kpi-card" onclick="window.location.href='assigned-tickets.html'">
+                <div class="cmd-kpi-left">
+                  <div class="cmd-kpi-icon blue"><i class="fa-regular fa-envelope"></i></div>
+                  <div class="cmd-kpi-meta">
+                    <h4>Assigned Queue</h4>
+                    <div class="value" id="stat-assigned">12</div>
+                  </div>
+                </div>
+                <div class="cmd-kpi-trend">
+                  ↑ 3
+                  <span class="sub">vs yesterday</span>
+                </div>
+              </div>
+
+              <!-- Card 2: In Progress -->
+              <div class="cmd-kpi-card" onclick="window.location.href='assigned-tickets.html?status=IN_PROGRESS'">
+                <div class="cmd-kpi-left">
+                  <div class="cmd-kpi-icon orange"><i class="fa-solid fa-arrows-rotate"></i></div>
+                  <div class="cmd-kpi-meta">
+                    <h4>In Progress</h4>
+                    <div class="value" id="stat-progress">5</div>
+                  </div>
+                </div>
+                <div class="cmd-kpi-trend">
+                  ↑ 2
+                  <span class="sub">vs yesterday</span>
+                </div>
+              </div>
+
+              <!-- Card 3: High / Urgent -->
+              <div class="cmd-kpi-card" onclick="window.location.href='assigned-tickets.html?priority=HIGH'">
+                <div class="cmd-kpi-left">
+                  <div class="cmd-kpi-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                  <div class="cmd-kpi-meta">
+                    <h4>High / Urgent</h4>
+                    <div class="value" id="stat-urgent">3</div>
+                  </div>
+                </div>
+                <div class="cmd-kpi-trend">
+                  ↑ 1
+                  <span class="sub">vs yesterday</span>
+                </div>
+              </div>
+
+              <!-- Card 4: Resolved Today -->
+              <div class="cmd-kpi-card" onclick="window.location.href='assigned-tickets.html?status=RESOLVED'">
+                <div class="cmd-kpi-left">
+                  <div class="cmd-kpi-icon green"><i class="fa-solid fa-circle-check"></i></div>
+                  <div class="cmd-kpi-meta">
+                    <h4>Resolved Today</h4>
+                    <div class="value" id="stat-resolved">4</div>
+                  </div>
+                </div>
+                <div class="cmd-kpi-trend" style="color: #16a34a;">
+                  100%
+                  <span class="sub">on SLA</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 1: Priority Tickets Feed -->
+            <div class="panel-box">
+              <div class="panel-box-head">
+                <div>
+                  <h3 class="panel-box-title"><i class="fa-solid fa-fire" style="color: #ef4444;"></i> Priority Tickets Feed</h3>
+                  <p class="panel-box-sub">High and urgent priority tickets that need immediate attention.</p>
+                </div>
+                <a href="assigned-tickets.html" class="btn-view-all-link">View All Tickets →</a>
+              </div>
+
+              <div id="priority-cards-feed">
+                <div style="text-align: center; color: #64748b; padding: 2rem; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1;">
+                  <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #3b82f6; display: block;"></i>
+                  <span>Loading priority tickets...</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: My Recent Tickets Table -->
+            <div class="panel-box">
+              <div class="panel-box-head">
+                <h3 class="panel-box-title">My Recent Tickets</h3>
+                <a href="assigned-tickets.html" class="btn-view-all-link">View All</a>
+              </div>
+              <div style="overflow-x: auto;">
+                <table class="cmd-table">
+                  <thead>
+                    <tr>
+                      <th>TICKET #</th>
+                      <th>SUBJECT</th>
+                      <th>STATUS</th>
+                      <th>UPDATED AT</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-tickets-tbody">
+                    <tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">Loading assigned tickets...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Officer Control & Analytics Panel -->
+          <div>
+            <!-- Widget 1: Officer Status & Capacity Card -->
+            <div class="officer-status-box">
+              <div class="officer-info-header">
+                <div class="officer-verified-icon">
+                  <i class="fa-solid fa-check"></i>
+                </div>
+                <div>
+                  <h4 id="officer-card-name" class="officer-name-title">Support Officer</h4>
+                  <p id="officer-card-code" class="officer-code-sub">AGT-1001</p>
+                </div>
+              </div>
+
+              <div>
+                <span class="status-toggle-label">LIVE STATUS TOGGLE</span>
+                <div class="status-btn-group">
+                  <button type="button" onclick="changeOfficerStatus('AVAILABLE')" id="btn-status-AVAILABLE" class="status-btn-pill active-available">
+                    <span style="color: #16a34a;">●</span> Available
+                  </button>
+                  <button type="button" onclick="changeOfficerStatus('BUSY')" id="btn-status-BUSY" class="status-btn-pill">
+                    <span style="color: #ca8a04;">●</span> Busy
+                  </button>
+                  <button type="button" onclick="changeOfficerStatus('OFFLINE')" id="btn-status-OFFLINE" class="status-btn-pill">
+                    <span style="color: #94a3b8;">●</span> Offline
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.775rem; font-weight: 700; color: #475569; margin-bottom: 0.35rem;">
+                  <span>Active Ticket Capacity</span>
+                  <span id="capacity-text">0 / 5</span>
+                </div>
+                <div class="capacity-bar-track">
+                  <div id="capacity-bar" class="capacity-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Widget 2: My Assigned Categories -->
+            <div class="officer-status-box">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <h4 style="margin: 0; font-size: 0.885rem; font-weight: 800; color: #0f172a;">My Assigned Categories</h4>
+                <a href="assigned-tickets.html" class="btn-view-all-link">View All</a>
+              </div>
+              <div id="assigned-categories-list">
+                <div style="color: #64748b; font-size: 0.8rem; padding: 0.5rem 0;">Loading categories...</div>
+              </div>
+            </div>
+
+            <!-- Widget 3: Today's Activity -->
+            <div class="officer-status-box">
+              <h4 style="margin: 0 0 0.5rem 0; font-size: 0.885rem; font-weight: 800; color: #0f172a;">Queue Summary</h4>
+              <div class="activity-metric-grid">
+                <div class="activity-metric-item">
+                  <div class="activity-metric-num" style="color: #2563eb;" id="activity-active-count">
+                    <i class="fa-solid fa-bolt" style="font-size: 0.8rem;"></i> 0
+                  </div>
+                  <div class="activity-metric-label">Active Tickets</div>
+                </div>
+                <div class="activity-metric-item">
+                  <div class="activity-metric-num" style="color: #16a34a;" id="activity-resolved-count">
+                    <i class="fa-solid fa-check" style="font-size: 0.8rem;"></i> 0
+                  </div>
+                  <div class="activity-metric-label">Tickets Resolved</div>
+                </div>
+                <div class="activity-metric-item">
+                  <div class="activity-metric-num" style="color: #ea580c; font-size: 0.85rem;" id="activity-urgent-count">
+                    <i class="fa-solid fa-fire" style="font-size: 0.75rem;"></i> 0
+                  </div>
+                  <div class="activity-metric-label">High / Urgent</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Widget 4: Quick Actions -->
+            <div class="officer-status-box" style="margin-bottom: 0;">
+              <h4 style="margin: 0 0 0.65rem 0; font-size: 0.885rem; font-weight: 800; color: #0f172a;">Quick Actions</h4>
+              <div class="quick-actions-grid">
+                <a href="assigned-tickets.html" class="qa-tile">
+                  <div class="qa-tile-icon"><i class="fa-solid fa-list-check"></i></div>
+                  <span class="qa-tile-text">View Assigned Queue</span>
+                </a>
+                <a href="../customer/knowledge-base.html" class="qa-tile">
+                  <div class="qa-tile-icon"><i class="fa-solid fa-book-open"></i></div>
+                  <span class="qa-tile-text">Search Knowledge Base</span>
+                </a>
+                <div class="qa-tile" onclick="changeOfficerStatus('BUSY')">
+                  <div class="qa-tile-icon"><i class="fa-solid fa-user-clock"></i></div>
+                  <span class="qa-tile-text">Update My Status</span>
+                </div>
+                <a href="../qa/satisfaction-analysis.html" class="qa-tile">
+                  <div class="qa-tile-icon"><i class="fa-solid fa-chart-column"></i></div>
+                  <span class="qa-tile-text">View CSAT Report</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js?v=13.0"></script>
+  <script src="../js/auth.js?v=13.0"></script>
+  <script src="../js/utils.js?v=13.0"></script>
+  <script src="../js/notifications.js?v=13.0"></script>
+  <script>
+    let officerTickets = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const user = Auth.getUser();
+      if (user && user.role === 'OPERATIONS_SUPERVISOR') {
+        window.location.href = '../supervisor/supervisor-dashboard.html';
+        return;
+      }
+      if (!Auth.requireRole(['CUSTOMER_SERVICE_OFFICER'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      initLiveClock();
+      populateOfficerInfo();
+
+      await loadDashboardData();
+    });
+
+    window.addEventListener('pageshow', () => {
+      loadDashboardData();
+    });
+
+    function populateOfficerInfo() {
+      const user = Auth.getUser();
+      if (!user) return;
+      
+      const nameEl = document.getElementById('officer-card-name');
+      const codeEl = document.getElementById('officer-card-code');
+      if (nameEl && user.fullName) nameEl.textContent = user.fullName;
+      if (codeEl) codeEl.textContent = user.agentCode || (user.id ? `AGT-${1000 + user.id}` : 'AGT-1001');
+    }
+
+    async function changeOfficerStatus(status) {
+      try {
+        await API.patch(`/agents/my-status?status=${status}`).catch(() => {});
+        Utils.showToast(`Status switched to ${status}`, 'success');
+
+        const buttons = {
+          'AVAILABLE': document.getElementById('btn-status-AVAILABLE'),
+          'BUSY': document.getElementById('btn-status-BUSY'),
+          'OFFLINE': document.getElementById('btn-status-OFFLINE')
+        };
+
+        Object.keys(buttons).forEach(key => {
+          const btn = buttons[key];
+          if (btn) {
+            btn.className = 'status-btn-pill';
+          }
+        });
+
+        if (status === 'AVAILABLE') buttons['AVAILABLE'].classList.add('active-available');
+        else if (status === 'BUSY') buttons['BUSY'].classList.add('active-busy');
+        else if (status === 'OFFLINE') buttons['OFFLINE'].classList.add('active-offline');
+
+      } catch (err) {
+        console.warn('Status change local fallback', err);
+      }
+    }
+
+    async function loadDashboardData() {
+      try {
+        const res = await API.get('/tickets/assigned?page=0&size=50').catch(() => ({ data: { content: [] } }));
+        officerTickets = res.data && res.data.content ? res.data.content : [];
+
+        let progress = 0, urgent = 0, resolved = 0;
+        const catCountMap = {};
+
+        officerTickets.forEach(t => {
+          if (t.status === 'IN_PROGRESS' || t.status === 'WAITING_FOR_CUSTOMER') progress++;
+          if (t.priority === 'HIGH' || t.priority === 'URGENT') urgent++;
+          if (t.status === 'RESOLVED' || t.status === 'CLOSED') resolved++;
+
+          const cat = t.categoryName || 'Support';
+          catCountMap[cat] = (catCountMap[cat] || 0) + 1;
+        });
+
+        const activeCount = officerTickets.filter(t => t.status !== 'RESOLVED' && t.status !== 'CLOSED').length;
+
+        // KPI metrics
+        document.getElementById('stat-assigned').textContent = officerTickets.length;
+        document.getElementById('stat-progress').textContent = progress;
+        document.getElementById('stat-urgent').textContent = urgent;
+        const resEl = document.getElementById('stat-resolved');
+        if (resEl) resEl.textContent = resolved;
+
+        document.getElementById('capacity-text').textContent = `${activeCount} / 5`;
+        const capPct = Math.min(100, Math.round((activeCount / 5) * 100));
+        document.getElementById('capacity-bar').style.width = capPct + '%';
+
+        // Queue Summary Activity
+        const actActive = document.getElementById('activity-active-count');
+        if (actActive) actActive.innerHTML = `<i class="fa-solid fa-bolt" style="font-size: 0.8rem;"></i> ${activeCount}`;
+        const actResolved = document.getElementById('activity-resolved-count');
+        if (actResolved) actResolved.innerHTML = `<i class="fa-solid fa-check" style="font-size: 0.8rem;"></i> ${resolved}`;
+        const actUrgent = document.getElementById('activity-urgent-count');
+        if (actUrgent) actUrgent.innerHTML = `<i class="fa-solid fa-fire" style="font-size: 0.75rem;"></i> ${urgent}`;
+
+        // Category breakdown
+        const catListEl = document.getElementById('assigned-categories-list');
+        if (catListEl) {
+          const catEntries = Object.entries(catCountMap);
+          if (catEntries.length === 0) {
+            catListEl.innerHTML = '<div style="color: #64748b; font-size: 0.8rem; padding: 0.5rem 0;">No active category assignments.</div>';
+          } else {
+            catListEl.innerHTML = catEntries.map(([catName, count], idx) => `
+              <div class="assigned-cat-row" ${idx === catEntries.length - 1 ? 'style="border-bottom: none;"' : ''}>
+                <div class="assigned-cat-left">
+                  <i class="fa-solid fa-tag" style="color: #2563eb; width: 18px;"></i>
+                  <span>${catName}</span>
+                </div>
+                <span class="assigned-cat-val">${count}</span>
+              </div>
+            `).join('');
+          }
+        }
+
+        // Dynamic Priority Cards Feed
+        const feedEl = document.getElementById('priority-cards-feed');
+        if (feedEl) {
+          const activeTickets = officerTickets
+            .filter(t => t.status !== 'RESOLVED' && t.status !== 'CLOSED')
+            .sort((a, b) => {
+              const pMap = { 'URGENT': 4, 'HIGH': 3, 'MEDIUM': 2, 'LOW': 1 };
+              const pDiff = (pMap[b.priority] || 0) - (pMap[a.priority] || 0);
+              if (pDiff !== 0) return pDiff;
+              return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+            });
+
+          if (activeTickets.length === 0) {
+            feedEl.innerHTML = `
+              <div style="text-align: center; padding: 2.5rem 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px dashed #cbd5e1; color: #64748b;">
+                <i class="fa-solid fa-circle-check" style="font-size: 2rem; color: #16a34a; margin-bottom: 0.5rem; display: block;"></i>
+                <div style="font-weight: 700; font-size: 0.95rem; color: #1e293b;">No Priority Tickets in Queue</div>
+                <div style="font-size: 0.825rem; margin-top: 0.25rem;">All assigned tickets are currently resolved or on schedule.</div>
+              </div>
+            `;
+          } else {
+            feedEl.innerHTML = activeTickets.slice(0, 4).map(t => {
+              const p = (t.priority || 'MEDIUM').toLowerCase();
+              const isHighOrUrgent = p === 'high' || p === 'urgent';
+              const borderClass = isHighOrUrgent ? '' : 'border-orange';
+              const statusClass = t.status === 'IN_PROGRESS' ? 'progress' : (t.status === 'WAITING_FOR_CUSTOMER' ? 'waiting' : (t.status === 'ASSIGNED' ? 'assigned' : 'progress'));
+              const custName = t.customerName || 'Customer';
+              const initials = custName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'CU';
+              const catText = `${t.categoryName || 'Support'}${t.subcategoryName ? ' > ' + t.subcategoryName : ''}`;
+              const orderText = t.orderNumber || 'N/A';
+              
+              let timeStr = '-';
+              if (t.createdAt) {
+                const diffMs = Date.now() - new Date(t.createdAt).getTime();
+                if (diffMs > 0) {
+                  const mins = Math.floor(diffMs / 60000);
+                  if (mins < 60) timeStr = `${mins}m`;
+                  else {
+                    const hrs = Math.floor(mins / 60);
+                    const remM = mins % 60;
+                    timeStr = hrs < 24 ? `${hrs}h ${remM}m` : `${Math.floor(hrs/24)}d ago`;
+                  }
+                } else {
+                  timeStr = 'Just now';
+                }
+              }
+
+              return `
+                <div class="priority-ticket-card ${borderClass}" onclick="window.location.href='../customer/ticket-details.html?id=${t.id}'">
+                  <div class="pt-top-row">
+                    <div class="pt-left-meta">
+                      <span class="pt-id">${t.ticketNumber}</span>
+                      <span class="pt-badge-priority ${p}">${t.priority || 'Medium'}</span>
+                      <h4 class="pt-subject-title">${Utils.escapeHtml(t.subject)}</h4>
+                    </div>
+                    <div class="pt-right-actions">
+                      <span class="pt-status-pill ${statusClass}">${(t.status || 'OPEN').replace(/_/g, ' ')}</span>
+                      <button class="btn-open-ticket" onclick="event.stopPropagation(); window.location.href='../customer/ticket-details.html?id=${t.id}'">
+                        Open Ticket →
+                      </button>
+                    </div>
+                  </div>
+                  <p class="pt-description">${Utils.escapeHtml(t.description || 'No description provided.')}</p>
+                  <div class="pt-bottom-meta">
+                    <div class="pt-meta-item">
+                      <span class="pt-cust-avatar" style="background: #3b82f6;">${initials}</span>
+                      <span>${Utils.escapeHtml(custName)}</span>
+                    </div>
+                    <div class="pt-meta-item">
+                      <i class="fa-solid fa-folder" style="color: #64748b;"></i>
+                      <span>${Utils.escapeHtml(catText)}</span>
+                    </div>
+                    <div class="pt-meta-item">
+                      <i class="fa-solid fa-cart-shopping" style="color: #64748b;"></i>
+                      <span>${Utils.escapeHtml(orderText)}</span>
+                    </div>
+                    <div class="pt-meta-item pt-waiting-time" ${isHighOrUrgent ? 'style="color: #ea580c; font-weight: 700;"' : ''}>
+                      <i class="fa-regular fa-clock"></i>
+                      <span>${timeStr}</span>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+
+        // Recent tickets table
+        const tbody = document.getElementById('recent-tickets-tbody');
+        if (tbody) {
+          if (officerTickets.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1.5rem;">No assigned tickets in queue.</td></tr>';
+          } else {
+            const recent = officerTickets.slice(0, 5);
+            tbody.innerHTML = recent.map(t => {
+              const statusClass = t.status === 'IN_PROGRESS' ? 'progress' : (t.status === 'WAITING_FOR_CUSTOMER' ? 'waiting' : 'resolved');
+              return `
+                <tr>
+                  <td><a href="../customer/ticket-details.html?id=${t.id}" style="color: #2563eb; font-weight: 700; text-decoration: none;">${t.ticketNumber}</a></td>
+                  <td><strong>${t.subject}</strong></td>
+                  <td><span class="pt-status-pill ${statusClass}">${t.status.replace(/_/g, ' ')}</span></td>
+                  <td style="color: #64748b; white-space: nowrap;">${Utils.formatDate(t.updatedAt || t.createdAt)}</td>
+                </tr>
+              `;
+            }).join('');
+          }
+        }
+      } catch (err) {
+        console.error('Error loading officer dashboard live data', err);
+      }
+    }
+  </script>
+</body>
+
+</html>

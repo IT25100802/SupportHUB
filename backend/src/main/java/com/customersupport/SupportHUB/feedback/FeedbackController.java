@@ -1,6 +1,7 @@
 package com.customersupport.SupportHUB.feedback;
 
 import com.customersupport.SupportHUB.common.ApiResponse;
+
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +31,7 @@ public class FeedbackController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('QA_EXECUTIVE', 'CUSTOMER_SUPPORT_MANAGER')")
+    @PreAuthorize("hasAnyRole('QA_EXECUTIVE', 'CUSTOMER_SUPPORT_MANAGER', 'OPERATIONS_SUPERVISOR')")
     public ResponseEntity<ApiResponse<FeedbackDto>> getFeedbackById(@PathVariable("id") Long id) {
         FeedbackDto feedback = feedbackService.getFeedbackById(id);
         return ResponseEntity.ok(ApiResponse.success("Feedback details fetched successfully", feedback));
@@ -44,7 +45,7 @@ public class FeedbackController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('QA_EXECUTIVE', 'CUSTOMER_SUPPORT_MANAGER')")
+    @PreAuthorize("hasAnyRole('QA_EXECUTIVE', 'CUSTOMER_SUPPORT_MANAGER', 'OPERATIONS_SUPERVISOR')")
     public ResponseEntity<ApiResponse<Page<FeedbackDto>>> filterFeedback(
             @RequestParam(value = "rating", required = false) Integer rating,
             @RequestParam(value = "keyword", required = false) String keyword,

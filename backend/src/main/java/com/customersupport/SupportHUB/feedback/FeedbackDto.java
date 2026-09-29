@@ -8,6 +8,9 @@ public class FeedbackDto {
     private Long ticketId;
     private String ticketNumber;
     private String ticketSubject;
+    private String categoryName;
+    private String agentName;
+    private String ticketStatus;
     private Long customerId;
     private String customerName;
     private Integer rating;
@@ -48,6 +51,30 @@ public class FeedbackDto {
 
     public void setTicketSubject(String ticketSubject) {
         this.ticketSubject = ticketSubject;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getAgentName() {
+        return agentName;
+    }
+
+    public void setAgentName(String agentName) {
+        this.agentName = agentName;
+    }
+
+    public String getTicketStatus() {
+        return ticketStatus;
+    }
+
+    public void setTicketStatus(String ticketStatus) {
+        this.ticketStatus = ticketStatus;
     }
 
     public Long getCustomerId() {

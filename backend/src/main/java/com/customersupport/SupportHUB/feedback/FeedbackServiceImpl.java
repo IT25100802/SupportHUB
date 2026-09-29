@@ -8,6 +8,7 @@ import com.customersupport.SupportHUB.customer.CustomerRepository;
 import com.customersupport.SupportHUB.ticket.Ticket;
 import com.customersupport.SupportHUB.ticket.TicketRepository;
 import com.customersupport.SupportHUB.ticket.TicketStatus;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,17 +22,23 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final FeedbackRepository feedbackRepository;
     private final TicketRepository ticketRepository;
     private final CustomerRepository customerRepository;
-    private final ReportFactory reportFactory;
+    private final ReportService reportService;
+    private final com.customersupport.SupportHUB.notification.NotificationService notificationService;
+    private final com.customersupport.SupportHUB.notification.NotificationFactory notificationFactory;
 
     public FeedbackServiceImpl(
             FeedbackRepository feedbackRepository,
             TicketRepository ticketRepository,
             CustomerRepository customerRepository,
-            ReportFactory reportFactory) {
+            ReportService reportService,
+            com.customersupport.SupportHUB.notification.NotificationService notificationService,
+            com.customersupport.SupportHUB.notification.NotificationFactory notificationFactory) {
         this.feedbackRepository = feedbackRepository;
         this.ticketRepository = ticketRepository;
         this.customerRepository = customerRepository;
-        this.reportFactory = reportFactory;
+        this.reportService = reportService;
+        this.notificationService = notificationService;
+        this.notificationFactory = notificationFactory;
     }
 
     @Override
@@ -70,6 +77,22 @@ public class FeedbackServiceImpl implements FeedbackService {
         );
 
         Feedback saved = feedbackRepository.save(feedback);
+
+        // Send notification to assigned agent
+        if (ticket.getAssignedAgent() != null && ticket.getAssignedAgent().getUser() != null) {
+            String title = "New Feedback: " + ticket.getTicketNumber();
+            String msg = "Customer submitted a " + request.getRating() + "-star rating for ticket '" + ticket.getSubject() + "'.";
+            notificationService.sendNotification(
+                    notificationFactory.createCustomNotification(
+                            ticket.getAssignedAgent().getUser(),
+                            title,
+                            msg,
+                            com.customersupport.SupportHUB.notification.NotificationType.FEEDBACK_RECEIVED,
+                            ticket.getId()
+                    )
+            );
+        }
+
         return mapToDto(saved);
     }
 
@@ -105,12 +128,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     @Transactional(readOnly = true)
     public FeedbackReportDto getFeedbackAnalytics() {
-        Double avgRating = feedbackRepository.calculateAverageRating();
-        double avg = avgRating != null ? avgRating : 0.0;
-        long total = feedbackRepository.count();
-        List<Object[]> distribution = feedbackRepository.countFeedbackGroupedByRating();
-
-        return reportFactory.createFeedbackReport(avg, total, distribution);
+        return reportService.getFeedbackReport();
     }
 
     private FeedbackDto mapToDto(Feedback f) {
@@ -119,6 +137,17 @@ public class FeedbackServiceImpl implements FeedbackService {
         dto.setTicketId(f.getTicket().getId());
         dto.setTicketNumber(f.getTicket().getTicketNumber());
         dto.setTicketSubject(f.getTicket().getSubject());
+        if (f.getTicket().getCategory() != null) {
+            dto.setCategoryName(f.getTicket().getCategory().getName());
+        }
+        if (f.getTicket().getAssignedAgent() != null) {
+            dto.setAgentName(f.getTicket().getAssignedAgent().getFullName());
+        } else {
+            dto.setAgentName("Unassigned");
+        }
+        if (f.getTicket().getStatus() != null) {
+            dto.setTicketStatus(f.getTicket().getStatus().name());
+        }
         dto.setCustomerId(f.getCustomer().getId());
         dto.setCustomerName(f.getCustomer().getFullName());
         dto.setRating(f.getRating());
