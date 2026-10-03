@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ Chatbot Assistant - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden !important;
+    }
+    .app-container {
+      height: 100vh;
+      overflow: hidden;
+    }
+    .main-content {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .page-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+      padding: 1.25rem 2rem 1.25rem 2rem;
+    }
+    .chat-grid-container {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 1.25rem;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .chat-arena-card {
+      height: 100% !important;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(15,23,42,0.08);
+      margin: 0;
+      padding: 0;
+    }
+    .side-panel-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow-y: auto;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div></div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="page-header-row" style="margin-bottom: 1rem; flex-shrink: 0;">
+          <div class="page-title-group">
+            <h1 style="font-size: 1.5rem; margin-bottom: 0.15rem;">Automated FAQ Chatbot Assistant</h1>
+            <p style="font-size: 0.85rem;">Powered by Strategy Pattern keyword & fuzzy token matching over stored Knowledge Base content.</p>
+          </div>
+        </div>
+
+        <!-- 100% Fit-to-Screen Single View Grid Container -->
+        <div class="chat-grid-container">
+          
+          <!-- Main Chat Arena Column (Fit-to-Screen) -->
+          <div class="panel-card chat-arena-card">
+            
+            <!-- Chat Room Header -->
+            <div style="padding: 0.9rem 1.25rem; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #ffffff; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 4px 10px rgba(37,99,235,0.4);">
+                  🤖
+                </div>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.95rem; color: #ffffff; font-family: var(--font-heading);">AI Support Strategy Assistant</div>
+                  <div style="font-size: 0.75rem; color: #94a3b8; display: flex; align-items: center; gap: 0.35rem;">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span> Strategy Engine Active
+                  </div>
+                </div>
+              </div>
+              <span style="background: rgba(16,185,129,0.2); color: #34d399; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 20px; border: 1px solid rgba(16,185,129,0.4);">
+                ONLINE 🟢
+              </span>
+            </div>
+
+            <!-- Messages Log Body (Scrollable inside container) -->
+            <div id="page-chat-messages" style="flex: 1; min-height: 0; padding: 1.25rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.25rem; background: #f8fafc;">
+              
+              <!-- Bot Welcome Message -->
+              <div style="display: flex; gap: 0.85rem; max-width: 85%;">
+                <div style="width: 34px; height: 34px; border-radius: 50%; background: #2563eb; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0;">🤖</div>
+                <div style="background: #ffffff; padding: 0.9rem 1.15rem; border-radius: 16px; border-top-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; font-size: 0.9rem; color: #1e293b; line-height: 1.5;">
+                  <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.25rem;">Hello! I am your AI Support Assistant 👋</div>
+                  Ask me any question regarding user accounts, password resets, billing payment methods, SLAs, or attaching files.
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Quick Suggested Topics Toolbar -->
+            <div style="padding: 0.5rem 1rem; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; align-items: center; gap: 0.4rem; overflow-x: auto; white-space: nowrap; flex-shrink: 0;">
+              <span style="font-size: 0.725rem; font-weight: 700; color: #64748b; margin-right: 0.2rem;"><i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> Quick:</span>
+              <button onclick="askFaq('How do I reset my account password?')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">🔑 Reset Password</button>
+              <button onclick="askFaq('What payment methods are supported for billing?')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">💳 Payment Methods</button>
+              <button onclick="askFaq('What is the turnaround time for Urgent tickets?')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">⏱️ SLA Response Times</button>
+              <button onclick="askFaq('How can I attach files to a support ticket?')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">📎 Attach Files</button>
+            </div>
+
+            <!-- Input Bar (Pinned at bottom of Single View Screen) -->
+            <div style="padding: 0.85rem 1rem; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; gap: 0.65rem; flex-shrink: 0;">
+              <input type="text" id="page-chat-input" class="form-control" placeholder="Type your question here (e.g. How to reset password?)..." style="flex: 1; padding: 0.65rem 0.9rem; border-radius: 10px;" />
+              <button id="page-chat-send" class="btn btn-primary" style="padding: 0.65rem 1.35rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem;">
+                <i class="fa-solid fa-paper-plane"></i> Send
+              </button>
+            </div>
+
+          </div>
+
+          <!-- AI Assistant Side Panel Column -->
+          <div class="side-panel-stack">
+            
+            <div class="panel-card" style="margin: 0; padding: 1.1rem; border-radius: 14px;">
+              <h4 style="margin: 0 0 0.4rem 0; font-size: 0.9rem; color: #0f172a; display: flex; align-items: center; gap: 0.4rem;">
+                <i class="fa-solid fa-microchip" style="color: #2563eb;"></i> Strategy Engine
+              </h4>
+              <p style="font-size: 0.8rem; color: #64748b; margin: 0; line-height: 1.4;">
+                This chatbot utilizes the Strategy Design Pattern to parse questions using keyword matching and fuzzy token similarity to provide instant KB answers.
+              </p>
+            </div>
+
+            <div class="panel-card" style="margin: 0; padding: 1.1rem; border-radius: 14px;">
+              <h4 style="margin: 0 0 0.65rem 0; font-size: 0.9rem; color: #0f172a; display: flex; align-items: center; gap: 0.4rem;">
+                <i class="fa-solid fa-fire" style="color: #f59e0b;"></i> Popular Topics
+              </h4>
+              <div style="display: flex; flex-direction: column; gap: 0.45rem;">
+                <div onclick="askFaq('Account lockout after multiple failed attempts')" style="font-size: 0.8rem; color: #2563eb; font-weight: 600; cursor: pointer; padding: 0.35rem 0.5rem; background: #eff6ff; border-radius: 8px; transition: background 0.2s;">
+                  • Account Lockout Resolution
+                </div>
+                <div onclick="askFaq('Can I change my assigned Support Officer?')" style="font-size: 0.8rem; color: #2563eb; font-weight: 600; cursor: pointer; padding: 0.35rem 0.5rem; background: #eff6ff; border-radius: 8px; transition: background 0.2s;">
+                  • Assigned Officer Changes
+                </div>
+                <div onclick="askFaq('How do I submit feedback after a ticket is resolved?')" style="font-size: 0.8rem; color: #2563eb; font-weight: 600; cursor: pointer; padding: 0.35rem 0.5rem; background: #eff6ff; border-radius: 8px; transition: background 0.2s;">
+                  • Submitting Service Feedback
+                </div>
+              </div>
+            </div>
+
+            <div class="panel-card" style="margin: 0; padding: 1.1rem; border-radius: 14px; background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(16,185,129,0.06)); border-color: rgba(37,99,235,0.2);">
+              <h4 style="margin: 0 0 0.3rem 0; font-size: 0.9rem; color: #0f172a;">Need Human Support?</h4>
+              <p style="font-size: 0.8rem; color: #475569; margin-bottom: 0.75rem; line-height: 1.4;">
+                If your question is not resolved by the AI Chatbot, submit a ticket to our support team.
+              </p>
+              <a href="my-tickets.html" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center; font-weight: 700;">
+                <i class="fa-solid fa-ticket-simple" style="margin-right: 4px;"></i> Go to My Tickets
+              </a>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!Auth.requireRole(['CUSTOMER', 'CUSTOMER_SERVICE_OFFICER', 'OPERATIONS_SUPERVISOR', 'CUSTOMER_SUPPORT_MANAGER', 'QA_EXECUTIVE'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      const sendBtn = document.getElementById('page-chat-send');
+      const input = document.getElementById('page-chat-input');
+
+      sendBtn.addEventListener('click', handlePageSend);
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handlePageSend();
+      });
+    });
+
+    async function handlePageSend() {
+      const input = document.getElementById('page-chat-input');
+      const messages = document.getElementById('page-chat-messages');
+      const question = input.value.trim();
+
+      if (!question) return;
+
+      // Add User Message Bubble
+      messages.innerHTML += `
+        <div style="display: flex; gap: 0.85rem; justify-content: flex-end; width: 100%;">
+          <div style="background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%); color: #ffffff; padding: 0.85rem 1.25rem; border-radius: 16px; border-top-right-radius: 4px; box-shadow: 0 4px 12px rgba(37,99,235,0.25); font-size: 0.9rem; max-width: 80%; line-height: 1.5;">
+            ${question}
+          </div>
+          <div style="width: 34px; height: 34px; border-radius: 50%; background: #0f172a; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; flex-shrink: 0;">YOU</div>
+        </div>
+      `;
+      input.value = '';
+      messages.scrollTop = messages.scrollHeight;
+
+      // Add Typing Indicator
+      const typingId = 'page-typing-' + Date.now();
+      messages.innerHTML += `
+        <div id="${typingId}" style="display: flex; gap: 0.85rem; max-width: 85%;">
+          <div style="width: 34px; height: 34px; border-radius: 50%; background: #2563eb; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0;">🤖</div>
+          <div style="background: #ffffff; padding: 0.75rem 1.1rem; border-radius: 16px; border-top-left-radius: 4px; border: 1px solid #e2e8f0; font-size: 0.85rem; color: #64748b; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-spinner fa-spin" style="color: #2563eb;"></i> Searching Knowledge Base FAQs...
+          </div>
+        </div>
+      `;
+      messages.scrollTop = messages.scrollHeight;
+
+      try {
+        const res = await API.post('/chatbot/query', { question });
+        const typingEl = document.getElementById(typingId);
+        if (typingEl) typingEl.remove();
+
+        const data = res.data;
+        let html = `
+          <div style="display: flex; gap: 0.85rem; max-width: 85%;">
+            <div style="width: 34px; height: 34px; border-radius: 50%; background: #2563eb; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0;">🤖</div>
+            <div style="background: #ffffff; padding: 0.9rem 1.15rem; border-radius: 16px; border-top-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; font-size: 0.9rem; color: #1e293b; line-height: 1.5; width: 100%;">
+              <div style="font-size: 0.725rem; color: #2563eb; font-weight: 700; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; background: #eff6ff; padding: 0.2rem 0.55rem; border-radius: 12px; width: fit-content;">
+                <i class="fa-solid fa-microchip"></i> Strategy: ${data.matchedStrategy || 'Fallback'} (Confidence: ${Math.round((data.confidenceScore||0)*100)}%)
+              </div>
+              <div style="color: #0f172a;">${data.answer}</div>
+        `;
+
+        if (data.relatedFaqs && data.relatedFaqs.length > 0) {
+          html += `
+            <div style="margin-top: 0.75rem; padding-top: 0.65rem; border-top: 1px dashed #e2e8f0;">
+              <div style="font-size: 0.78rem; font-weight: 700; color: #64748b; margin-bottom: 0.35rem;">Related Questions:</div>
+          `;
+          data.relatedFaqs.forEach(faq => {
+            const safeQ = faq.question.replaceAll("'", "\\'");
+            html += `<div onclick="askFaq('${safeQ}')" style="font-size: 0.825rem; color: #2563eb; cursor: pointer; margin-top: 0.2rem; font-weight: 600; hover: underline;">• ${faq.question}</div>`;
+          });
+          html += `</div>`;
+        }
+
+        if (data.suggestTicket) {
+          html += `
+            <div style="margin-top: 0.85rem; padding: 0.65rem; background: #fffbeb; border: 1px solid #fef3c7; border-radius: 10px;">
+              <div style="font-size: 0.8rem; color: #b45309; font-weight: 600; margin-bottom: 0.35rem;">Didn't get what you were looking for?</div>
+              <a href="my-tickets.html" class="btn btn-warning btn-sm" style="background: #f59e0b; border-color: #d97706; color: #0f172a; font-weight: 700; display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.78rem;">
+                <i class="fa-solid fa-plus"></i> Submit Support Ticket
+              </a>
+            </div>
+          `;
+        }
+
+        html += `</div></div>`;
+
+        messages.innerHTML += html;
+        messages.scrollTop = messages.scrollHeight;
+      } catch (err) {
+        const typingEl = document.getElementById(typingId);
+        if (typingEl) typingEl.remove();
+
+        messages.innerHTML += `
+          <div style="display: flex; gap: 0.85rem; max-width: 85%;">
+            <div style="width: 34px; height: 34px; border-radius: 50%; background: #ef4444; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0;">⚠️</div>
+            <div style="background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 0.85rem 1.1rem; border-radius: 14px; font-size: 0.85rem;">
+              An error occurred while connecting to the FAQ matching service. Please try again.
+            </div>
+          </div>
+        `;
+        messages.scrollTop = messages.scrollHeight;
+      }
+    }
+
+    function askFaq(q) {
+      document.getElementById('page-chat-input').value = q;
+      handlePageSend();
+    }
+  </script>
+</body>
+</html>

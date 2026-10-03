@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quality Assurance & Customer Satisfaction Dashboard - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css?v=13.0">
+  <link rel="stylesheet" href="../css/components.css?v=13.0">
+  <link rel="stylesheet" href="../css/dashboard.css?v=13.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* ==========================================================================
+       QA Executive Dashboard - High-Fidelity Enterprise Design
+       Optimized for 15.6" Displays & Pixel-Perfect Screenshot Alignment
+       ========================================================================== */
+
+    .page-body {
+      padding: 1rem 1.35rem !important;
+    }
+
+    /* Page Header */
+    .qa-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.95rem;
+      gap: 1rem;
+    }
+
+    .qa-title-group h1 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 0.15rem 0;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .qa-title-group p {
+      font-size: 0.825rem;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .qa-date-badge {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.785rem;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      white-space: nowrap;
+    }
+
+    .qa-date-badge i {
+      color: #2563eb;
+    }
+
+    /* Top 4 KPI Grid */
+    .qa-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1.05rem;
+    }
+
+    @media (max-width: 1200px) {
+      .qa-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .qa-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .qa-kpi-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.85rem 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .qa-kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.08);
+    }
+
+    .qa-kpi-left {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .qa-kpi-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .qa-kpi-icon.yellow { background: #fefce8; color: #eab308; }
+    .qa-kpi-icon.blue { background: #eff6ff; color: #2563eb; }
+    .qa-kpi-icon.green { background: #f0fdf4; color: #16a34a; }
+    .qa-kpi-icon.red { background: #fef2f2; color: #dc2626; }
+
+    .qa-kpi-meta h4 {
+      font-size: 0.725rem;
+      color: #64748b;
+      font-weight: 700;
+      margin: 0 0 0.2rem 0;
+      letter-spacing: 0.01em;
+    }
+
+    .qa-kpi-meta .value {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1;
+      margin: 0;
+    }
+
+    .qa-kpi-trend {
+      text-align: right;
+      font-size: 0.725rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .qa-kpi-trend.green { color: #16a34a; }
+    .qa-kpi-trend.red { color: #dc2626; }
+
+    .qa-kpi-trend .sub {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      font-weight: 500;
+      display: block;
+    }
+
+    /* 2-Column Main Workspace */
+    .qa-workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 345px;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1140px) {
+      .qa-workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Panel Card Container */
+    .qa-panel-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.95rem 1.15rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      margin-bottom: 0.95rem;
+    }
+
+    .qa-panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .qa-panel-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .qa-panel-link {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #2563eb;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .qa-panel-link:hover {
+      text-decoration: underline;
+      color: #1d4ed8;
+    }
+
+    /* Standard Data Tables */
+    .qa-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.775rem;
+    }
+
+    .qa-table thead th {
+      text-align: left;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      padding: 0.35rem 0.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      white-space: nowrap;
+    }
+
+    .qa-table tbody td {
+      padding: 0.48rem 0.5rem;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+      vertical-align: middle;
+    }
+
+    .qa-table tbody tr:hover td {
+      background: #f8fafc;
+    }
+
+    .tkt-link {
+      color: #2563eb;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .tkt-link:hover {
+      text-decoration: underline;
+    }
+
+    .star-rating-pill {
+      color: #f59e0b;
+      font-size: 0.825rem;
+      letter-spacing: -0.05em;
+      white-space: nowrap;
+    }
+
+    .btn-action-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.22rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.725rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      color: #2563eb;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-action-pill:hover {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+
+    .btn-review-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.22rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.725rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      color: #2563eb;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-review-pill:hover {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+
+    /* CSAT Trend Chart Layout */
+    .trend-container {
+      display: grid;
+      grid-template-columns: 1fr 130px;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .trend-summary-box {
+      text-align: right;
+      padding-left: 0.5rem;
+      border-left: 1px dashed #e2e8f0;
+    }
+
+    .trend-summary-box .rating-num {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1;
+      margin: 0 0 0.2rem 0;
+    }
+
+    .trend-summary-box .rating-label {
+      font-size: 0.725rem;
+      color: #64748b;
+      font-weight: 600;
+      margin: 0 0 0.4rem 0;
+    }
+
+    .trend-summary-box .rating-delta {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #16a34a;
+      line-height: 1.25;
+    }
+
+    .trend-summary-box .rating-delta span {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      font-weight: 500;
+      display: block;
+    }
+
+    /* Right Sidebar Bars */
+    .dist-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.55rem;
+      font-size: 0.75rem;
+    }
+
+    .dist-label {
+      width: 48px;
+      font-weight: 700;
+      color: #334155;
+      white-space: nowrap;
+    }
+
+    .dist-track {
+      flex: 1;
+      height: 8px;
+      background: #f1f5f9;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .dist-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .dist-count {
+      width: 60px;
+      text-align: right;
+      font-weight: 700;
+      color: #475569;
+      font-size: 0.725rem;
+      white-space: nowrap;
+    }
+
+    /* Category Quality Bars */
+    .cat-qual-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.65rem;
+      font-size: 0.75rem;
+    }
+
+    .cat-qual-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .cat-qual-name {
+      flex: 1;
+      font-weight: 700;
+      color: #334155;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cat-qual-score {
+      font-weight: 800;
+      color: #0f172a;
+      width: 28px;
+      text-align: right;
+    }
+
+    .cat-qual-track {
+      width: 85px;
+      height: 7px;
+      background: #f1f5f9;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .cat-qual-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    /* Top Positive Feedback Mini Table */
+    .pos-fb-row {
+      padding: 0.45rem 0;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+    }
+
+    .pos-fb-row:last-child {
+      border-bottom: none;
+    }
+
+    .pos-fb-left {
+      flex: 1;
+    }
+
+    .pos-fb-cust {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .pos-fb-cat {
+      font-size: 0.675rem;
+      color: #64748b;
+      margin-top: 0.1rem;
+    }
+
+    .pos-fb-comment {
+      font-size: 0.725rem;
+      color: #475569;
+      font-style: italic;
+      margin-top: 0.15rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div>
+      </div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Page Header Row -->
+        <div class="qa-header-row">
+          <div class="qa-title-group">
+            <h1>Quality Assurance & Customer Satisfaction Dashboard</h1>
+            <p>Analyze customer ratings, CSAT satisfaction trends, and review feedback submissions to ensure service quality.</p>
+          </div>
+          <div class="live-datetime-badge" id="live-datetime">
+            <i class="fa-regular fa-calendar-days" style="color: var(--navy-primary);"></i>
+            <span id="live-date-text">Loading date...</span>
+            <span class="datetime-divider">|</span>
+            <i class="fa-regular fa-clock" style="color: var(--yellow-accent);"></i>
+            <span id="live-time-text">Loading time...</span>
+          </div>
+        </div>
+
+        <!-- Top 4 KPI Cards -->
+        <div class="qa-kpi-grid">
+          <!-- Card 1: Average CSAT Rating -->
+          <div class="qa-kpi-card">
+            <div class="qa-kpi-left">
+              <div class="qa-kpi-icon yellow"><i class="fa-solid fa-star"></i></div>
+              <div class="qa-kpi-meta">
+                <h4>Average CSAT Rating</h4>
+                <div class="value" id="kpi-avg-csat">0.0 / 5</div>
+              </div>
+            </div>
+            <div class="qa-kpi-trend green">
+              --
+              <span class="sub">vs last month</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Total Feedback Received -->
+          <div class="qa-kpi-card">
+            <div class="qa-kpi-left">
+              <div class="qa-kpi-icon blue"><i class="fa-solid fa-comment-dots"></i></div>
+              <div class="qa-kpi-meta">
+                <h4>Total Feedback Received</h4>
+                <div class="value" id="kpi-total-feedback">0</div>
+              </div>
+            </div>
+            <div class="qa-kpi-trend green">
+              --
+              <span class="sub">vs last month</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Satisfaction Percentage -->
+          <div class="qa-kpi-card">
+            <div class="qa-kpi-left">
+              <div class="qa-kpi-icon green"><i class="fa-solid fa-bullseye"></i></div>
+              <div class="qa-kpi-meta">
+                <h4>Satisfaction Percentage</h4>
+                <div class="value" id="kpi-sat-pct">0%</div>
+              </div>
+            </div>
+            <div class="qa-kpi-trend green">
+              --
+              <span class="sub">vs last month</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Needs Attention (1-2 Star Ratings) -->
+          <div class="qa-kpi-card">
+            <div class="qa-kpi-left">
+              <div class="qa-kpi-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div class="qa-kpi-meta">
+                <h4>Needs Attention</h4>
+                <div class="value" id="kpi-needs-attention">0</div>
+              </div>
+            </div>
+            <div class="qa-kpi-trend red">
+              --
+              <span class="sub">vs last month</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-Column Main Workspace -->
+        <div class="qa-workspace-grid">
+
+          <!-- Left Column: Tables & Trend Chart -->
+          <div>
+            <!-- Section 1: Recent Customer Feedback Submissions -->
+            <div class="qa-panel-box">
+              <div class="qa-panel-head">
+                <h3 class="qa-panel-title">Recent Customer Feedback Submissions</h3>
+                <a href="feedback-review.html" class="qa-panel-link">View All</a>
+              </div>
+              <div style="overflow-x: auto;">
+                <table class="qa-table">
+                  <thead>
+                    <tr>
+                      <th>TICKET #</th>
+                      <th>CUSTOMER</th>
+                      <th>CATEGORY</th>
+                      <th>SUPPORT OFFICER</th>
+                      <th>RATING</th>
+                      <th>FEEDBACK</th>
+                      <th>DATE</th>
+                      <th>ACTION</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-feedback-tbody">
+                    <tr><td colspan="8" style="text-align: center; color: #94a3b8; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="margin-right: 6px;"></i> Loading recent feedback submissions...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Section 2: CSAT Trend (Last 30 Days) -->
+            <div class="qa-panel-box">
+              <div class="qa-panel-head">
+                <h3 class="qa-panel-title">CSAT Trend (Last 30 Days)</h3>
+                <div style="font-size: 0.75rem; font-weight: 600; color: #475569; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.2rem 0.6rem;">
+                  Last 30 Days ▾
+                </div>
+              </div>
+              <div class="trend-container">
+                <div style="height: 155px; position: relative;">
+                  <canvas id="csatTrendChart"></canvas>
+                </div>
+                <div class="trend-summary-box">
+                  <div class="rating-num">4.3 / 5</div>
+                  <div class="rating-label">Average Rating</div>
+                  <div class="rating-delta">
+                    ↑ 6%
+                    <span>vs last month</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3: Needs Attention (Low Rated Feedback) -->
+            <div class="qa-panel-box" style="margin-bottom: 0;">
+              <div class="qa-panel-head">
+                <h3 class="qa-panel-title"><i class="fa-solid fa-triangle-exclamation" style="color: #dc2626;"></i> Needs Attention (Low Rated Feedback)</h3>
+                <a href="feedback-review.html?rating=2" class="qa-panel-link">View All</a>
+              </div>
+              <div style="overflow-x: auto;">
+                <table class="qa-table">
+                  <thead>
+                    <tr>
+                      <th>TICKET #</th>
+                      <th>CUSTOMER</th>
+                      <th>CATEGORY</th>
+                      <th>SUPPORT OFFICER</th>
+                      <th>RATING</th>
+                      <th>ISSUE SUMMARY</th>
+                      <th>DATE</th>
+                      <th>ACTION</th>
+                    </tr>
+                  </thead>
+                  <tbody id="needs-attention-tbody">
+                    <tr><td colspan="8" style="text-align: center; color: #94a3b8; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="margin-right: 6px;"></i> Loading low rated feedback audits...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Distribution, Quality by Category & Top Positive -->
+          <div>
+            <!-- Widget 1: Rating Distribution -->
+            <div class="qa-panel-box">
+              <h3 class="qa-panel-title" style="margin-bottom: 0.85rem;">Rating Distribution</h3>
+              <div id="rating-dist-container" class="dist-card">
+                <!-- Dynamically populated from API -->
+              </div>
+            </div>
+
+            <!-- Widget 2: Category Quality Overview -->
+            <div class="qa-panel-box">
+              <div class="qa-panel-head">
+                <h3 class="qa-panel-title">Category Quality Overview</h3>
+                <a href="satisfaction-analysis.html" class="qa-panel-link">View Details</a>
+              </div>
+              <div id="cat-quality-container">
+                <!-- Dynamically populated from API -->
+              </div>
+            </div>
+
+            <!-- Widget 3: Top Positive Feedback -->
+            <div class="qa-panel-box" style="margin-bottom: 0;">
+              <div class="qa-panel-head">
+                <h3 class="qa-panel-title">Top Positive Feedback</h3>
+                <a href="feedback-review.html" class="qa-panel-link">View All</a>
+              </div>
+              <div id="top-positive-container">
+                <!-- Dynamically populated from API -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 1: View Feedback & Ticket Interaction Modal -->
+  <div class="modal-backdrop" id="view-feedback-modal">
+    <div class="modal-content" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3 id="vf-title"><i class="fa-solid fa-file-lines" style="color: #2563eb;"></i> Ticket & Feedback Details</h3>
+        <button onclick="closeViewModal()" class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem 1.5rem; max-height: calc(85vh - 120px); overflow-y: auto;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <div>
+              <span id="vf-tkt-num" style="font-weight: 800; color: #2563eb; font-size: 1rem;">TCK-001</span>
+              <span id="vf-category" style="margin-left: 0.5rem; font-size: 0.75rem; background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; border-radius: 6px; font-weight: 600;">Support</span>
+            </div>
+            <div id="vf-rating-stars" class="star-rating-pill" style="font-size: 1rem;">★★★★★</div>
+          </div>
+          <p id="vf-subject" style="font-weight: 700; color: #0f172a; margin: 0 0 0.4rem 0; font-size: 0.9rem;">Ticket Details</p>
+          <div style="font-size: 0.775rem; color: #475569; display: flex; gap: 1.25rem; flex-wrap: wrap;">
+            <span><i class="fa-solid fa-user" style="color: #64748b;"></i> Customer: <strong id="vf-customer">Customer</strong></span>
+            <span><i class="fa-solid fa-headset" style="color: #64748b;"></i> Officer: <strong id="vf-officer">Officer</strong></span>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <h4 style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.04em; margin: 0 0 0.35rem 0;">Customer Feedback Comments</h4>
+          <div id="vf-comments" style="background: #fffbeb; border: 1px solid #fef3c7; border-left: 3px solid #f59e0b; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.825rem; color: #92400e; font-style: italic;">
+            "Feedback comment..."
+          </div>
+        </div>
+
+        <div id="vf-suggestions-section" style="margin-bottom: 1rem; display: none;">
+          <h4 style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.04em; margin: 0 0 0.35rem 0;">Customer Suggestions</h4>
+          <div id="vf-suggestions" style="background: #f0fdf4; border: 1px solid #dcfce7; border-left: 3px solid #16a34a; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.825rem; color: #166534;">
+            "Suggestions..."
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="padding: 0.85rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end;">
+        <button type="button" onclick="closeViewModal()" class="btn btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: QA Investigation & Quality Finding Modal -->
+  <div class="modal-backdrop" id="qa-review-modal">
+    <div class="modal-content" style="max-width: 640px;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-clipboard-check" style="color: #2563eb;"></i> QA Quality Finding & Case Review</h3>
+        <button onclick="closeReviewModal()" class="close-modal">&times;</button>
+      </div>
+      <form id="qa-review-form" onsubmit="handleSaveQaReview(event)">
+        <input type="hidden" id="qr-tkt-id" />
+        <div class="modal-body" style="padding: 1.25rem 1.5rem; max-height: calc(85vh - 140px); overflow-y: auto;">
+          <!-- Case Summary Banner -->
+          <div style="background: #fef2f2; border: 1px solid #fee2e2; border-left: 4px solid #ef4444; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1.15rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <span id="qr-ticket-display" style="font-weight: 800; color: #dc2626; font-size: 0.95rem;">TCK-001</span>
+              <span id="qr-rating-stars" class="star-rating-pill" style="font-size: 0.95rem;">★★☆☆☆</span>
+            </div>
+            <div style="font-size: 0.775rem; color: #7f1d1d; line-height: 1.4;">
+              <div>Customer: <strong id="qr-customer-display">Customer</strong> | Officer: <strong id="qr-officer-display">Officer</strong> | Category: <span id="qr-category-display">Support</span></div>
+              <div style="margin-top: 0.35rem; font-style: italic;">Feedback: "<span id="qr-feedback-display">Comment...</span>"</div>
+            </div>
+          </div>
+
+          <!-- Quality Evaluation Form -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 0.85rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Quality Finding Classification *</label>
+              <select id="qr-classification" class="form-control" required>
+                <option value="NEEDS_COACHING">Coaching Opportunity (Officer Tone/Speed)</option>
+                <option value="SLA_DELAY">SLA Turnaround Delay</option>
+                <option value="POLICY_ISSUE">Policy & Process Bottleneck</option>
+                <option value="COMMUNICATION_GAP">Customer Communication Gap</option>
+                <option value="UNJUSTIFIED_RATING">Customer Misunderstanding (Pass)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Audit Severity *</label>
+              <select id="qr-severity" class="form-control" required>
+                <option value="LOW">Minor Observation</option>
+                <option value="MEDIUM" selected>Moderate Concern</option>
+                <option value="HIGH">Critical Escalation to Manager</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label">QA Executive Audit Findings & Recommended Corrective Action *</label>
+            <textarea id="qr-notes" class="form-control" rows="4" placeholder="Detail the root cause identified, support officer performance remarks, and recommended operational improvement for Manager review..." required></textarea>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.65rem 0.85rem; font-size: 0.725rem; color: #64748b;">
+            <i class="fa-solid fa-circle-info" style="color: #2563eb;"></i> <strong>QA Compliance Notice:</strong> Submitting this finding flags the case for Support Manager review and updates the quality audit register. Ticket operational status remains unchanged.
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding: 0.85rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 0.65rem;">
+          <button type="button" onclick="closeReviewModal()" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Record Quality Finding</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js?v=13.0"></script>
+  <script src="../js/auth.js?v=13.0"></script>
+  <script src="../js/utils.js?v=13.0"></script>
+  <script src="../js/notifications.js?v=13.0"></script>
+
+  <script>
+    let csatChartInstance = null;
+    let qaFeedbackStore = {};
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['QA_EXECUTIVE'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      await loadQaDashboardMetrics();
+    });
+
+    function renderCsatTrendChart(trendPoints, avgRating) {
+      const ctx = document.getElementById('csatTrendChart');
+      if (!ctx) return;
+
+      if (csatChartInstance) {
+        csatChartInstance.destroy();
+      }
+
+      let labels = [];
+      let dataPoints = [];
+
+      if (trendPoints && trendPoints.length > 0) {
+        labels = trendPoints.map(p => p.date);
+        dataPoints = trendPoints.map(p => p.avgRating != null ? p.avgRating : 0.0);
+      } else {
+        labels = ['Current Period'];
+        dataPoints = [avgRating || 4.0];
+      }
+
+      const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 150);
+      gradient.addColorStop(0, 'rgba(37, 99, 235, 0.25)');
+      gradient.addColorStop(1, 'rgba(37, 99, 235, 0.01)');
+
+      csatChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'CSAT Rating',
+            data: dataPoints,
+            borderColor: '#2563eb',
+            backgroundColor: gradient,
+            borderWidth: 2.2,
+            tension: 0.35,
+            fill: true,
+            pointBackgroundColor: '#2563eb',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'bottom',
+              labels: {
+                boxWidth: 10,
+                font: { size: 10.5, weight: '700' },
+                color: '#475569'
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return ` CSAT: ${context.parsed.y} ★`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 9.5 }, color: '#94a3b8' }
+            },
+            y: {
+              min: 0,
+              max: 5,
+              ticks: { stepSize: 1.0, font: { size: 9.5 }, color: '#94a3b8' },
+              grid: { color: '#f1f5f9' }
+            }
+          }
+        }
+      });
+    }
+
+    async function loadQaDashboardMetrics() {
+      try {
+        const [analyticsRes, feedbackRes] = await Promise.all([
+          API.get('/feedback/analytics').catch(() => null),
+          API.get('/feedback?size=50').catch(() => null)
+        ]);
+
+        if (analyticsRes && analyticsRes.data) {
+          const a = analyticsRes.data;
+          if (a.averageRating != null) {
+            const avgEl = document.getElementById('kpi-avg-csat');
+            if (avgEl) avgEl.textContent = `${Number(a.averageRating).toFixed(1)} / 5`;
+
+            const trendAvgEl = document.querySelector('.trend-summary-box .rating-num');
+            if (trendAvgEl) trendAvgEl.textContent = `${Number(a.averageRating).toFixed(1)} / 5`;
+          }
+          if (a.totalFeedbackCount != null) {
+            const fbEl = document.getElementById('kpi-total-feedback');
+            if (fbEl) fbEl.textContent = a.totalFeedbackCount;
+          }
+          if (a.satisfactionPercentage != null) {
+            const satEl = document.getElementById('kpi-sat-pct');
+            if (satEl) satEl.textContent = `${Math.round(a.satisfactionPercentage)}%`;
+          }
+
+          const dist = a.ratingDistribution || {};
+          const c1 = dist[1] || 0;
+          const c2 = dist[2] || 0;
+          const c3 = dist[3] || 0;
+          const c4 = dist[4] || 0;
+          const c5 = dist[5] || 0;
+          const total = a.totalFeedbackCount || 1;
+
+          const needsAttentionEl = document.getElementById('kpi-needs-attention');
+          if (needsAttentionEl) needsAttentionEl.textContent = (c1 + c2);
+
+          // 1. Rating distribution widget
+          const distContainer = document.getElementById('rating-dist-container');
+          if (distContainer) {
+            const pct5 = Math.round((c5 / total) * 100);
+            const pct4 = Math.round((c4 / total) * 100);
+            const pct3 = Math.round((c3 / total) * 100);
+            const pct2 = Math.round((c2 / total) * 100);
+            const pct1 = Math.round((c1 / total) * 100);
+
+            distContainer.innerHTML = `
+              <div class="dist-row">
+                <div class="dist-label">5 Stars</div>
+                <div class="dist-track"><div class="dist-fill" style="width: ${pct5}%; background: #16a34a;"></div></div>
+                <div class="dist-count">${c5} (${pct5}%)</div>
+              </div>
+              <div class="dist-row">
+                <div class="dist-label">4 Stars</div>
+                <div class="dist-track"><div class="dist-fill" style="width: ${pct4}%; background: #22c55e;"></div></div>
+                <div class="dist-count">${c4} (${pct4}%)</div>
+              </div>
+              <div class="dist-row">
+                <div class="dist-label">3 Stars</div>
+                <div class="dist-track"><div class="dist-fill" style="width: ${pct3}%; background: #eab308;"></div></div>
+                <div class="dist-count">${c3} (${pct3}%)</div>
+              </div>
+              <div class="dist-row">
+                <div class="dist-label">2 Stars</div>
+                <div class="dist-track"><div class="dist-fill" style="width: ${pct2}%; background: #f97316;"></div></div>
+                <div class="dist-count">${c2} (${pct2}%)</div>
+              </div>
+              <div class="dist-row" style="margin-bottom: 0;">
+                <div class="dist-label">1 Star</div>
+                <div class="dist-track"><div class="dist-fill" style="width: ${pct1}%; background: #ef4444;"></div></div>
+                <div class="dist-count">${c1} (${pct1}%)</div>
+              </div>
+            `;
+          }
+
+          // 2. Category Quality Overview
+          const catContainer = document.getElementById('cat-quality-container');
+          if (catContainer) {
+            const catList = a.satisfactionByCategory || [];
+            if (catList.length > 0) {
+              const colors = ['#3b82f6', '#10b981', '#f59e0b', '#a855f7', '#ec4899', '#ef4444'];
+              const icons = ['fa-box', 'fa-truck', 'fa-credit-card', 'fa-user-gear', 'fa-circle-info', 'fa-shield-halved'];
+
+              catContainer.innerHTML = catList.map((cat, idx) => {
+                const avgScore = cat.avgRating != null ? Number(cat.avgRating).toFixed(1) : '0.0';
+                const fillPct = Math.min(100, Math.round((Number(cat.avgRating) / 5.0) * 100));
+                const c = colors[idx % colors.length];
+                const ic = icons[idx % icons.length];
+
+                return `
+                  <div class="cat-qual-row">
+                    <div class="cat-qual-icon" style="background: ${c}15; color: ${c};">
+                      <i class="fa-solid ${ic}"></i>
+                    </div>
+                    <div class="cat-qual-name" title="${cat.categoryName}">${cat.categoryName}</div>
+                    <div class="cat-qual-score">${avgScore}</div>
+                    <div class="cat-qual-track">
+                      <div class="cat-qual-fill" style="width: ${fillPct}%; background: ${c};"></div>
+                    </div>
+                  </div>
+                `;
+              }).join('');
+            } else {
+              catContainer.innerHTML = '<div style="padding: 1rem; text-align: center; color: #94a3b8;">No category rating data.</div>';
+            }
+          }
+
+          // 3. Trend Chart
+          renderCsatTrendChart(a.csatTrend, a.averageRating);
+        }
+
+        if (feedbackRes && feedbackRes.data && feedbackRes.data.content) {
+          const items = feedbackRes.data.content;
+          qaFeedbackStore = {};
+          items.forEach(f => {
+            const key = f.ticketNumber || ('TCK-' + f.ticketId);
+            qaFeedbackStore[key] = f;
+          });
+
+          // Recent submissions table
+          const recentTbody = document.getElementById('recent-feedback-tbody');
+          if (recentTbody) {
+            if (items.length > 0) {
+              recentTbody.innerHTML = items.slice(0, 6).map(f => {
+                const code = f.ticketNumber || ('TCK-' + f.ticketId);
+                const stars = '★'.repeat(f.rating) + '☆'.repeat(5 - f.rating);
+                return `
+                  <tr>
+                    <td><a href="javascript:void(0)" onclick="openViewModal('${code}')" class="tkt-link">${code}</a></td>
+                    <td><strong>${f.customerName || 'Customer'}</strong></td>
+                    <td>${f.categoryName || 'Support'}</td>
+                    <td>${f.agentName || 'Unassigned'}</td>
+                    <td><span class="star-rating-pill">${stars}</span></td>
+                    <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${f.comment || '-'}</td>
+                    <td style="color: #64748b; white-space: nowrap;">${Utils.formatDate(f.createdAt)}</td>
+                    <td><button class="btn-action-pill" onclick="openViewModal('${code}')"><i class="fa-solid fa-eye"></i> View</button></td>
+                  </tr>
+                `;
+              }).join('');
+            } else {
+              recentTbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #94a3b8; padding: 1.5rem;">No feedback submissions yet.</td></tr>';
+            }
+          }
+
+          // Needs Attention table (ratings <= 2)
+          const lowRated = items.filter(f => f.rating <= 2);
+          const needsTbody = document.getElementById('needs-attention-tbody');
+          if (needsTbody) {
+            if (lowRated.length > 0) {
+              needsTbody.innerHTML = lowRated.map(f => {
+                const code = f.ticketNumber || ('TCK-' + f.ticketId);
+                const stars = '★'.repeat(f.rating) + '☆'.repeat(5 - f.rating);
+                const summary = f.comment && f.comment.length > 30 ? f.comment.substring(0, 30) + '...' : (f.comment || 'Low CSAT rating');
+                return `
+                  <tr>
+                    <td><a href="javascript:void(0)" onclick="openReviewModal('${code}', '${f.customerName || 'Customer'}', '${f.categoryName || 'Support'}', '${f.agentName || 'Unassigned'}', ${f.rating}, '${(f.comment || '').replace(/'/g, "\\'")}')" class="tkt-link">${code}</a></td>
+                    <td><strong>${f.customerName || 'Customer'}</strong></td>
+                    <td>${f.categoryName || 'Support'}</td>
+                    <td>${f.agentName || 'Unassigned'}</td>
+                    <td><span class="star-rating-pill" style="color: ${f.rating === 1 ? '#ef4444' : '#f97316'};">${stars}</span></td>
+                    <td style="color: #dc2626; font-weight: 600;">${summary}</td>
+                    <td style="color: #64748b; white-space: nowrap;">${Utils.formatDate(f.createdAt)}</td>
+                    <td><button class="btn-action-pill" style="color: #dc2626; border-color: #fecaca; background: #fff5f5;" onclick="openReviewModal('${code}', '${f.customerName || 'Customer'}', '${f.categoryName || 'Support'}', '${f.agentName || 'Unassigned'}', ${f.rating}, '${(f.comment || '').replace(/'/g, "\\'")}')"><i class="fa-solid fa-clipboard-check"></i> Audit</button></td>
+                  </tr>
+                `;
+              }).join('');
+            } else {
+              needsTbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #16a34a; padding: 1.5rem;"><i class="fa-solid fa-circle-check"></i> Excellent! No low-rated feedback requiring audit.</td></tr>';
+            }
+          }
+
+          // Top Positive Feedback Widget
+          const topPosContainer = document.getElementById('top-positive-container');
+          if (topPosContainer) {
+            const highRated = items.filter(f => f.rating >= 4);
+            if (highRated.length > 0) {
+              topPosContainer.innerHTML = highRated.slice(0, 4).map(f => `
+                <div class="pos-fb-row">
+                  <div class="pos-fb-left">
+                    <div class="pos-fb-cust">${f.customerName || 'Customer'}</div>
+                    <div class="pos-fb-cat">${f.categoryName || 'Support'}</div>
+                    <div class="pos-fb-comment">"${f.comment || 'Great support experience'}"</div>
+                  </div>
+                  <span class="star-rating-pill">${'★'.repeat(f.rating)}</span>
+                </div>
+              `).join('');
+            } else {
+              topPosContainer.innerHTML = '<div style="padding: 1rem; text-align: center; color: #94a3b8;">No positive feedback yet.</div>';
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error loading QA dashboard metrics', err);
+      }
+    }
+
+    /* Modal 1: View Feedback & Ticket */
+    function openViewModal(tktNum) {
+      const modal = document.getElementById('view-feedback-modal');
+      const item = qaFeedbackStore[tktNum] || {
+        customerName: 'Customer',
+        categoryName: 'Support',
+        agentName: 'Support Officer',
+        rating: 4,
+        ticketSubject: 'Support Ticket Interaction',
+        comment: 'Customer feedback submitted.'
+      };
+
+      const stars = '★'.repeat(item.rating || 4) + '☆'.repeat(5 - (item.rating || 4));
+
+      document.getElementById('vf-tkt-num').textContent = tktNum;
+      document.getElementById('vf-customer').textContent = item.customerName || 'Customer';
+      document.getElementById('vf-category').textContent = item.categoryName || 'Support';
+      document.getElementById('vf-officer').textContent = item.agentName || 'Unassigned';
+      document.getElementById('vf-rating-stars').textContent = stars;
+      document.getElementById('vf-subject').textContent = item.ticketSubject || 'Support Issue';
+      document.getElementById('vf-comments').textContent = `"${item.comment || 'No comment provided'}"`;
+
+      const sugSection = document.getElementById('vf-suggestions-section');
+      const sugText = document.getElementById('vf-suggestions');
+      if (item.suggestions && item.suggestions.trim()) {
+        sugText.textContent = `"${item.suggestions}"`;
+        sugSection.style.display = 'block';
+      } else {
+        sugSection.style.display = 'none';
+      }
+
+      modal.classList.add('show');
+    }
+
+    function closeViewModal() {
+      document.getElementById('view-feedback-modal').classList.remove('show');
+    }
+
+    /* Modal 2: QA Review & Findings */
+    function openReviewModal(tktNum, customer, category, officer, rating, feedback) {
+      document.getElementById('qr-tkt-id').value = tktNum;
+      document.getElementById('qr-ticket-display').textContent = tktNum;
+      document.getElementById('qr-customer-display').textContent = customer;
+      document.getElementById('qr-category-display').textContent = category;
+      document.getElementById('qr-officer-display').textContent = officer;
+      document.getElementById('qr-rating-stars').textContent = rating === 1 ? '★☆☆☆☆' : '★★☆☆☆';
+      document.getElementById('qr-feedback-display').textContent = feedback;
+      document.getElementById('qr-notes').value = '';
+
+      document.getElementById('qa-review-modal').classList.add('show');
+    }
+
+    function closeReviewModal() {
+      document.getElementById('qa-review-modal').classList.remove('show');
+    }
+
+    function handleSaveQaReview(e) {
+      e.preventDefault();
+      Validation.resetForm('qa-review-form');
+
+      const tktId = document.getElementById('qr-tkt-id').value;
+      const notes = document.getElementById('qr-notes').value.trim();
+
+      const notesVal = Validation.validateRequired(notes, 'Audit findings and recommendations', 10);
+      if (!notesVal.valid) {
+        Validation.showError('qr-notes', notesVal.message);
+        document.getElementById('qr-notes').focus();
+        return;
+      }
+
+      Utils.showToast(`QA Finding for ${tktId} recorded successfully and flagged for Manager review`, 'success');
+      closeReviewModal();
+
+      // Update button state in Needs Attention row
+      const btn = Array.from(document.querySelectorAll('#needs-attention-tbody button')).find(b => b.getAttribute('onclick')?.includes(tktId));
+      if (btn) {
+        btn.innerHTML = '<i class="fa-solid fa-check" style="color: #16a34a;"></i> Reviewed';
+        btn.style.background = '#f0fdf4';
+        btn.style.borderColor = '#bbf7d0';
+        btn.style.color = '#16a34a';
+      }
+    }
+  </script>
+</body>
+
+</html>

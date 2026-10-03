@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Dashboard - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css?v=13.0">
+  <link rel="stylesheet" href="../css/components.css?v=13.0">
+  <link rel="stylesheet" href="../css/dashboard.css?v=13.0">
+
+  <style>
+    /* ==========================================================================
+       Customer Portal Dashboard - High-Fidelity E-Commerce Experience
+       Optimized for 15.6" Displays & Pixel-Perfect Screenshot Alignment
+       ========================================================================== */
+
+    .page-body {
+      padding: 1rem 1.35rem !important;
+    }
+
+    /* Page Header */
+    .cust-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.95rem;
+      gap: 1rem;
+    }
+
+    .cust-title-group h1 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 0.15rem 0;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .cust-title-group p {
+      font-size: 0.825rem;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .btn-create-ticket-header {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #ffffff;
+      font-size: 0.825rem;
+      font-weight: 700;
+      padding: 0.55rem 1.15rem;
+      border-radius: 10px;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .btn-create-ticket-header:hover {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.45);
+      color: #ffffff;
+    }
+
+    /* Top 4 KPI Grid */
+    .cust-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1.05rem;
+    }
+
+    @media (max-width: 1180px) {
+      .cust-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .cust-kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .cust-kpi-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.85rem 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+    }
+
+    .cust-kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.08);
+    }
+
+    .cust-kpi-left {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .cust-kpi-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .cust-kpi-icon.blue { background: #eff6ff; color: #2563eb; }
+    .cust-kpi-icon.amber { background: #fffbeb; color: #d97706; }
+    .cust-kpi-icon.green { background: #f0fdf4; color: #16a34a; }
+    .cust-kpi-icon.purple { background: #faf5ff; color: #9333ea; }
+
+    .cust-kpi-meta h4 {
+      font-size: 0.725rem;
+      color: #64748b;
+      font-weight: 700;
+      margin: 0 0 0.15rem 0;
+      letter-spacing: 0.01em;
+    }
+
+    .cust-kpi-meta .value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1;
+      margin: 0;
+    }
+
+    .cust-kpi-trend {
+      text-align: right;
+      font-size: 0.725rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: #64748b;
+    }
+
+    .cust-kpi-trend.green { color: #16a34a; }
+
+    .cust-kpi-trend .sub {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      font-weight: 500;
+      display: block;
+    }
+
+    /* 2-Column Main Workspace */
+    .cust-workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 345px;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1140px) {
+      .cust-workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Panels */
+    .cust-panel-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.95rem 1.15rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      margin-bottom: 0.95rem;
+    }
+
+    .cust-panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .cust-panel-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+    }
+
+    .cust-panel-link {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #2563eb;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .cust-panel-link:hover {
+      text-decoration: underline;
+      color: #1d4ed8;
+    }
+
+    /* Table */
+    .cust-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.775rem;
+    }
+
+    .cust-table thead th {
+      text-align: left;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #64748b;
+      padding: 0.35rem 0.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      white-space: nowrap;
+    }
+
+    .cust-table tbody td {
+      padding: 0.55rem 0.5rem;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+      vertical-align: middle;
+    }
+
+    .cust-table tbody tr:hover td {
+      background: #f8fafc;
+    }
+
+    .tkt-link {
+      color: #2563eb;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .tkt-link:hover {
+      text-decoration: underline;
+    }
+
+    .order-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: #f1f5f9;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      color: #475569;
+    }
+
+    .cat-link {
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    .btn-view-pill {
+      background: #eff6ff;
+      color: #2563eb;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.725rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: all 0.15s ease;
+    }
+
+    .btn-view-pill:hover {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+
+    /* Popular FAQs Light Cards */
+    .faq-light-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.65rem 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.45rem;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .faq-light-card:hover {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+      transform: translateX(2px);
+    }
+
+    .faq-card-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .faq-card-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .faq-card-title {
+      font-size: 0.785rem;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.25;
+    }
+
+    .faq-arrow {
+      color: #94a3b8;
+      font-size: 0.75rem;
+    }
+
+    .faq-light-card:hover .faq-arrow {
+      color: #2563eb;
+    }
+
+    /* Need Help Card */
+    .need-help-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.15rem;
+      text-align: left;
+    }
+
+    .need-help-header {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .need-help-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #eff6ff;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .need-help-title {
+      font-size: 0.885rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+      line-height: 1.25;
+    }
+
+    .need-help-sub {
+      font-size: 0.75rem;
+      color: #64748b;
+      line-height: 1.4;
+      margin: 0 0 0.85rem 0;
+    }
+
+    .btn-create-ticket-blue {
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 0.785rem;
+      font-weight: 700;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-create-ticket-blue:hover {
+      background: #1d4ed8;
+      color: #ffffff;
+    }
+
+    /* Bottom Guide Banner */
+    .guide-banner {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.85rem 1.15rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      margin-top: 0.5rem;
+      gap: 1rem;
+    }
+
+    .guide-banner-left h4 {
+      margin: 0 0 0.15rem 0;
+      font-size: 0.885rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .guide-banner-left p {
+      margin: 0;
+      font-size: 0.775rem;
+      color: #64748b;
+    }
+
+    .btn-watch-guide {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #2563eb;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-watch-guide:hover {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div>
+      </div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <!-- Page Header Row with Prominent + Create Support Ticket Button -->
+        <div class="cust-header-row">
+          <div class="cust-title-group">
+            <h1 id="welcome-greeting">Welcome to SupportHUB 👋</h1>
+            <p>Track your active support inquiries, view ticket resolutions, or open a new request.</p>
+          </div>
+          <button onclick="openCreateTicketModal()" class="btn-create-ticket-header">
+            <i class="fa-solid fa-plus"></i> Create Support Ticket
+          </button>
+        </div>
+
+        <!-- Top 4 Clean KPI Cards -->
+        <div class="cust-kpi-grid">
+          <!-- Card 1: Open Tickets -->
+          <div class="cust-kpi-card" onclick="window.location.href='my-tickets.html?status=OPEN'">
+            <div class="cust-kpi-left">
+              <div class="cust-kpi-icon blue"><i class="fa-solid fa-ticket-simple"></i></div>
+              <div class="cust-kpi-meta">
+                <h4>Open Tickets</h4>
+                <div class="value" id="stat-open">0</div>
+              </div>
+            </div>
+            <div class="cust-kpi-trend">
+              Queue
+              <span class="sub">active tickets</span>
+            </div>
+          </div>
+
+          <!-- Card 2: In Progress -->
+          <div class="cust-kpi-card" onclick="window.location.href='my-tickets.html?status=IN_PROGRESS'">
+            <div class="cust-kpi-left">
+              <div class="cust-kpi-icon amber"><i class="fa-solid fa-arrows-rotate"></i></div>
+              <div class="cust-kpi-meta">
+                <h4>In Progress</h4>
+                <div class="value" id="stat-progress">0</div>
+              </div>
+            </div>
+            <div class="cust-kpi-trend green">
+              Assigned
+              <span class="sub">with officer</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Resolved -->
+          <div class="cust-kpi-card" onclick="window.location.href='my-tickets.html?status=RESOLVED'">
+            <div class="cust-kpi-left">
+              <div class="cust-kpi-icon green"><i class="fa-solid fa-circle-check"></i></div>
+              <div class="cust-kpi-meta">
+                <h4>Resolved</h4>
+                <div class="value" id="stat-resolved">0</div>
+              </div>
+            </div>
+            <div class="cust-kpi-trend green">
+              Solved
+              <span class="sub">completed</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Closed -->
+          <div class="cust-kpi-card" onclick="window.location.href='my-tickets.html?status=CLOSED'">
+            <div class="cust-kpi-left">
+              <div class="cust-kpi-icon purple"><i class="fa-solid fa-folder-closed"></i></div>
+              <div class="cust-kpi-meta">
+                <h4>Closed</h4>
+                <div class="value" id="stat-closed">0</div>
+              </div>
+            </div>
+            <div class="cust-kpi-trend green">
+              Archived
+              <span class="sub">closed tickets</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-Column Main Workspace -->
+        <div class="cust-workspace-grid">
+
+          <!-- Left Column: My Recent Support Tickets -->
+          <div>
+            <div class="cust-panel-box">
+              <div class="cust-panel-head">
+                <h3 class="cust-panel-title">My Recent Support Tickets</h3>
+                <a href="my-tickets.html" class="cust-panel-link">View All Tickets →</a>
+              </div>
+              <div style="overflow-x: auto;">
+                <table class="cust-table">
+                  <thead>
+                    <tr>
+                      <th>TICKET #</th>
+                      <th>SUBJECT</th>
+                      <th>RELATED ORDER</th>
+                      <th>CATEGORY</th>
+                      <th>PRIORITY</th>
+                      <th>STATUS</th>
+                      <th>CREATED</th>
+                      <th>ACTION</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-tickets-body">
+                    <tr><td colspan="8" style="text-align: center; color: #64748b; padding: 1.5rem;">Loading recent tickets...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Bottom Video / Getting Started Guide Banner -->
+            <div class="guide-banner">
+              <div class="guide-banner-left">
+                <h4>Need Help Getting Started?</h4>
+                <p>Learn how to create a support ticket, track your order, and reach our support team.</p>
+              </div>
+              <a href="knowledge-base.html" class="btn-watch-guide">
+                <i class="fa-regular fa-circle-play"></i> Browse Knowledge Base
+              </a>
+            </div>
+          </div>
+
+          <!-- Right Column: Popular FAQs & Need Help? -->
+          <div>
+            <!-- Section 1: Popular FAQs -->
+            <div class="cust-panel-box">
+              <div class="cust-panel-head">
+                <h3 class="cust-panel-title">Popular FAQs</h3>
+                <a href="knowledge-base.html" class="cust-panel-link">Browse All</a>
+              </div>
+              <div id="popular-faqs-list">
+                <div style="text-align: center; padding: 1rem; color: #64748b; font-size: 0.8rem;">
+                  Loading FAQs...
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: Need Help? Card -->
+            <div class="need-help-card">
+              <div class="need-help-header">
+                <div class="need-help-icon">
+                  <i class="fa-solid fa-headset"></i>
+                </div>
+                <h4 class="need-help-title">Can't find the answer you're looking for?</h4>
+              </div>
+              <p class="need-help-sub">Our support team is here to help. Create a support ticket and we'll get back to you as soon as possible.</p>
+              <button onclick="openCreateTicketModal()" class="btn-create-ticket-blue">
+                <i class="fa-solid fa-paper-plane"></i> Create Support Ticket
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Support Ticket Modal (Centered with frame breathing room) -->
+  <div class="modal-backdrop" id="create-ticket-modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-circle-plus" style="color: #f59e0b;"></i> Create Support Ticket</h3>
+        <button onclick="closeCreateTicketModal()" class="close-modal">&times;</button>
+      </div>
+      <form id="create-ticket-form" onsubmit="handleCreateTicket(event)">
+        <div class="modal-body" style="padding: 1.25rem 1.5rem; max-height: calc(85vh - 140px); overflow-y: auto;">
+          <div class="form-group">
+            <label class="form-label">Ticket Subject *</label>
+            <input type="text" id="modal-subject" class="form-control" placeholder="e.g. Inquiry about product order" required />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 0.85rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Support Category *</label>
+              <select id="modal-category" class="form-control" required>
+                <option value="1">Order Issues</option>
+                <option value="2">Delivery Issues</option>
+                <option value="3" selected>Payment & Refunds</option>
+                <option value="4">Account Issues</option>
+                <option value="5">Product Information</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Related Order # (Optional)</label>
+              <input type="text" id="modal-order-number" class="form-control" placeholder="e.g. ORD-50218" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Priority Level *</label>
+            <select id="modal-priority" class="form-control" required>
+              <option value="LOW">Low - General Inquiry</option>
+              <option value="MEDIUM" selected>Medium - Normal Issue</option>
+              <option value="HIGH">High - Urgent / Delayed Delivery / Payment</option>
+              <option value="URGENT">Urgent - Critical Escalation</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Issue Description *</label>
+            <textarea id="modal-description" class="form-control" rows="4" placeholder="Please describe your issue clearly so our officers can resolve it swiftly..." required></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding: 0.85rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 0.65rem;">
+          <button type="button" onclick="closeCreateTicketModal()" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-color: #d97706;">
+            <i class="fa-solid fa-paper-plane"></i> Submit Ticket
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js?v=13.0"></script>
+  <script src="../js/auth.js?v=13.0"></script>
+  <script src="../js/utils.js?v=13.0"></script>
+  <script src="../js/notifications.js?v=13.0"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['CUSTOMER'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      const user = Auth.getUser();
+      if (user && user.fullName) {
+        const greetEl = document.getElementById('welcome-greeting');
+        if (greetEl) greetEl.textContent = `Welcome Back, ${user.fullName}! 👋`;
+      }
+
+      await loadCustomerDashboardData();
+      await loadPopularFaqs();
+    });
+
+    async function loadCustomerDashboardData() {
+      try {
+        const res = await API.get('/tickets/my?page=0&size=50').catch(() => null);
+        const tickets = res && res.data && res.data.content ? res.data.content : [];
+
+        let open = 0, progress = 0, resolved = 0, closed = 0;
+        tickets.forEach(t => {
+          if (t.status === 'OPEN') open++;
+          else if (t.status === 'IN_PROGRESS' || t.status === 'WAITING_FOR_CUSTOMER' || t.status === 'ESCALATED') progress++;
+          else if (t.status === 'RESOLVED') resolved++;
+          else if (t.status === 'CLOSED') closed++;
+        });
+
+        document.getElementById('stat-open').textContent = open;
+        document.getElementById('stat-progress').textContent = progress;
+        document.getElementById('stat-resolved').textContent = resolved;
+        document.getElementById('stat-closed').textContent = closed;
+
+        // Render recent tickets table
+        const tbody = document.getElementById('recent-tickets-body');
+        if (tbody) {
+          if (tickets.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #64748b; padding: 1.5rem;">No support tickets created yet. Click "Create Support Ticket" to start.</td></tr>';
+          } else {
+            const recent = tickets.slice(0, 5);
+            tbody.innerHTML = recent.map(t => {
+              const priorityClass = t.priority ? t.priority.toLowerCase() : 'medium';
+              const statusClass = t.status ? t.status.toLowerCase() : 'open';
+              return `
+                <tr>
+                  <td><a href="ticket-details.html?id=${t.id}" class="tkt-link">${t.ticketNumber}</a></td>
+                  <td><strong>${escapeHtml(t.subject)}</strong></td>
+                  <td>${t.orderNumber ? `<span class="order-tag">${escapeHtml(t.orderNumber)}</span>` : '<span style="color: #94a3b8;">-</span>'}</td>
+                  <td><span class="cat-link">${escapeHtml(t.categoryName || 'Support')}</span></td>
+                  <td><span class="badge badge-${priorityClass}">${t.priority}</span></td>
+                  <td><span class="badge badge-${statusClass}">${t.status.replace(/_/g, ' ')}</span></td>
+                  <td style="color: #64748b; white-space: nowrap;">${Utils.formatDate(t.createdAt)}</td>
+                  <td><a href="ticket-details.html?id=${t.id}" class="btn-view-pill"><i class="fa-solid fa-eye"></i> View</a></td>
+                </tr>
+              `;
+            }).join('');
+          }
+        }
+      } catch (err) {
+        console.error('Error loading customer dashboard live data', err);
+      }
+    }
+
+    async function loadPopularFaqs() {
+      const faqContainer = document.getElementById('popular-faqs-list');
+      if (!faqContainer) return;
+
+      try {
+        const res = await API.get('/faqs/public');
+        const faqs = (res && res.data) ? res.data : [];
+
+        if (faqs.length === 0) {
+          faqContainer.innerHTML = `
+            <div style="text-align: center; padding: 1.25rem 0.75rem; color: #64748b; font-size: 0.8rem;">
+              <i class="fa-solid fa-circle-question" style="font-size: 1.5rem; color: #cbd5e1; margin-bottom: 0.35rem; display: block;"></i>
+              No FAQs published yet. Check back soon.
+            </div>
+          `;
+          return;
+        }
+
+        const popular = faqs.slice(0, 5);
+        const ICONS = [
+          { bg: '#fef2f2', color: '#ef4444', icon: 'fa-credit-card' },
+          { bg: '#eff6ff', color: '#2563eb', icon: 'fa-box' },
+          { bg: '#f0fdf4', color: '#16a34a', icon: 'fa-lock' },
+          { bg: '#fffbeb', color: '#d97706', icon: 'fa-cart-shopping' },
+          { bg: '#faf5ff', color: '#9333ea', icon: 'fa-gear' }
+        ];
+
+        faqContainer.innerHTML = popular.map((f, idx) => {
+          const ic = ICONS[idx % ICONS.length];
+          return `
+            <a href="knowledge-base.html?q=${encodeURIComponent(f.question)}" class="faq-light-card">
+              <div class="faq-card-left">
+                <div class="faq-card-icon" style="background: ${ic.bg}; color: ${ic.color};">
+                  <i class="fa-solid ${ic.icon}"></i>
+                </div>
+                <span class="faq-card-title">${escapeHtml(f.question)}</span>
+              </div>
+              <i class="fa-solid fa-arrow-right faq-arrow"></i>
+            </a>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('Error loading FAQs', err);
+        faqContainer.innerHTML = `
+          <div style="text-align: center; padding: 1.25rem 0.75rem; color: #64748b; font-size: 0.8rem;">
+            No FAQs published yet.
+          </div>
+        `;
+      }
+    }
+
+    function openCreateTicketModal() {
+      document.getElementById('create-ticket-modal').classList.add('show');
+    }
+
+    function closeCreateTicketModal() {
+      document.getElementById('create-ticket-modal').classList.remove('show');
+    }
+
+    async function handleCreateTicket(e) {
+      e.preventDefault();
+      Validation.resetForm('create-ticket-form');
+
+      const subject = document.getElementById('modal-subject').value.trim();
+      const categoryId = document.getElementById('modal-category').value;
+      const orderNumber = document.getElementById('modal-order-number').value.trim();
+      const priority = document.getElementById('modal-priority').value;
+      const description = document.getElementById('modal-description').value.trim();
+
+      const subVal = Validation.validateRequired(subject, 'Ticket subject', 5);
+      if (!subVal.valid) {
+        Validation.showError('modal-subject', subVal.message);
+        document.getElementById('modal-subject').focus();
+        return;
+      }
+
+      const descVal = Validation.validateRequired(description, 'Issue description', 10);
+      if (!descVal.valid) {
+        Validation.showError('modal-description', descVal.message);
+        document.getElementById('modal-description').focus();
+        return;
+      }
+
+      try {
+        await API.post('/tickets', {
+          subject,
+          categoryId: parseInt(categoryId),
+          orderNumber: orderNumber || null,
+          priority,
+          description
+        });
+        Utils.showToast('Support ticket created successfully!', 'success');
+        closeCreateTicketModal();
+        setTimeout(() => {
+          window.location.href = 'my-tickets.html';
+        }, 600);
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to create ticket', 'error');
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+
+</html>

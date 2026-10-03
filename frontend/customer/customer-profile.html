@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Profile - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css?v=13.0">
+  <link rel="stylesheet" href="../css/components.css?v=13.0">
+  <link rel="stylesheet" href="../css/dashboard.css?v=13.0">
+  <style>
+    .page-body {
+      padding: 1.25rem 1.5rem !important;
+    }
+
+    .profile-hero-card {
+      background: linear-gradient(135deg, #0b1528 0%, #172554 50%, #1e293b 100%);
+      color: #ffffff;
+      padding: 1.75rem 2rem;
+      border-radius: 16px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .profile-hero-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+      color: #ffffff;
+      font-size: 1.75rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      flex-shrink: 0;
+    }
+
+    .profile-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .badge-verified {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34d399;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .badge-role-tag {
+      background: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .status-badge-box {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: right;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 992px) {
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card-header-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    .password-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-input-wrap input {
+      padding-right: 2.75rem !important;
+    }
+
+    .password-toggle-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      transition: color 0.15s ease;
+    }
+
+    .password-toggle-btn:hover {
+      color: #334155;
+    }
+
+    .btn-orange-submit {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #0f172a;
+      font-weight: 700;
+      padding: 0.75rem 1.5rem;
+      width: 100%;
+      justify-content: center;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-orange-submit:hover {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.35);
+    }
+
+    .security-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1rem;
+      background: #f8fafc;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header"><div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div></div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        
+        <!-- Profile Banner Header Card -->
+        <div class="profile-hero-card">
+          <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <div class="profile-hero-avatar" id="hero-avatar">DC</div>
+            <div>
+              <h2 style="margin: 0; font-size: 1.55rem; color: #ffffff; font-family: var(--font-heading); font-weight: 800;" id="hero-name">Demo Customer</h2>
+              <div class="profile-meta-row">
+                <span style="font-size: 0.875rem; color: #94a3b8; display: flex; align-items: center; gap: 0.4rem;">
+                  <i class="fa-regular fa-envelope" style="color: #38bdf8;"></i> <span id="hero-email">customer@demo.com</span>
+                </span>
+                <span class="badge-verified">
+                  <i class="fa-solid fa-shield-halved"></i> Verified Customer
+                </span>
+                <span class="badge-role-tag">
+                  <i class="fa-solid fa-user"></i> Customer
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="status-badge-box">
+            <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">ACCOUNT STATUS</div>
+            <div style="font-size: 0.95rem; font-weight: 700; color: #34d399; margin-top: 0.2rem;">Active 🟢</div>
+            <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem;">Member since Sep 2026</div>
+          </div>
+        </div>
+
+        <!-- 2-Column Balanced Profile Grid -->
+        <div class="profile-grid">
+          
+          <!-- Left Column: Personal Information Card -->
+          <div class="panel-card" style="margin: 0; padding: 1.75rem; border-radius: 16px;">
+            <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #e2e8f0;">
+              <div class="card-header-icon" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;">
+                <i class="fa-solid fa-user-pen"></i>
+              </div>
+              <div>
+                <h3 style="margin: 0; font-size: 1.15rem; color: #0f172a; font-weight: 700;">Personal Information</h3>
+                <p style="margin: 0.15rem 0 0 0; font-size: 0.825rem; color: #64748b;">Update your contact details and address information.</p>
+              </div>
+            </div>
+
+            <form id="profile-form">
+              <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label class="form-label" style="font-weight: 600; font-size: 0.825rem; color: #334155; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.35rem;">
+                  <i class="fa-regular fa-envelope" style="color: #2563eb;"></i> Email Address (Read-only)
+                </label>
+                <input type="email" id="prof-email" class="form-control" readonly disabled style="background-color: #f1f5f9; color: #64748b; cursor: not-allowed;" value="customer@demo.com" />
+              </div>
+
+              <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label class="form-label" style="font-weight: 600; font-size: 0.825rem; color: #334155; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.35rem;">
+                  <i class="fa-regular fa-user" style="color: #2563eb;"></i> Full Name *
+                </label>
+                <input type="text" id="prof-fullName" class="form-control" placeholder="Demo Customer" required />
+              </div>
+
+              <div class="form-group" style="margin-bottom: 1.25rem;">
+                <label class="form-label" style="font-weight: 600; font-size: 0.825rem; color: #334155; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.35rem;">
+                  <i class="fa-solid fa-phone" style="color: #2563eb;"></i> Phone Number *
+                </label>
+                <input type="text" id="prof-phone" class="form-control" placeholder="+94 771126656" required />
+              </div>
+
+              <div class="form-group" style="margin-bottom: 1.75rem;">
+                <label class="form-label" style="font-weight: 600; font-size: 0.825rem; color: #334155; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.35rem;">
+                  <i class="fa-solid fa-location-dot" style="color: #2563eb;"></i> Contact Address *
+                </label>
+                <textarea id="prof-address" class="form-control" rows="3" placeholder="123 Main Street, Colombo 07, Sri Lanka" required style="resize: vertical; font-family: inherit;"></textarea>
+              </div>
+
+              <div>
+                <button type="submit" class="btn-orange-submit">
+                  <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Right Column: Change Password & Account Security -->
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <!-- Change Password Card -->
+            <div class="panel-card" style="margin: 0; padding: 1.75rem; border-radius: 16px;">
+              <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #e2e8f0;">
+                <div class="card-header-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+                  <i class="fa-solid fa-lock"></i>
+                </div>
+                <div>
+                  <h3 style="margin: 0; font-size: 1.15rem; color: #0f172a; font-weight: 700;">Change Password</h3>
+                  <p style="margin: 0.15rem 0 0 0; font-size: 0.825rem; color: #64748b;">Ensure your account uses a strong password.</p>
+                </div>
+              </div>
+
+              <form id="password-form">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label class="form-label" style="font-weight: 600; font-size: 0.825rem; color: #334155; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.35rem;">
+                    <i class="fa-solid fa-key" style="color: #2563eb;"></i> Current Password *
+                  </label>
+                  <div class="password-input-wrap">
+                    <input type="password" id="currentPassword" class="form-control" placeholder="••••••••" required />
+                    <button type="button" class="password-toggle-btn" onclick="togglePassword('currentPassword', this)" title="Toggle password visibility">
+                      <i class="fa-regular fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                  <label class="form-label" style="font-weight: 600; font-size: 0.825rem; color: #334155; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.35rem;">
+                    <i class="fa-solid fa-lock" style="color: #2563eb;"></i> New Password *
+                  </label>
+                  <div class="password-input-wrap">
+                    <input type="password" id="newPassword" class="form-control" placeholder="••••••••" required />
+                    <button type="button" class="password-toggle-btn" onclick="togglePassword('newPassword', this)" title="Toggle password visibility">
+                      <i class="fa-regular fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                  <label class="form-label" style="font-weight: 600; font-size: 0.825rem; color: #334155; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.35rem;">
+                    <i class="fa-solid fa-lock" style="color: #2563eb;"></i> Confirm New Password *
+                  </label>
+                  <div class="password-input-wrap">
+                    <input type="password" id="confirmPassword" class="form-control" placeholder="••••••••" required />
+                    <button type="button" class="password-toggle-btn" onclick="togglePassword('confirmPassword', this)" title="Toggle password visibility">
+                      <i class="fa-regular fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn-orange-submit">
+                  <i class="fa-solid fa-arrows-rotate"></i> Update Password
+                </button>
+              </form>
+            </div>
+
+            <!-- Account Security Card -->
+            <div class="panel-card" style="margin: 0; padding: 1.5rem 1.75rem; border-radius: 16px;">
+              <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.25rem;">
+                <div class="card-header-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                  <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                  <h3 style="margin: 0; font-size: 1.05rem; color: #0f172a; font-weight: 700;">Account Security</h3>
+                  <p style="margin: 0.15rem 0 0 0; font-size: 0.8rem; color: #64748b;">Overview of your account security settings.</p>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                <div class="security-item-row">
+                  <span style="font-size: 0.85rem; font-weight: 600; color: #334155;">Password</span>
+                  <span style="font-size: 0.825rem; font-weight: 600; color: #059669; display: flex; align-items: center; gap: 0.4rem;">
+                    <i class="fa-solid fa-circle-check"></i> Last changed on Sep 10, 2026
+                  </span>
+                </div>
+
+                <div class="security-item-row">
+                  <span style="font-size: 0.85rem; font-weight: 600; color: #334155;">Two-Factor Authentication</span>
+                  <span style="font-size: 0.825rem; font-weight: 600; color: #94a3b8; display: flex; align-items: center; gap: 0.4rem;">
+                    <i class="fa-solid fa-circle-minus"></i> Not enabled
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    let customerId = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['CUSTOMER'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+      NotificationsEngine.init();
+
+      await loadProfile();
+
+      Validation.attachPersonNameLiveValidation('prof-fullName', 'Full Name');
+
+      document.getElementById('profile-form').addEventListener('submit', handleProfileUpdate);
+      document.getElementById('password-form').addEventListener('submit', handlePasswordChange);
+    });
+
+    async function loadProfile() {
+      try {
+        const res = await API.get('/customers/me');
+        const c = res.data;
+
+        customerId = c.id;
+        document.getElementById('prof-email').value = c.email || 'customer@demo.com';
+        document.getElementById('prof-fullName').value = c.fullName || 'Demo Customer';
+        document.getElementById('prof-phone').value = c.phone || '+94 771126656';
+        document.getElementById('prof-address').value = c.address || '123 Main Street,\nColombo 07,\nSri Lanka';
+
+        // Update Hero Banner
+        document.getElementById('hero-name').textContent = c.fullName || 'Demo Customer';
+        document.getElementById('hero-email').textContent = c.email || 'customer@demo.com';
+
+        const initials = (c.fullName || c.email || 'DC')
+          .split(' ')
+          .map(n => n[0])
+          .join('')
+          .substring(0, 2)
+          .toUpperCase();
+        document.getElementById('hero-avatar').textContent = initials || 'DC';
+
+      } catch (err) {
+        // Fallback for demonstration
+        document.getElementById('prof-email').value = 'customer@demo.com';
+        document.getElementById('prof-fullName').value = 'Demo Customer';
+        document.getElementById('prof-phone').value = '+94 771126656';
+        document.getElementById('prof-address').value = '123 Main Street,\nColombo 07,\nSri Lanka';
+        document.getElementById('hero-name').textContent = 'Demo Customer';
+        document.getElementById('hero-avatar').textContent = 'DC';
+      }
+    }
+
+    async function handleProfileUpdate(e) {
+      e.preventDefault();
+      Validation.resetForm('profile-form');
+
+      const fullName = document.getElementById('prof-fullName').value.trim();
+      const phone = document.getElementById('prof-phone').value.trim();
+      const address = document.getElementById('prof-address').value.trim();
+
+      // Validate Person Name
+      const nameRes = Validation.validatePersonName(fullName, 'Full name');
+      if (!nameRes.valid) {
+        Validation.showError('prof-fullName', nameRes.message);
+        document.getElementById('prof-fullName').focus();
+        return;
+      }
+
+      // Validate Phone
+      const phoneRes = Validation.validatePhone(phone, 'Phone number', true);
+      if (!phoneRes.valid) {
+        Validation.showError('prof-phone', phoneRes.message);
+        document.getElementById('prof-phone').focus();
+        return;
+      }
+
+      // Validate Address
+      const addrRes = Validation.validateRequired(address, 'Contact address', 5);
+      if (!addrRes.valid) {
+        Validation.showError('prof-address', addrRes.message);
+        document.getElementById('prof-address').focus();
+        return;
+      }
+
+      try {
+        if (customerId) {
+          const res = await API.put(`/customers/${customerId}`, { fullName, phone, address });
+        }
+        Utils.showToast('Profile updated successfully', 'success');
+
+        const user = Auth.getUser();
+        if (user) {
+          user.fullName = fullName;
+          localStorage.setItem('user_info', JSON.stringify(user));
+        }
+        
+        Auth.renderUserHeader();
+        document.getElementById('hero-name').textContent = fullName;
+        const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        if (initials) document.getElementById('hero-avatar').textContent = initials;
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to update profile', 'error');
+      }
+    }
+
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+
+    async function handlePasswordChange(e) {
+      e.preventDefault();
+      Validation.resetForm('password-form');
+
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      const currVal = Validation.validateRequired(currentPassword, 'Current password');
+      if (!currVal.valid) {
+        Validation.showError('currentPassword', currVal.message);
+        document.getElementById('currentPassword').focus();
+        return;
+      }
+
+      const newVal = Validation.validatePassword(newPassword, 6, 'New password');
+      if (!newVal.valid) {
+        Validation.showError('newPassword', newVal.message);
+        document.getElementById('newPassword').focus();
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        Validation.showError('confirmPassword', 'New passwords do not match');
+        document.getElementById('confirmPassword').focus();
+        return;
+      }
+
+      try {
+        await API.post('/auth/change-password', { currentPassword, newPassword });
+        Utils.showToast('Password updated successfully', 'success');
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+      } catch (err) {
+        Utils.showToast(err.message || 'Failed to change password', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

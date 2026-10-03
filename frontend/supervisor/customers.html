@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Management - SupportHUB</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    .metrics-summary-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+    @media (max-width: 900px) {
+      .metrics-summary-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    .metric-box {
+      background: var(--bg-surface, #ffffff);
+      border: 1px solid var(--border-color, #e2e8f0);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .metric-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    }
+    .metric-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    .metric-info h4 {
+      font-size: 0.825rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted, #64748b);
+      margin: 0 0 0.25rem 0;
+    }
+    .metric-info .metric-num {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--text-main, #0f172a);
+      margin: 0;
+    }
+
+    /* Clean Search & Filter Bar matching Image 2 */
+    .search-filter-bar-v2 {
+      display: flex;
+      gap: 0.85rem;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .search-filter-bar-v2 .search-input-wrap {
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+    }
+    .search-filter-bar-v2 .search-input-wrap i {
+      position: absolute;
+      left: 1.15rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+    .search-filter-bar-v2 .search-input-wrap input {
+      width: 100%;
+      padding: 0.65rem 1rem 0.65rem 2.75rem;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      font-size: 0.925rem;
+      color: #0f172a;
+      outline: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+    .search-filter-bar-v2 .search-input-wrap input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+    .filter-select-v2 {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 0.65rem 2.4rem 0.65rem 1.15rem;
+      font-size: 0.885rem;
+      font-weight: 500;
+      color: #1e293b;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 0.85rem center;
+      background-size: 0.95rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease;
+    }
+    .filter-select-v2:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+    .btn-refresh-v2 {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 0.65rem 1.15rem;
+      font-size: 0.885rem;
+      font-weight: 600;
+      color: #1e293b;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease;
+    }
+    .btn-refresh-v2:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+
+    /* Enterprise Table Container - Single View (No Scrollbar) */
+    .customer-table-card {
+      background: #ffffff;
+      border-radius: 14px;
+      overflow: hidden !important;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      width: 100%;
+    }
+    .custom-table-v2 {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      table-layout: fixed !important;
+    }
+    .custom-table-v2 thead tr {
+      background: #0d1527 !important;
+      border-bottom: 3px solid #f59e0b !important;
+    }
+    .custom-table-v2 th {
+      color: #ffffff !important;
+      font-size: 0.72rem !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.04em !important;
+      text-transform: uppercase !important;
+      padding: 0.95rem 0.65rem !important;
+      border: none !important;
+      border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+      background: transparent !important;
+      white-space: nowrap !important;
+      vertical-align: middle !important;
+      text-align: center !important;
+    }
+    .custom-table-v2 th:last-child {
+      border-right: none !important;
+    }
+    .custom-table-v2 tbody tr {
+      border-bottom: 1px solid #e2e8f0 !important;
+      transition: background-color 0.15s ease;
+    }
+    .custom-table-v2 tbody tr:nth-child(even) {
+      background-color: #fafbfd;
+    }
+    .custom-table-v2 tbody tr:hover {
+      background-color: #f1f5f9 !important;
+    }
+    .custom-table-v2 td {
+      padding: 0.85rem 0.65rem !important;
+      vertical-align: middle !important;
+      font-size: 0.875rem !important;
+      color: #1e293b !important;
+      white-space: nowrap !important;
+      border: none !important;
+      border-right: 1px solid #edf2f7 !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      max-width: 0;
+    }
+    .custom-table-v2 td:last-child {
+      border-right: none !important;
+    }
+
+    /* Customer Name Column Boundaries */
+    .customer-name-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      min-width: 0;
+      width: 100%;
+      overflow: hidden;
+    }
+    .customer-name-link {
+      font-weight: 700;
+      color: #0f172a;
+      text-decoration: none;
+      font-size: 0.885rem;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: block;
+      transition: color 0.15s ease;
+    }
+    .customer-name-link:hover {
+      color: #2563eb;
+      text-decoration: underline;
+    }
+
+    /* Customer Initial Avatar */
+    .avatar-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* Status Pills with Dot */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.28rem 0.7rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+    .status-pill-active {
+      background: #e6f9f0;
+      color: #059669;
+    }
+    .status-pill-active .dot {
+      width: 6.5px;
+      height: 6.5px;
+      border-radius: 50%;
+      background-color: #10b981;
+    }
+    .status-pill-inactive {
+      background: #fff4e5;
+      color: #d97706;
+    }
+    .status-pill-inactive .dot {
+      width: 6.5px;
+      height: 6.5px;
+      border-radius: 50%;
+      background-color: #f59e0b;
+    }
+
+    /* Square Action Buttons */
+    .action-btn-square {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      outline: none;
+      font-size: 0.85rem;
+    }
+    .action-btn-square.btn-edit {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #2563eb;
+    }
+    .action-btn-square.btn-edit:hover {
+      background: #dbeafe;
+      border-color: #93c5fd;
+      color: #1d4ed8;
+      transform: translateY(-1px);
+    }
+    .action-btn-square.btn-delete {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #ef4444;
+    }
+    .action-btn-square.btn-delete:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #dc2626;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo"><span class="logo-support">Support</span><span class="logo-hub">HUB</span></div>
+      </div>
+      <nav id="sidebar-nav" class="sidebar-nav"></nav>
+    </aside>
+
+    <div class="main-content">
+      <header class="top-header">
+        <div class="header-left"></div>
+
+        <div class="header-right">
+          <div class="notif-bell-container" id="notif-bell">
+            <div class="bell-icon" title="Notifications"><i class="fa-solid fa-bell"></i></div>
+            <span class="notif-counter" id="notif-counter" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notif-dropdown">
+              <div style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600;">Notifications</div>
+              <div id="notif-dropdown-list"></div>
+            </div>
+          </div>
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </header>
+
+      <div class="page-body">
+        <div class="page-header-row">
+          <div class="page-title-group">
+            <h1>Customer Management</h1>
+            <p>Manage customer accounts, contact information, and support access.</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem; align-items: center;">
+            <button id="btn-inactivity-check" onclick="triggerInactivityCheck()" class="btn btn-secondary" style="font-weight: 600; padding: 0.6rem 1.1rem; border-radius: 10px; display: inline-flex; align-items: center; gap: 0.45rem;" title="Run automated check for customers inactive for 6+ months">
+              <i class="fa-solid fa-clock-rotate-left" style="color: #64748b;"></i> Check 6-Month Inactivity
+            </button>
+            <button onclick="openCustomerModal()" class="btn btn-warning" style="background: #f59e0b; border: 1px solid #d97706; color: #0f172a; font-weight: 700; padding: 0.6rem 1.25rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35); cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem;">
+              <i class="fa-solid fa-user-plus" style="color: #0f172a;"></i> + Add Customer
+            </button>
+          </div>
+        </div>
+
+        <!-- Metrics Overview (Top 3 Summary Cards) -->
+        <div class="metrics-summary-row">
+          <div class="metric-box">
+            <div class="metric-icon-wrap" style="background: rgba(59, 130, 246, 0.1); color: #2563eb;">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="metric-info">
+              <h4>Total Customers</h4>
+              <p class="metric-num" id="metric-total-customers">0</p>
+            </div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-icon-wrap" style="background: rgba(16, 185, 129, 0.1); color: #059669;">
+              <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div class="metric-info">
+              <h4>Active Customers</h4>
+              <p class="metric-num" id="metric-active-customers">0</p>
+            </div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-icon-wrap" style="background: rgba(139, 92, 246, 0.1); color: #7c3aed;">
+              <i class="fa-solid fa-ticket"></i>
+            </div>
+            <div class="metric-info">
+              <h4>Support Tickets</h4>
+              <p class="metric-num" id="metric-support-tickets">0</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search & Filter Bar (Matching Image 2) -->
+        <div class="search-filter-bar-v2">
+          <div class="search-input-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="customer-search-input" placeholder="Search by customer name, email, or phone..." oninput="handleSearchCustomers()" />
+          </div>
+          <select id="status-filter" class="filter-select-v2" onchange="handleSearchCustomers()">
+            <option value="ALL">All Statuses</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+          </select>
+          <select id="sort-filter" class="filter-select-v2" onchange="handleSearchCustomers()">
+            <option value="NEWEST">Sort by Newest</option>
+            <option value="OLDEST">Sort by Oldest</option>
+            <option value="NAME_ASC">Sort by Name (A-Z)</option>
+            <option value="ORDERS_DESC">Sort by Total Orders</option>
+          </select>
+          <button onclick="loadCustomers()" class="btn-refresh-v2" title="Refresh list">
+            <i class="fa-solid fa-rotate"></i> Refresh
+          </button>
+        </div>
+
+        <!-- Main Customer Table (Matching Image 2) -->
+        <div id="customers-table-wrapper" class="customer-table-card">
+          <table class="custom-table-v2">
+            <thead>
+              <tr>
+                <th style="width: 20%; text-align: center;">CUSTOMER NAME</th>
+                <th style="width: 20%; text-align: center;">EMAIL ADDRESS</th>
+                <th style="width: 14%; text-align: center;">PHONE NUMBER</th>
+                <th style="width: 9%; text-align: center;">TOTAL ORDERS</th>
+                <th style="width: 9%; text-align: center;">OPEN TICKETS</th>
+                <th style="width: 10%; text-align: center;">ACCOUNT STATUS</th>
+                <th style="width: 10%; text-align: center;">REGISTERED DATE</th>
+                <th style="width: 8%; text-align: center;">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="customers-table-body">
+              <tr>
+                <td colspan="8" style="text-align: center; padding: 2.5rem; color: #64748b;">Loading customers...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customer Profile Executive Modal -->
+  <div class="modal-backdrop" id="customer-profile-modal">
+    <div class="modal-content" style="max-width: 680px; max-height: 90vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; border-radius: 16px;">
+      <div class="modal-header" style="padding: 1.25rem 1.75rem; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-bottom: 1px solid rgba(255,255,255,0.1);">
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+          <div id="profile-avatar" style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; border: 2px solid rgba(255,255,255,0.2);">JD</div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <h3 id="profile-fullname" style="margin: 0; color: white; font-size: 1.25rem;">John Doe</h3>
+              <span id="profile-status-badge" class="badge badge-success">Active</span>
+            </div>
+            <p id="profile-code-sub" style="margin: 0.15rem 0 0 0; font-size: 0.8rem; color: #94a3b8; font-weight: 600;">Customer ID: CUS-00125</p>
+          </div>
+        </div>
+        <button onclick="closeCustomerProfileModal()" class="close-modal" style="color: white; font-size: 1.5rem;">&times;</button>
+      </div>
+
+      <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+        
+        <!-- Section 1: Personal Information -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem;">
+          <h4 style="margin: 0 0 1rem 0; font-size: 0.825rem; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; font-weight: 800; display: flex; align-items: center; gap: 0.4rem;">
+            <i class="fa-solid fa-user-check" style="color: #2563eb;"></i> Personal Information
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; font-size: 0.875rem;">
+            <div><span style="color: #64748b; font-weight: 500;">Email:</span> <strong id="profile-email" style="color: #0f172a; margin-left: 4px;">-</strong></div>
+            <div><span style="color: #64748b; font-weight: 500;">Phone:</span> <strong id="profile-phone" style="color: #0f172a; margin-left: 4px;">-</strong></div>
+            <div><span style="color: #64748b; font-weight: 500;">Registered:</span> <strong id="profile-registered" style="color: #0f172a; margin-left: 4px;">-</strong></div>
+            <div><span style="color: #64748b; font-weight: 500;">Customer ID:</span> <strong id="profile-cust-id" style="color: #0284c7; margin-left: 4px;">-</strong></div>
+            <div><span style="color: #64748b; font-weight: 500;">Last Active:</span> <strong id="profile-last-login" style="color: #0f172a; margin-left: 4px;">-</strong></div>
+            <div><span style="color: #64748b; font-weight: 500;">Inactivity:</span> <strong id="profile-inactivity-days" style="color: #0f172a; margin-left: 4px;">-</strong></div>
+            <div style="grid-column: span 2; padding-top: 0.65rem; border-top: 1px dashed #cbd5e1; margin-top: 0.25rem;">
+              <span style="color: #64748b; font-weight: 500;"><i class="fa-solid fa-location-dot" style="color: #e11d48; margin-right: 4px;"></i> Shipping Address:</span>
+              <p id="profile-shipping-address" style="margin: 0.25rem 0 0 0; color: #0f172a; font-weight: 600; line-height: 1.4;">-</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Order Summary -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+            <h4 style="margin: 0; font-size: 0.825rem; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; font-weight: 800; display: flex; align-items: center; gap: 0.4rem;">
+              <i class="fa-solid fa-box" style="color: #0284c7;"></i> Order Summary
+            </h4>
+            <span id="profile-total-orders-pill" style="font-size: 0.75rem; font-weight: 700; background: #e0f2fe; color: #0284c7; padding: 0.15rem 0.55rem; border-radius: 8px;">0 Orders</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; text-align: center;">
+            <div style="background: #f8fafc; padding: 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <div style="font-size: 0.725rem; color: #64748b; font-weight: 600;">Total Orders</div>
+              <div id="profile-orders-total" style="font-size: 1.25rem; font-weight: 800; color: #0f172a;">0</div>
+            </div>
+            <div style="background: #f0fdf4; padding: 0.75rem; border-radius: 8px; border: 1px solid #bbf7d0;">
+              <div style="font-size: 0.725rem; color: #166534; font-weight: 600;">Completed</div>
+              <div id="profile-orders-completed" style="font-size: 1.25rem; font-weight: 800; color: #15803d;">0</div>
+            </div>
+            <div style="background: #eff6ff; padding: 0.75rem; border-radius: 8px; border: 1px solid #bfdbfe;">
+              <div style="font-size: 0.725rem; color: #1e40af; font-weight: 600;">Processing</div>
+              <div id="profile-orders-processing" style="font-size: 1.25rem; font-weight: 800; color: #2563eb;">0</div>
+            </div>
+            <div style="background: #fef2f2; padding: 0.75rem; border-radius: 8px; border: 1px solid #fecaca;">
+              <div style="font-size: 0.725rem; color: #991b1b; font-weight: 600;">Cancelled</div>
+              <div id="profile-orders-cancelled" style="font-size: 1.25rem; font-weight: 800; color: #dc2626;">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Support Summary -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+            <h4 style="margin: 0; font-size: 0.825rem; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; font-weight: 800; display: flex; align-items: center; gap: 0.4rem;">
+              <i class="fa-solid fa-ticket" style="color: #8b5cf6;"></i> Support Summary
+            </h4>
+            <span id="profile-total-tickets-pill" style="font-size: 0.75rem; font-weight: 700; background: #ede9fe; color: #7c3aed; padding: 0.15rem 0.55rem; border-radius: 8px;">0 Tickets</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; text-align: center;">
+            <div style="background: #fef2f2; padding: 0.75rem; border-radius: 8px; border: 1px solid #fecaca;">
+              <div style="font-size: 0.725rem; color: #991b1b; font-weight: 600;">Open</div>
+              <div id="profile-tickets-open" style="font-size: 1.25rem; font-weight: 800; color: #dc2626;">0</div>
+            </div>
+            <div style="background: #eff6ff; padding: 0.75rem; border-radius: 8px; border: 1px solid #bfdbfe;">
+              <div style="font-size: 0.725rem; color: #1e40af; font-weight: 600;">In Progress</div>
+              <div id="profile-tickets-progress" style="font-size: 1.25rem; font-weight: 800; color: #2563eb;">0</div>
+            </div>
+            <div style="background: #f0fdf4; padding: 0.75rem; border-radius: 8px; border: 1px solid #bbf7d0;">
+              <div style="font-size: 0.725rem; color: #166534; font-weight: 600;">Resolved</div>
+              <div id="profile-tickets-resolved" style="font-size: 1.25rem; font-weight: 800; color: #15803d;">0</div>
+            </div>
+            <div style="background: #f8fafc; padding: 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+              <div style="font-size: 0.725rem; color: #64748b; font-weight: 600;">Closed</div>
+              <div id="profile-tickets-closed" style="font-size: 1.25rem; font-weight: 800; color: #475569;">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Recent Support Tickets -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+          <h4 style="margin: 0 0 0.85rem 0; font-size: 0.825rem; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; font-weight: 800; display: flex; align-items: center; gap: 0.4rem;">
+            <i class="fa-solid fa-clock-rotate-left" style="color: #f59e0b;"></i> Recent Support Tickets
+          </h4>
+          <div id="profile-recent-tickets-list" style="display: flex; flex-direction: column; gap: 0.65rem;">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer" style="padding: 1rem 1.75rem; border-top: 1px solid #e2e8f0; background: #ffffff; display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button type="button" onclick="closeCustomerProfileModal()" class="btn btn-secondary">Close Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Customer Modal -->
+  <div class="modal-backdrop" id="customer-modal">
+    <div class="modal-content" style="max-width: 560px; max-height: 90vh; display: flex; flex-direction: column; padding: 0; overflow: hidden;">
+      <div class="modal-header" style="padding: 1.25rem 1.75rem 1rem; margin-bottom: 0; flex-shrink: 0; background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white;">
+        <h3 style="color: white; margin: 0; font-size: 1.2rem;"><i class="fa-solid fa-user-plus" style="color: #f59e0b; margin-right: 8px;"></i> Add Customer Account</h3>
+        <button onclick="closeCustomerModal()" class="close-modal" style="color: white;">&times;</button>
+      </div>
+      <form id="customer-form" style="display: flex; flex-direction: column; flex: 1; min-height: 0; margin: 0;" onsubmit="handleCreateCustomerSubmit(event)">
+        <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1.25rem 1.75rem 0.5rem; display: flex; flex-direction: column; gap: 0.85rem;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label"><i class="fa-solid fa-user" style="color: var(--navy-primary); margin-right: 4px;"></i> Full Name *</label>
+            <input type="text" id="cust-fullName" class="form-control" placeholder="e.g. John Doe" required />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label"><i class="fa-solid fa-envelope" style="color: var(--navy-primary); margin-right: 4px;"></i> Email Address (Username) *</label>
+            <input type="email" id="cust-email" class="form-control" placeholder="e.g. john@gmail.com" required />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label"><i class="fa-solid fa-phone" style="color: var(--navy-primary); margin-right: 4px;"></i> Contact Phone</label>
+            <input type="text" id="cust-phone" class="form-control" placeholder="e.g. +94 71 2345678" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label"><i class="fa-solid fa-location-dot" style="color: var(--navy-primary); margin-right: 4px;"></i> Shipping Address</label>
+            <input type="text" id="cust-address" class="form-control" placeholder="e.g. 123 Innovation Way, Tech City" />
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label"><i class="fa-solid fa-lock" style="color: var(--navy-primary); margin-right: 4px;"></i> Initial Password *</label>
+            <input type="password" id="cust-password" class="form-control" placeholder="Minimum 6 characters" minlength="6" required />
+            <small style="color: var(--text-muted); font-size: 0.775rem; margin-top: 0.2rem; display: block;">The customer will use this password to sign into the Customer Support Portal.</small>
+          </div>
+        </div>
+        <div class="modal-footer" style="padding: 1rem 1.75rem 1.25rem; flex-shrink: 0; border-top: 1px solid var(--border-color, #e2e8f0); background: var(--bg-surface, #ffffff); display: flex; gap: 0.75rem;">
+          <button type="button" onclick="closeCustomerModal()" class="btn btn-secondary" style="flex:1;">Cancel</button>
+          <button type="submit" id="submit-cust-btn" class="btn btn-warning" style="flex:2; background: #f59e0b; border: 1px solid #d97706; color: #0f172a; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;"><i class="fa-solid fa-user-check"></i> Add Customer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Customer Modal -->
+  <div class="modal-backdrop" id="edit-customer-modal">
+    <div class="modal-content" style="max-width: 540px;">
+      <div class="modal-header">
+        <div>
+          <h3 style="margin:0;"><i class="fa-solid fa-user-pen" style="color: var(--navy-primary); margin-right: 6px;"></i> Edit Customer Details</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Update profile information for this customer.</p>
+        </div>
+        <button onclick="closeEditCustomerModal()" class="close-modal">&times;</button>
+      </div>
+      <form id="edit-customer-form" onsubmit="handleEditCustomerSubmit(event)">
+        <input type="hidden" id="edit-cust-id" />
+        <div class="modal-body" style="padding: 0 0 1rem 0;">
+          <div class="form-group">
+            <label class="form-label">Email Address (Read Only)</label>
+            <input type="text" id="edit-cust-email" class="form-control" readonly style="background: #f1f5f9; cursor: not-allowed;" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" id="edit-cust-fullName" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="text" id="edit-cust-phone" class="form-control" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Shipping Address</label>
+            <input type="text" id="edit-cust-address" class="form-control" />
+          </div>
+        </div>
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem;">
+          <button type="button" onclick="closeEditCustomerModal()" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    let allCustomers = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!Auth.requireRole(['OPERATIONS_SUPERVISOR', 'CUSTOMER_SUPPORT_MANAGER'])) return;
+
+      Auth.renderUserHeader();
+      Auth.renderSidebar();
+
+      if (typeof NotificationsEngine !== 'undefined' && NotificationsEngine.init) {
+        NotificationsEngine.init();
+      }
+
+      Validation.attachPersonNameLiveValidation('cust-fullName', 'Full Name');
+      Validation.attachPersonNameLiveValidation('edit-cust-fullName', 'Full Name');
+
+      await loadCustomers();
+    });
+
+    async function loadCustomers() {
+      try {
+        const res = await API.get('/customers');
+        allCustomers = res.data || [];
+        updateMetrics();
+        handleSearchCustomers();
+      } catch (err) {
+        console.error('Error loading customers:', err);
+        Utils.showToast(err.message || 'Failed to load customers', 'error');
+      }
+    }
+
+    function updateMetrics() {
+      document.getElementById('metric-total-customers').textContent = allCustomers.length;
+      const activeCount = allCustomers.filter(c => c.active !== false).length;
+      document.getElementById('metric-active-customers').textContent = activeCount;
+
+      const totalSupportTickets = allCustomers.reduce((acc, c) => acc + (c.totalTickets || 0), 0);
+      document.getElementById('metric-support-tickets').textContent = totalSupportTickets;
+    }
+
+    function handleSearchCustomers() {
+      const q = (document.getElementById('customer-search-input') ? document.getElementById('customer-search-input').value : '').toLowerCase().trim();
+      const statusFilter = document.getElementById('status-filter') ? document.getElementById('status-filter').value : 'ALL';
+      const sortFilter = document.getElementById('sort-filter') ? document.getElementById('sort-filter').value : 'NEWEST';
+      renderCustomers(q, statusFilter, sortFilter);
+    }
+
+    function renderCustomers(searchFilter = '', statusFilter = 'ALL', sortFilter = 'NEWEST') {
+      let filtered = [...allCustomers];
+
+      // Text search filter
+      if (searchFilter) {
+        filtered = filtered.filter(c =>
+          (c.fullName && c.fullName.toLowerCase().includes(searchFilter)) ||
+          (c.email && c.email.toLowerCase().includes(searchFilter)) ||
+          (c.phone && c.phone.toLowerCase().includes(searchFilter))
+        );
+      }
+
+      // Status dropdown filter
+      if (statusFilter === 'ACTIVE') {
+        filtered = filtered.filter(c => c.active !== false);
+      } else if (statusFilter === 'INACTIVE') {
+        filtered = filtered.filter(c => c.active === false);
+      }
+
+      // Sort dropdown filter
+      if (sortFilter === 'NEWEST') {
+        filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      } else if (sortFilter === 'OLDEST') {
+        filtered.sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+      } else if (sortFilter === 'NAME_ASC') {
+        filtered.sort((a, b) => (a.fullName || '').localeCompare(b.fullName || ''));
+      } else if (sortFilter === 'ORDERS_DESC') {
+        filtered.sort((a, b) => (b.totalOrders || 0) - (a.totalOrders || 0));
+      }
+
+      const tableBody = document.getElementById('customers-table-body');
+
+      if (!filtered.length) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+              <i class="fa-solid fa-users-slash" style="font-size: 2rem; margin-bottom: 0.5rem; color: #94a3b8; display: block;"></i>
+              <strong style="color: var(--text-main); font-size: 1rem;">No Customers Found</strong>
+              <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem;">${searchFilter ? 'No customer matches your filter criteria.' : 'Click "+ Add Customer" above to create customer accounts.'}</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      // Render Table Rows matching user's exact specification in Image 2
+      const avatarColors = [
+        '#2563eb', // Blue (JD in image 2)
+        '#8b5cf6', // Purple (NS in image 2)
+        '#ec4899', // Pink (SA in image 2)
+        '#ea580c', // Orange-Red (KD in image 2)
+        '#0d9488', // Teal (PW in image 2)
+        '#0284c7', // Sky
+        '#6366f1'  // Indigo
+      ];
+
+      tableBody.innerHTML = filtered.map((c, index) => {
+        const createdDate = c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-US') : 'N/A';
+        const isActive = c.active !== false;
+        const totalOrders = c.totalOrders != null ? c.totalOrders : 0;
+        const openTickets = c.openTickets != null ? c.openTickets : 0;
+        const initials = (c.fullName || c.email || 'CU').substring(0, 2).toUpperCase();
+        const avatarBg = avatarColors[index % avatarColors.length];
+
+        return `
+          <tr>
+            <td style="padding-left: 0.85rem; max-width: 0; overflow: hidden;">
+              <div class="customer-name-wrapper">
+                <span class="avatar-circle" style="background-color: ${avatarBg}; cursor: pointer; flex-shrink: 0;" onclick="viewCustomerProfile(${c.id})" title="Click to view full customer profile">
+                  ${Utils.escapeHtml(initials)}
+                </span>
+                <a href="javascript:void(0)" onclick="viewCustomerProfile(${c.id})" class="customer-name-link" title="${Utils.escapeHtml(c.fullName || 'Unnamed')} (Click to view profile)">
+                  ${Utils.escapeHtml(c.fullName || 'Unnamed')}
+                </a>
+              </div>
+            </td>
+            <td style="color: #1e293b; font-size: 0.885rem; max-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${Utils.escapeHtml(c.email || '')}">
+              ${Utils.escapeHtml(c.email || '-')}
+            </td>
+            <td style="color: #1e293b; font-size: 0.885rem; max-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              ${c.phone ? Utils.escapeHtml(c.phone) : '-'}
+            </td>
+            <td style="text-align: center; font-weight: 500; color: #1e293b; font-size: 0.885rem;">
+              ${totalOrders}
+            </td>
+            <td style="text-align: center; font-weight: 500; color: #1e293b; font-size: 0.885rem;">
+              ${openTickets}
+            </td>
+            <td style="text-align: center;">
+              ${isActive ? `
+                <span class="status-pill status-pill-active">
+                  <span class="dot"></span> Active
+                </span>
+              ` : `
+                <span class="status-pill status-pill-inactive">
+                  <span class="dot"></span> Inactive
+                </span>
+              `}
+            </td>
+            <td style="text-align: center; color: #1e293b; font-size: 0.885rem;">
+              ${createdDate}
+            </td>
+            <td style="text-align: center;">
+              <div style="display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem;">
+                <button onclick="openEditCustomerModal(${c.id})" class="action-btn-square btn-edit" title="Edit Customer Details">
+                  <i class="fa-regular fa-pen-to-square"></i>
+                </button>
+                <button onclick="deleteCustomer(${c.id}, '${Utils.escapeHtml(c.fullName || c.email)}')" class="action-btn-square btn-delete" title="Permanently Delete Customer">
+                  <i class="fa-regular fa-trash-can"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function viewCustomerProfile(id) {
+      const c = allCustomers.find(item => item.id === id);
+      if (!c) return;
+
+      const initials = (c.fullName || c.email || 'CU').substring(0, 2).toUpperCase();
+      document.getElementById('profile-avatar').textContent = initials;
+      document.getElementById('profile-fullname').textContent = c.fullName || 'Unnamed Customer';
+      document.getElementById('profile-code-sub').textContent = `Customer ID: ${c.customerCode || 'CUS-' + c.id}`;
+      
+      const statusBadge = document.getElementById('profile-status-badge');
+      const isActive = c.active !== false;
+      statusBadge.className = `badge ${isActive ? 'badge-success' : 'badge-danger'}`;
+      statusBadge.textContent = isActive ? 'Active' : 'Inactive';
+
+      document.getElementById('profile-email').textContent = c.email || '-';
+      document.getElementById('profile-phone').textContent = c.phone || 'Not provided';
+      document.getElementById('profile-registered').textContent = c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A';
+      document.getElementById('profile-cust-id').textContent = c.customerCode || 'CUS-' + c.id;
+      document.getElementById('profile-last-login').textContent = c.lastLoginAt ? new Date(c.lastLoginAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Never logged in';
+      
+      const inactDays = c.inactivityDays != null ? c.inactivityDays : 0;
+      const inactEl = document.getElementById('profile-inactivity-days');
+      if (!isActive || inactDays >= 180) {
+        inactEl.innerHTML = `<span style="color: #dc2626; font-weight: 700;">${inactDays} days (Dormant)</span>`;
+      } else {
+        inactEl.innerHTML = `<span style="color: #16a34a; font-weight: 600;">${inactDays} days</span>`;
+      }
+
+      document.getElementById('profile-shipping-address').textContent = c.address || 'No shipping address on file';
+
+      // Order Summary
+      const totalOrders = c.totalOrders || 0;
+      const completedOrders = c.completedOrders || 0;
+      const processingOrders = c.processingOrders || 0;
+      const cancelledOrders = c.cancelledOrders || 0;
+
+      document.getElementById('profile-total-orders-pill').textContent = `${totalOrders} Orders`;
+      document.getElementById('profile-orders-total').textContent = totalOrders;
+      document.getElementById('profile-orders-completed').textContent = completedOrders;
+      document.getElementById('profile-orders-processing').textContent = processingOrders;
+      document.getElementById('profile-orders-cancelled').textContent = cancelledOrders;
+
+      // Support Summary
+      const totalTickets = c.totalTickets || 0;
+      const openTickets = c.openTickets || 0;
+      const progressTickets = c.inProgressTickets || 0;
+      const resolvedTickets = c.resolvedTickets || 0;
+      const closedTickets = c.closedTickets || 0;
+
+      document.getElementById('profile-total-tickets-pill').textContent = `${totalTickets} Tickets`;
+      document.getElementById('profile-tickets-open').textContent = openTickets;
+      document.getElementById('profile-tickets-progress').textContent = progressTickets;
+      document.getElementById('profile-tickets-resolved').textContent = resolvedTickets;
+      document.getElementById('profile-tickets-closed').textContent = closedTickets;
+
+      // Recent Tickets List
+      const recentListContainer = document.getElementById('profile-recent-tickets-list');
+      const recentTickets = c.recentTickets || [];
+
+      if (!recentTickets.length) {
+        recentListContainer.innerHTML = '<div style="text-align: center; color: #94a3b8; font-size: 0.85rem; padding: 1rem; background: #f8fafc; border-radius: 8px; border: 1px dashed #e2e8f0;">No previous support tickets recorded for this customer.</div>';
+      } else {
+        recentListContainer.innerHTML = recentTickets.map(t => {
+          let statusStyle = 'background: #eff6ff; color: #2563eb;';
+          if (t.status === 'RESOLVED') statusStyle = 'background: #f0fdf4; color: #16a34a;';
+          else if (t.status === 'CLOSED') statusStyle = 'background: #f8fafc; color: #64748b;';
+          else if (t.status === 'OPEN') statusStyle = 'background: #fef2f2; color: #dc2626;';
+
+          return `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.85rem;">
+              <div style="display: flex; align-items: center; gap: 0.65rem;">
+                <span style="font-weight: 700; color: #0f172a;">${t.ticketNumber}</span>
+                <span style="color: #cbd5e1;">|</span>
+                <span style="color: #334155; font-weight: 600;">${Utils.escapeHtml(t.subject)}</span>
+                ${t.orderNumber ? `<span style="font-size: 0.725rem; font-weight: 700; background: #e0f2fe; color: #0284c7; padding: 0.1rem 0.4rem; border-radius: 4px;">${t.orderNumber}</span>` : ''}
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.65rem;">
+                <span style="font-size: 0.725rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 6px; ${statusStyle}">${t.status}</span>
+                <a href="../customer/ticket-details.html?id=${t.id}" class="btn btn-sm btn-secondary" style="padding: 0.2rem 0.55rem; font-size: 0.75rem;">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Details
+                </a>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      document.getElementById('customer-profile-modal').style.display = 'flex';
+    }
+
+    function closeCustomerProfileModal() {
+      document.getElementById('customer-profile-modal').style.display = 'none';
+    }
+
+    function openCustomerModal() {
+      document.getElementById('customer-form').reset();
+      document.getElementById('customer-modal').style.display = 'flex';
+    }
+
+    function closeCustomerModal() {
+      document.getElementById('customer-modal').style.display = 'none';
+    }
+
+    async function handleCreateCustomerSubmit(e) {
+      e.preventDefault();
+      Validation.resetForm('customer-form');
+
+      const submitBtn = document.getElementById('submit-cust-btn');
+      const fullName = document.getElementById('cust-fullName').value.trim();
+      const email = document.getElementById('cust-email').value.trim();
+      const phone = document.getElementById('cust-phone').value.trim();
+      const address = document.getElementById('cust-address').value.trim();
+      const password = document.getElementById('cust-password').value;
+
+      // Validate Person Name
+      const nameRes = Validation.validatePersonName(fullName, 'Full name');
+      if (!nameRes.valid) {
+        Validation.showError('cust-fullName', nameRes.message);
+        document.getElementById('cust-fullName').focus();
+        return;
+      }
+
+      // Validate Email
+      const emailRes = Validation.validateEmail(email, 'Email address');
+      if (!emailRes.valid) {
+        Validation.showError('cust-email', emailRes.message);
+        document.getElementById('cust-email').focus();
+        return;
+      }
+
+      // Validate Phone (optional)
+      if (phone) {
+        const phoneRes = Validation.validatePhone(phone, 'Contact phone');
+        if (!phoneRes.valid) {
+          Validation.showError('cust-phone', phoneRes.message);
+          document.getElementById('cust-phone').focus();
+          return;
+        }
+      }
+
+      // Validate Password
+      const pwdRes = Validation.validatePassword(password, 6, 'Initial password');
+      if (!pwdRes.valid) {
+        Validation.showError('cust-password', pwdRes.message);
+        document.getElementById('cust-password').focus();
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adding Customer...';
+      }
+
+      try {
+        await API.post('/customers', {
+          fullName,
+          email,
+          phone: phone || null,
+          address: address || null,
+          password
+        });
+
+        Utils.showToast(`Customer "${fullName}" added successfully!`, 'success');
+        closeCustomerModal();
+        await loadCustomers();
+      } catch (err) {
+        console.error('Customer creation failed:', err);
+        Utils.showToast(err.message || 'Failed to add customer', 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-user-check"></i> Add Customer';
+        }
+      }
+    }
+
+    function openEditCustomerModal(id) {
+      const customer = allCustomers.find(c => c.id === id);
+      if (!customer) return;
+
+      Validation.resetForm('edit-customer-form');
+      document.getElementById('edit-cust-id').value = customer.id;
+      document.getElementById('edit-cust-email').value = customer.email || '';
+      document.getElementById('edit-cust-fullName').value = customer.fullName || '';
+      document.getElementById('edit-cust-phone').value = customer.phone || '';
+      document.getElementById('edit-cust-address').value = customer.address || '';
+
+      document.getElementById('edit-customer-modal').style.display = 'flex';
+    }
+
+    function closeEditCustomerModal() {
+      document.getElementById('edit-customer-modal').style.display = 'none';
+    }
+
+    async function handleEditCustomerSubmit(e) {
+      e.preventDefault();
+      Validation.resetForm('edit-customer-form');
+
+      const id = document.getElementById('edit-cust-id').value;
+      const fullName = document.getElementById('edit-cust-fullName').value.trim();
+      const phone = document.getElementById('edit-cust-phone').value.trim();
+      const address = document.getElementById('edit-cust-address').value.trim();
+
+      // Validate Person Name
+      const nameRes = Validation.validatePersonName(fullName, 'Full name');
+      if (!nameRes.valid) {
+        Validation.showError('edit-cust-fullName', nameRes.message);
+        document.getElementById('edit-cust-fullName').focus();
+        return;
+      }
+
+      // Validate Phone (optional)
+      if (phone) {
+        const phoneRes = Validation.validatePhone(phone, 'Phone number');
+        if (!phoneRes.valid) {
+          Validation.showError('edit-cust-phone', phoneRes.message);
+          document.getElementById('edit-cust-phone').focus();
+          return;
+        }
+      }
+
+      try {
+        await API.put(`/customers/${id}`, {
+          fullName,
+          phone: phone || null,
+          address: address || null
+        });
+
+        Utils.showToast('Customer profile updated successfully', 'success');
+        closeEditCustomerModal();
+        await loadCustomers();
+      } catch (err) {
+        console.error('Customer update failed:', err);
+        Utils.showToast(err.message || 'Failed to update customer', 'error');
+      }
+    }
+
+    async function deleteCustomer(id, name) {
+      if (!confirm(`Are you sure you want to permanently delete customer "${name}"? This action cannot be undone.`)) return;
+
+      try {
+        await API.delete(`/customers/${id}`);
+        allCustomers = allCustomers.filter(c => c.id !== id);
+        updateMetrics();
+        renderCustomers();
+        Utils.showToast(`Customer "${name}" deleted successfully`, 'success');
+        await loadCustomers();
+      } catch (err) {
+        console.error('Failed to delete customer:', err);
+        Utils.showToast(err.message || 'Failed to delete customer', 'error');
+      }
+    }
+
+    async function triggerInactivityCheck() {
+      const btn = document.getElementById('btn-inactivity-check');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking Inactivity...';
+      }
+
+      try {
+        const res = await API.post('/customers/check-inactivity?days=180', {});
+        const count = (res && res.data && res.data.deactivatedCount != null) ? res.data.deactivatedCount : 0;
+        if (count > 0) {
+          Utils.showToast(`Inactivity check complete: ${count} dormant customer account(s) deactivated.`, 'warning');
+        } else {
+          Utils.showToast('Inactivity check complete: All active customers have logged in within the 6-month threshold.', 'success');
+        }
+        await loadCustomers();
+      } catch (err) {
+        console.error('Inactivity check failed:', err);
+        Utils.showToast(err.message || 'Failed to execute customer inactivity check', 'error');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-clock-rotate-left" style="color: #64748b;"></i> Check 6-Month Inactivity';
+        }
+      }
+    }
+
+    async function reactivateCustomerAccount(id, name) {
+      if (!confirm(`Reactivate customer account for "${name}"? This will allow the customer to log into the platform again.`)) return;
+
+      try {
+        await API.patch(`/customers/${id}/reactivate`);
+        Utils.showToast(`Customer "${name}" has been reactivated successfully!`, 'success');
+        await loadCustomers();
+      } catch (err) {
+        console.error('Reactivation failed:', err);
+        Utils.showToast(err.message || 'Failed to reactivate customer', 'error');
+      }
+    }
+  </script>
+</body>
+
+</html>
