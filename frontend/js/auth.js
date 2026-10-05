@@ -327,14 +327,15 @@ const Auth = {
       }
     });
 
-    // On Home Page: If user is logged in, enhance the top navigation action button
-    if (isHomePage && isLoggedIn && user) {
+    // On Any Public Header Page (Home, Public Knowledge Base, etc.):
+    // If user is logged in, replace "Sign In / Register" with role-based Portal button
+    if (isLoggedIn && user) {
       const navActions = document.querySelector('.nav-actions');
       if (navActions) {
         const dashboardUrl = this.getDashboardUrl(user);
         const displayName = (user.fullName || user.email || 'Portal').split(' ')[0];
         navActions.innerHTML = `
-          <a href="${dashboardUrl}" class="btn btn-accent" style="font-size: 0.875rem; padding: 0.5rem 1.15rem; display: inline-flex; align-items: center; gap: 0.45rem;">
+          <a href="${dashboardUrl}" class="btn btn-accent" style="font-size: 0.875rem; padding: 0.5rem 1.15rem; display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 700; border-radius: 8px;">
             <i class="fa-solid fa-gauge-high"></i> <span>${displayName}'s Portal</span> &rarr;
           </a>
           <button class="hamburger-btn" id="hamburger-toggle" aria-label="Toggle Navigation Menu">☰</button>

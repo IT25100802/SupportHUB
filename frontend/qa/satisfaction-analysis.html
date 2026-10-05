@@ -940,18 +940,28 @@
           // Satisfaction by Category
           const catListEl = document.getElementById('category-sat-list');
           if (catListEl) {
-            const catMap = r.satisfactionByCategory || {};
-            const catKeys = Object.keys(catMap);
-            if (catKeys.length === 0) {
+            let catItems = [];
+            if (Array.isArray(r.satisfactionByCategory)) {
+              catItems = r.satisfactionByCategory;
+            } else if (r.satisfactionByCategory && typeof r.satisfactionByCategory === 'object') {
+              catItems = Object.entries(r.satisfactionByCategory).map(([name, score]) => ({
+                categoryName: name,
+                csatPercentage: score,
+                avgRating: (score / 20.0).toFixed(1)
+              }));
+            }
+
+            if (catItems.length === 0) {
               catListEl.innerHTML = '<div style="color: #64748b; font-size: 0.85rem; padding: 1rem 0;">No category satisfaction data recorded yet.</div>';
             } else {
               const colorClasses = ['blue', 'cyan', 'amber', 'purple', 'green', 'red'];
-              catListEl.innerHTML = catKeys.map((cat, idx) => {
-                const score = Math.round(catMap[cat] || 0);
+              catListEl.innerHTML = catItems.map((cat, idx) => {
+                const name = cat.categoryName || `Category ${idx + 1}`;
+                const score = cat.csatPercentage != null ? Math.round(Number(cat.csatPercentage)) : (cat.avgRating != null ? Math.round((Number(cat.avgRating) / 5) * 100) : 0);
                 const colorClass = colorClasses[idx % colorClasses.length];
                 return `
                   <div class="category-sat-item">
-                    <span class="category-sat-name">${cat}</span>
+                    <span class="category-sat-name">${name}</span>
                     <div class="category-sat-track">
                       <div class="category-sat-fill ${colorClass}" style="width: ${score}%;"></div>
                     </div>
@@ -970,21 +980,25 @@
               officerTbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #64748b; padding: 1rem;">No officer ratings recorded yet.</td></tr>';
             } else {
               officerTbody.innerHTML = officers.map(o => {
-                const initials = (o.name || 'Agent').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                const agentName = o.agentName || o.name || 'Support Officer';
+                const initials = agentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'SO';
+                const count = o.feedbackCount || 0;
+                const avg = o.avgRating != null ? Number(o.avgRating).toFixed(1) : '5.0';
+                const csat = o.csatPercentage != null ? Math.round(Number(o.csatPercentage)) : 100;
                 return `
                   <tr>
                     <td>
                       <div class="officer-meta-flex">
                         <div class="officer-badge-avatar">${initials}</div>
                         <div>
-                          <strong style="color: #0f172a; display: block;">${o.name}</strong>
+                          <strong style="color: #0f172a; display: block;">${agentName}</strong>
                           <span style="font-size: 0.7rem; color: #64748b;">${o.role || 'Support Officer'}</span>
                         </div>
                       </div>
                     </td>
-                    <td><strong>${o.feedbackCount}</strong> reviews</td>
-                    <td><i class="fa-solid fa-star" style="color: #f59e0b; margin-right: 4px;"></i> <strong>${o.avgRating}</strong> / 5</td>
-                    <td><span class="csat-pct-pill">${Math.round(o.csatPercentage)}%</span></td>
+                    <td><strong>${count}</strong> reviews</td>
+                    <td><i class="fa-solid fa-star" style="color: #f59e0b; margin-right: 4px;"></i> <strong>${avg}</strong> / 5</td>
+                    <td><span class="csat-pct-pill">${csat}%</span></td>
                   </tr>
                 `;
               }).join('');
