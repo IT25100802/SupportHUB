@@ -836,7 +836,7 @@
         <h3 style="color: white; margin: 0;"><i class="fa-solid fa-user-plus" style="color: #f59e0b; margin-right: 8px;"></i> Onboard Staff Member</h3>
         <button onclick="closeAgentModal()" class="close-modal" style="color: white;">&times;</button>
       </div>
-      <form id="agent-form" style="display: flex; flex-direction: column; flex: 1; min-height: 0; margin: 0;">
+      <form id="agent-form" autocomplete="off" style="display: flex; flex-direction: column; flex: 1; min-height: 0; margin: 0;">
         <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1.25rem 1.75rem 0.5rem;">
           <div class="form-group">
             <label class="form-label"><i class="fa-solid fa-user-shield" style="color: var(--navy-primary); margin-right: 4px;"></i> Staff Role *</label>
@@ -857,7 +857,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">Email Address *</label>
-            <input type="email" id="agent-email" class="form-control" placeholder="kasun.w@demo.com" required />
+            <input type="email" id="agent-email" class="form-control" placeholder="kasun.w@demo.com" autocomplete="new-email" required />
           </div>
           <div class="form-group">
             <label class="form-label">Phone Number</label>
@@ -865,7 +865,12 @@
           </div>
           <div class="form-group">
             <label class="form-label">Initial Password *</label>
-            <input type="password" id="agent-password" class="form-control" placeholder="••••••••" required />
+            <div class="password-input-wrap">
+              <input type="password" id="agent-password" class="form-control" placeholder="••••••••" autocomplete="new-password" required />
+              <button type="button" class="password-toggle-btn" onclick="togglePassword('agent-password', this)" title="Toggle password visibility">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
           </div>
           <div class="form-group" style="margin-bottom: 0.5rem;">
             <label class="form-label"><i class="fa-solid fa-layer-group"
@@ -1451,12 +1456,31 @@
 
     async function openAgentModal() {
       document.getElementById('agent-form').reset();
+      const passInput = document.getElementById('agent-password');
+      if (passInput) {
+        passInput.value = '';
+        passInput.type = 'password';
+        const eyeIcon = passInput.parentElement?.querySelector('.password-toggle-btn i');
+        if (eyeIcon) {
+          eyeIcon.classList.remove('fa-eye-slash');
+          eyeIcon.classList.add('fa-eye');
+        }
+      }
+      const emailInput = document.getElementById('agent-email');
+      if (emailInput) emailInput.value = '';
+
       toggleAgentCategorySection();
       const modalEl = document.getElementById('agent-modal');
       if (modalEl) {
         modalEl.style.cssText = 'display: flex !important; z-index: 100000 !important;';
         modalEl.classList.add('show');
       }
+
+      // Safeguard against browser autofill delays
+      setTimeout(() => {
+        if (passInput) passInput.value = '';
+        if (emailInput) emailInput.value = '';
+      }, 50);
 
       const listContainer = document.getElementById('register-categories-list');
       listContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 0.75rem; font-size: 0.85rem;">Loading categories...</div>';

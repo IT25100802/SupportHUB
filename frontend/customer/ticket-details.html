@@ -423,33 +423,22 @@
         slaBadge.style.cssText = 'font-size: 0.75rem; font-weight: 600; background: #f0fdf4; color: #16a34a; padding: 0.15rem 0.55rem; border-radius: 8px;';
       }
 
-      // Action Bar for Customer / Officer Status Controls
+      // Action Bar for Officer / Supervisor Status Controls
       const user = Auth.getUser() || { role: 'CUSTOMER' };
       const actionBar = document.getElementById('action-bar');
       actionBar.innerHTML = '';
 
-      const feedbackCard = document.getElementById('feedback-display-card');
-      if (t.hasFeedback || t.feedback) {
-        feedbackCard.style.display = 'block';
-        const fb = t.feedback || { rating: 5, comment: '', suggestions: '' };
-        document.getElementById('feedback-display-stars').innerHTML = Utils.renderStars(fb.rating || 5);
-        document.getElementById('feedback-display-comment').textContent = fb.comment ? `"${fb.comment}"` : 'No written comments provided.';
-        if (fb.suggestions) {
-          const sugEl = document.getElementById('feedback-display-suggestions');
-          sugEl.style.display = 'block';
-          sugEl.innerHTML = `<strong>Suggestion:</strong> ${fb.suggestions}`;
-        }
-      } else {
-        feedbackCard.style.display = 'none';
-      }
-
-      if (user.role === 'CUSTOMER' && (t.status === 'RESOLVED' || t.status === 'CLOSED')) {
-        if (!t.hasFeedback && !t.feedback) {
-          actionBar.innerHTML = `
-            <button onclick="openRateModal('${t.ticketNumber || t.id}', '${(t.subject || '').replace(/'/g, "\\'")}')" class="btn btn-warning" style="background: #f59e0b; border-color: #d97706; color: #0f172a; font-weight: 700; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.4rem;">
-              <i class="fa-solid fa-star"></i> Rate Support Service
-            </button>
-          `;
+      // Check for Feedback if ticket is Resolved or Closed
+      if (t.hasFeedback || t.status === 'RESOLVED' || t.status === 'CLOSED') {
+        try {
+          const numId = isNum ? currentTicketId : (parseInt(String(currentTicketId).replace(/\D/g, '')) || 1);
+          const fbRes = await API.get(`/feedback/ticket/${numId}`);
+          if (fbRes && fbRes.data) {
+            t.feedback = fbRes.data;
+            t.hasFeedback = true;
+          }
+        } catch (e) {
+          // No feedback recorded yet
         }
       }
 
@@ -482,11 +471,14 @@
         const section = document.getElementById('attachments-section');
         const list = document.getElementById('attachments-list');
         section.style.display = 'block';
-        list.innerHTML = t.attachments.map(a => `
-          <a href="${a.fileUrl || '#'}" target="_blank" class="btn btn-secondary btn-sm" style="background: #ffffff; border: 1px solid #cbd5e1; color: #0f172a; font-size: 0.8rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 8px; display: inline-flex; align-items: center; gap: 0.35rem;">
-            <i class="fa-solid fa-paperclip" style="color: #2563eb;"></i> ${a.originalFileName}
-          </a>
-        `).join('');
+        list.innerHTML = t.attachments.map(a => {
+          const fullUrl = (typeof API !== 'undefined' && API.getFileUrl) ? API.getFileUrl(a.fileUrl) : (a.fileUrl || '#');
+          return `
+            <a href="${fullUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" style="background: #ffffff; border: 1px solid #cbd5e1; color: #0f172a; font-size: 0.8rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 8px; display: inline-flex; align-items: center; gap: 0.35rem; transition: all 0.2s ease;">
+              <i class="fa-solid fa-paperclip" style="color: #2563eb;"></i> ${Utils.escapeHtml(a.originalFileName || 'Attachment')}
+            </a>
+          `;
+        }).join('');
       }
 
       // Replies Thread
@@ -538,8 +530,178 @@
         `).join('');
       }
 
-      if (t.status === 'CLOSED') {
-        document.getElementById('reply-form-container').innerHTML = '<div style="background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 1rem; border-radius: 12px; font-size: 0.875rem; font-weight: 600; text-align: center;"><i class="fa-solid fa-lock" style="margin-right: 6px;"></i> This ticket is CLOSED. Discussion thread is locked.</div>';
+      // Render Reply Form or Locked Discussion / Feedback Card
+      const replyContainer = document.getElementById('reply-form-container');
+      if (replyContainer) {
+        if (t.status === 'CLOSED' || t.status === 'RESOLVED') {
+          const isResolved = t.status === 'RESOLVED';
+          const statusText = isResolved ? 'RESOLVED' : 'CLOSED';
+          const iconClass = isResolved ? 'fa-circle-check' : 'fa-lock';
+          const bgGrad = isResolved ? 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)' : 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)';
+          const borderColor = isResolved ? '#86efac' : '#fca5a5';
+          const textColor = isResolved ? '#166534' : '#991b1b';
+          const descText = isResolved 
+            ? 'This ticket has been marked as <strong>Resolved</strong>. The discussion thread is locked and new messages are disabled.' 
+            : 'This ticket has been <strong>Closed</strong>. The discussion thread is locked and new messages are disabled.';
+
+          let feedbackHtml = '';
+
+          if (t.feedback) {
+            const fb = t.feedback;
+            feedbackHtml = `
+              <div style="margin-top: 1.15rem; background: #ffffff; border: 1.5px solid #cbd5e1; padding: 1.25rem 1.5rem; border-radius: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.03); text-align: left;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 0.5rem;">
+                  <span style="font-weight: 800; font-size: 0.95rem; color: #0f172a; display: flex; align-items: center; gap: 0.4rem;">
+                    <i class="fa-solid fa-star" style="color: #f59e0b;"></i> Customer Feedback Submitted
+                  </span>
+                  <span style="font-size: 1.15rem; color: #f59e0b;">${Utils.renderStars(fb.rating || 5)}</span>
+                </div>
+                ${fb.comment ? `<p style="font-size: 0.9rem; color: #334155; margin: 0.35rem 0 0.4rem 0; font-style: italic;">"${Utils.escapeHtml(fb.comment)}"</p>` : '<p style="font-size: 0.85rem; color: #94a3b8; margin: 0.25rem 0 0 0; font-style: italic;">No written comments provided.</p>'}
+                ${fb.suggestions ? `<p style="font-size: 0.825rem; color: #64748b; margin: 0.25rem 0 0 0;"><strong>Suggestion:</strong> ${Utils.escapeHtml(fb.suggestions)}</p>` : ''}
+              </div>
+            `;
+          } else if (user.role === 'CUSTOMER') {
+            selectedInlineRating = 0;
+            feedbackHtml = `
+              <div style="margin-top: 1.15rem; background: #ffffff; border: 2px solid #f59e0b; padding: 1.5rem; border-radius: 16px; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.12); text-align: center;">
+                <div style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-bottom: 0.3rem; display: flex; align-items: center; justify-content: center; gap: 0.45rem;">
+                  <i class="fa-solid fa-star" style="color: #f59e0b;"></i> Rate Your Support Experience
+                </div>
+                <p style="font-size: 0.85rem; color: #64748b; margin: 0 0 1rem 0;">
+                  Your ticket is resolved! Please rate how well our support team assisted you.
+                </p>
+
+                <div id="inline-star-picker" style="display: flex; justify-content: center; gap: 0.65rem; font-size: 2.25rem; margin-bottom: 0.4rem;">
+                  <i class="fa-solid fa-star inline-star" data-val="1" onclick="selectInlineStar(1)" onmouseover="hoverInlineStar(1)" onmouseout="resetInlineStarHover()" style="color: #cbd5e1; cursor: pointer; transition: all 0.15s ease;"></i>
+                  <i class="fa-solid fa-star inline-star" data-val="2" onclick="selectInlineStar(2)" onmouseover="hoverInlineStar(2)" onmouseout="resetInlineStarHover()" style="color: #cbd5e1; cursor: pointer; transition: all 0.15s ease;"></i>
+                  <i class="fa-solid fa-star inline-star" data-val="3" onclick="selectInlineStar(3)" onmouseover="hoverInlineStar(3)" onmouseout="resetInlineStarHover()" style="color: #cbd5e1; cursor: pointer; transition: all 0.15s ease;"></i>
+                  <i class="fa-solid fa-star inline-star" data-val="4" onclick="selectInlineStar(4)" onmouseover="hoverInlineStar(4)" onmouseout="resetInlineStarHover()" style="color: #cbd5e1; cursor: pointer; transition: all 0.15s ease;"></i>
+                  <i class="fa-solid fa-star inline-star" data-val="5" onclick="selectInlineStar(5)" onmouseover="hoverInlineStar(5)" onmouseout="resetInlineStarHover()" style="color: #cbd5e1; cursor: pointer; transition: all 0.15s ease;"></i>
+                </div>
+                <div id="inline-star-label" style="font-size: 0.85rem; font-weight: 700; color: #d97706; margin-bottom: 1.15rem; min-height: 1.25rem;">
+                  Tap stars to rate (1 to 5 stars)
+                </div>
+
+                <div style="text-align: left; margin-bottom: 0.85rem;">
+                  <label style="font-size: 0.825rem; font-weight: 700; color: #334155; margin-bottom: 0.35rem; display: block;"><i class="fa-solid fa-comment" style="color: #2563eb; margin-right: 4px;"></i> Feedback Comments (Optional)</label>
+                  <textarea id="inline-comment" class="form-control" rows="2" placeholder="Share how the officer assisted you or your experience..." style="border-radius: 10px; font-size: 0.875rem; background: #f8fafc;"></textarea>
+                </div>
+
+                <div style="text-align: left; margin-bottom: 1.25rem;">
+                  <label style="font-size: 0.825rem; font-weight: 700; color: #334155; margin-bottom: 0.35rem; display: block;"><i class="fa-solid fa-lightbulb" style="color: #f59e0b; margin-right: 4px;"></i> Suggestions for Improvement (Optional)</label>
+                  <input type="text" id="inline-suggestions" class="form-control" placeholder="Any suggestions to make our support better?" style="border-radius: 10px; font-size: 0.875rem; background: #f8fafc;" />
+                </div>
+
+                <button type="button" id="btn-submit-inline-feedback" onclick="submitInlineFeedback()" class="btn btn-warning" style="width: 100%; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; color: #0f172a; font-weight: 800; font-size: 0.95rem; padding: 0.75rem 1.5rem; border-radius: 10px; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; transition: transform 0.15s ease;">
+                  <i class="fa-solid fa-paper-plane"></i> Submit Customer Feedback
+                </button>
+              </div>
+            `;
+          }
+
+          replyContainer.innerHTML = `
+            <div style="background: ${bgGrad}; border: 1.5px solid ${borderColor}; color: ${textColor}; padding: 1.35rem 1.5rem; border-radius: 14px; text-align: center; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
+              <div style="font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                <i class="fa-solid ${iconClass}"></i> Ticket is ${statusText}
+              </div>
+              <div style="font-size: 0.85rem; font-weight: 500; opacity: 0.95;">
+                ${descText}
+              </div>
+            </div>
+            ${feedbackHtml}
+          `;
+        } else {
+          replyContainer.innerHTML = `
+            <form id="reply-form" onsubmit="handleReplySubmit(event)">
+              <div class="form-group" style="margin-bottom: 0.85rem;">
+                <label class="form-label" style="font-weight: 700; color: #0f172a;"><i class="fa-solid fa-reply" style="color: #2563eb; margin-right: 4px;"></i> Post Your Reply / Update</label>
+                <textarea id="replyMessage" class="form-control" rows="4" placeholder="Write your official response or update here..." style="border-radius: 10px; padding: 0.85rem 1rem; background: #ffffff;" required></textarea>
+              </div>
+              <div style="display: flex; justify-content: flex-end;">
+                <button type="submit" class="btn btn-warning" style="background: #f59e0b; border: 1px solid #d97706; color: #0f172a; font-weight: 700; padding: 0.65rem 1.5rem; border-radius: 10px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35); cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem;">
+                  <i class="fa-solid fa-paper-plane"></i> Send Reply
+                </button>
+              </div>
+            </form>
+          `;
+        }
+      }
+    }
+
+    let selectedInlineRating = 0;
+
+    function selectInlineStar(rating) {
+      selectedInlineRating = rating;
+      renderInlineStars(rating);
+    }
+
+    function hoverInlineStar(rating) {
+      renderInlineStars(rating);
+    }
+
+    function resetInlineStarHover() {
+      renderInlineStars(selectedInlineRating);
+    }
+
+    function renderInlineStars(rating) {
+      const stars = document.querySelectorAll('#inline-star-picker .inline-star');
+      const labels = {
+        0: 'Tap stars to rate (1 to 5 stars)',
+        1: '⭐ 1/5 - Poor Experience',
+        2: '⭐⭐ 2/5 - Below Expectations',
+        3: '⭐⭐⭐ 3/5 - Average Support',
+        4: '⭐⭐⭐⭐ 4/5 - Very Good Support',
+        5: '⭐⭐⭐⭐⭐ 5/5 - Excellent Service!'
+      };
+
+      stars.forEach((s, idx) => {
+        if (rating > 0 && idx < rating) {
+          s.style.color = '#f59e0b';
+          s.style.transform = 'scale(1.15)';
+        } else {
+          s.style.color = '#cbd5e1';
+          s.style.transform = 'scale(1)';
+        }
+      });
+
+      const labelEl = document.getElementById('inline-star-label');
+      if (labelEl) {
+        labelEl.textContent = labels[rating] || 'Tap stars to rate (1 to 5 stars)';
+      }
+    }
+
+    async function submitInlineFeedback() {
+      if (!selectedInlineRating || selectedInlineRating < 1) {
+        Utils.showToast('Please select a star rating (1 to 5 stars)', 'error');
+        return;
+      }
+
+      const comment = (document.getElementById('inline-comment')?.value || '').trim();
+      const suggestions = (document.getElementById('inline-suggestions')?.value || '').trim();
+      const submitBtn = document.getElementById('btn-submit-inline-feedback');
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+      }
+
+      try {
+        const isNum = /^\d+$/.test(String(currentTicketId).trim());
+        const numId = isNum ? parseInt(currentTicketId) : (parseInt(String(currentTicketId).replace(/\D/g, '')) || 1);
+        await API.post('/feedback', {
+          ticketId: numId,
+          rating: selectedInlineRating,
+          comment,
+          suggestions
+        });
+        Utils.showToast('Thank you! Your feedback has been submitted successfully.', 'success');
+        await loadTicketDetails();
+      } catch (err) {
+        Utils.showToast('Feedback submission failed: ' + (err.message || 'Error'), 'error');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Customer Feedback';
+        }
       }
     }
 

@@ -83,6 +83,25 @@ const Utils = {
 
     update();
     setInterval(update, 1000);
+  },
+
+  togglePassword(inputId, btn) {
+    const input = typeof inputId === 'string' ? document.getElementById(inputId) : inputId;
+    if (!input) return;
+    const icon = btn ? (btn.querySelector('i') || btn) : null;
+    if (input.type === 'password') {
+      input.type = 'text';
+      if (icon) {
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      }
+    } else {
+      input.type = 'password';
+      if (icon) {
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
   }
 };
 
@@ -254,3 +273,8 @@ const Validation = {
 document.addEventListener('DOMContentLoaded', () => {
   Utils.initLiveClock();
 });
+
+function togglePassword(inputId, btn) {
+  Utils.togglePassword(inputId, btn);
+}
+window.togglePassword = togglePassword;

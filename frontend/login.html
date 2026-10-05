@@ -28,7 +28,12 @@
 
         <div class="form-group">
           <label class="form-label" for="password">Password</label>
-          <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="current-password" />
+          <div class="password-input-wrap">
+            <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="current-password" />
+            <button type="button" class="password-toggle-btn" onclick="togglePassword('password', this)" title="Toggle password visibility">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
           <!-- Direct Under-Box Red Error Message for Incorrect Password -->
           <div id="password-error-msg" style="display: none; color: #dc2626; font-size: 0.825rem; font-weight: 600; margin-top: 0.45rem; align-items: center; gap: 0.35rem;">
             <i class="fa-solid fa-circle-exclamation"></i> <span>Password incorrect. Please try again.</span>

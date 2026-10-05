@@ -45,11 +45,21 @@
           <div class="form-row-2col">
             <div class="form-group">
               <label class="form-label" for="reg-password">Password</label>
-              <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required autocomplete="new-password" />
+              <div class="password-input-wrap">
+                <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required autocomplete="new-password" />
+                <button type="button" class="password-toggle-btn" onclick="togglePassword('reg-password', this)" title="Toggle password visibility">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label" for="reg-confirm-password">Confirm</label>
-              <input type="password" id="reg-confirm-password" class="form-control" placeholder="••••••••" required autocomplete="new-password" />
+              <div class="password-input-wrap">
+                <input type="password" id="reg-confirm-password" class="form-control" placeholder="••••••••" required autocomplete="new-password" />
+                <button type="button" class="password-toggle-btn" onclick="togglePassword('reg-confirm-password', this)" title="Toggle password visibility">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>

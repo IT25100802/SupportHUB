@@ -235,7 +235,7 @@ const Auth = {
     }
 
     // Auto initialize SupportHUB Virtual Support Assistant for Customers
-    if (user.role === 'CUSTOMER') {
+    if (user && user.role === 'CUSTOMER') {
       if (typeof ChatbotAssistant !== 'undefined') {
         ChatbotAssistant.init();
       } else {
@@ -252,6 +252,100 @@ const Auth = {
         }
       }
     }
+
+    // Automatically bind Logo Navigation across sidebar and top-nav
+    this.initLogoNavigation();
+  },
+
+  getDashboardUrl(user) {
+    const u = user || this.getUser();
+    const basePath = this.getBasePath();
+    if (!u) return `${basePath}/index.html`;
+
+    switch (u.role) {
+      case 'CUSTOMER':
+        return `${basePath}/customer/customer-dashboard.html`;
+      case 'CUSTOMER_SERVICE_OFFICER':
+        return `${basePath}/officer/officer-dashboard.html`;
+      case 'OPERATIONS_SUPERVISOR':
+        return `${basePath}/supervisor/supervisor-dashboard.html`;
+      case 'CUSTOMER_SUPPORT_MANAGER':
+        return `${basePath}/manager/manager-dashboard.html`;
+      case 'QA_EXECUTIVE':
+        return `${basePath}/qa/qa-dashboard.html`;
+      default:
+        return `${basePath}/index.html`;
+    }
+  },
+
+  handleLogoClick(e) {
+    if (e) e.preventDefault();
+    const basePath = this.getBasePath();
+    const currentPath = window.location.pathname;
+    const isHomePage = currentPath.endsWith('/index.html') || currentPath.endsWith('/') || currentPath.endsWith('/frontend') || currentPath.endsWith('/frontend/');
+
+    if (isHomePage) {
+      if (this.isLoggedIn()) {
+        window.location.href = this.getDashboardUrl();
+      } else {
+        window.location.href = `${basePath}/index.html`;
+      }
+    } else {
+      // If inside the system (logged in or on inner pages) -> clicking the logo takes user to Home Page
+      window.location.href = `${basePath}/index.html`;
+    }
+  },
+
+  initLogoNavigation() {
+    const basePath = this.getBasePath();
+    const currentPath = window.location.pathname;
+    const isHomePage = currentPath.endsWith('/index.html') || currentPath.endsWith('/') || currentPath.endsWith('/frontend') || currentPath.endsWith('/frontend/');
+    const user = this.getUser();
+    const isLoggedIn = this.isLoggedIn();
+
+    // Select all logo elements on the page
+    const logos = document.querySelectorAll('.brand-logo, .nav-logo, .sidebar-header .brand-logo, .sidebar-header');
+
+    logos.forEach(logoEl => {
+      const target = logoEl.classList.contains('sidebar-header') ? (logoEl.querySelector('.brand-logo') || logoEl) : logoEl;
+      target.style.cursor = 'pointer';
+
+      if (isHomePage) {
+        if (isLoggedIn) {
+          target.setAttribute('title', 'Go to your System Dashboard');
+          target.onclick = (e) => {
+            this.handleLogoClick(e);
+          };
+        } else {
+          target.setAttribute('title', 'SupportHUB Home');
+        }
+      } else {
+        target.setAttribute('title', 'Go to Home Page');
+        target.onclick = (e) => {
+          this.handleLogoClick(e);
+        };
+      }
+    });
+
+    // On Home Page: If user is logged in, enhance the top navigation action button
+    if (isHomePage && isLoggedIn && user) {
+      const navActions = document.querySelector('.nav-actions');
+      if (navActions) {
+        const dashboardUrl = this.getDashboardUrl(user);
+        const displayName = (user.fullName || user.email || 'Portal').split(' ')[0];
+        navActions.innerHTML = `
+          <a href="${dashboardUrl}" class="btn btn-accent" style="font-size: 0.875rem; padding: 0.5rem 1.15rem; display: inline-flex; align-items: center; gap: 0.45rem;">
+            <i class="fa-solid fa-gauge-high"></i> <span>${displayName}'s Portal</span> &rarr;
+          </a>
+          <button class="hamburger-btn" id="hamburger-toggle" aria-label="Toggle Navigation Menu">☰</button>
+        `;
+        const hamburgerBtn = document.getElementById('hamburger-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        if (hamburgerBtn && navMenu) {
+          hamburgerBtn.addEventListener('click', () => navMenu.classList.toggle('active'));
+        }
+      }
+    }
   },
 
   fixUrlSpace() {
@@ -264,3 +358,14 @@ const Auth = {
 
 // Instantly auto-fix URLs with spaces
 Auth.fixUrlSpace();
+
+// Auto-bind logo navigation on DOMContentLoaded
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      Auth.initLogoNavigation();
+    });
+  } else {
+    Auth.initLogoNavigation();
+  }
+}

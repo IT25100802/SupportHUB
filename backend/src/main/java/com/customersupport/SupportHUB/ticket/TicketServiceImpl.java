@@ -294,8 +294,8 @@ public class TicketServiceImpl implements TicketService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userEmail));
 
-        if (ticket.getStatus() == TicketStatus.CLOSED) {
-            throw new BadRequestException("Cannot reply to a CLOSED ticket");
+        if (ticket.getStatus() == TicketStatus.CLOSED || ticket.getStatus() == TicketStatus.RESOLVED) {
+            throw new BadRequestException("Cannot reply to a " + ticket.getStatus() + " ticket. The conversation thread is locked.");
         }
 
         // Officer restriction check: if officer replies to internal/external ticket, verify officer category permissions

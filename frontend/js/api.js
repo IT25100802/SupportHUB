@@ -103,5 +103,15 @@ const API = {
 
   delete(endpoint) {
     return this.request(endpoint, { method: 'DELETE' });
+  },
+
+  getFileUrl(fileUrl) {
+    if (!fileUrl) return '#';
+    if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://') || fileUrl.startsWith('blob:') || fileUrl.startsWith('data:')) {
+      return fileUrl;
+    }
+    const baseUrl = API_BASE_URL.replace(/\/api\/?$/, '');
+    const cleanPath = fileUrl.startsWith('/') ? fileUrl : `/${fileUrl}`;
+    return `${baseUrl}${cleanPath}`;
   }
 };
