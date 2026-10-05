@@ -445,42 +445,136 @@
     }
 
     /* Actions */
-    .action-btn-view {
-      padding: 0.2rem 0.5rem;
+    .action-btn-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .action-btn-view,
+    .action-btn-edit,
+    .action-btn-delete {
+      padding: 0.25rem 0.55rem;
       font-size: 0.725rem;
       font-weight: 700;
-      color: #2563eb;
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
       border-radius: 6px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 0.25rem;
+      gap: 0.3rem;
       white-space: nowrap;
       transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .action-btn-view {
+      color: #2563eb;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
     }
 
     .action-btn-view:hover {
       background: #eff6ff;
-      border-color: #bfdbfe;
+      border-color: #93c5fd;
+      color: #1d4ed8;
     }
 
-    .action-btn-dots {
-      padding: 0.2rem 0.35rem;
-      font-size: 0.775rem;
-      color: #64748b;
-      background: transparent;
-      border: none;
+    .action-btn-edit {
+      color: #0f766e;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+    }
+
+    .action-btn-edit:hover {
+      background: #f0fdfa;
+      border-color: #99f6e4;
+      color: #115e59;
+    }
+
+    .action-btn-delete {
+      color: #dc2626;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+    }
+
+    .action-btn-delete:hover {
+      background: #fef2f2;
+      border-color: #fca5a5;
+      color: #b91c1c;
+    }
+
+    /* Interactive Star Rating Selector */
+    .star-picker-container {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.75rem 1rem;
+      background: #fffbeb;
+      border: 1px solid #fef3c7;
+      border-radius: 10px;
+    }
+
+    .star-picker-stars {
+      display: inline-flex;
+      gap: 0.35rem;
+    }
+
+    .star-picker-stars i {
+      font-size: 1.5rem;
+      color: #cbd5e1;
       cursor: pointer;
-      border-radius: 4px;
-      margin-left: 0.15rem;
-      transition: all 0.15s ease;
+      transition: transform 0.15s ease, color 0.15s ease;
     }
 
-    .action-btn-dots:hover {
-      background: #f1f5f9;
-      color: #0f172a;
+    .star-picker-stars i:hover {
+      transform: scale(1.2);
+    }
+
+    .star-picker-stars i.filled {
+      color: #f59e0b;
+    }
+
+    .star-rating-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #92400e;
+    }
+
+    /* Delete Danger Modal Card */
+    .delete-modal-card {
+      background: #ffffff;
+      border-radius: 16px;
+      max-width: 480px;
+      width: 90%;
+      margin: auto;
+      padding: 1.5rem;
+      box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.4);
+      border: 1px solid #fecaca;
+      animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      text-align: center;
+    }
+
+    .delete-icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #fee2e2;
+      color: #dc2626;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin: 0 auto 1rem auto;
+    }
+
+    .delete-preview-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      text-align: left;
+      margin: 1rem 0;
+      font-size: 0.825rem;
     }
 
     /* Pagination Bar */
@@ -896,15 +990,122 @@
       </div>
 
       <div class="feedback-modal-footer">
-        <button type="button" class="btn btn-secondary btn-sm" onclick="openTicketFullDetails()" style="font-weight: 600; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.45rem 0.85rem; border-radius: 8px;">
-          <i class="fa-solid fa-arrow-up-right-from-square" style="color: #2563eb;"></i> Open Full Ticket History
-        </button>
+        <div style="display: flex; gap: 0.4rem; align-items: center;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="openTicketFullDetails()" style="font-weight: 600; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.45rem 0.85rem; border-radius: 8px;">
+            <i class="fa-solid fa-arrow-up-right-from-square" style="color: #2563eb;"></i> Full Ticket
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="openEditFromDetailModal()" style="font-weight: 600; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.45rem 0.85rem; border-radius: 8px; color: #0f766e; border-color: #99f6e4;">
+            <i class="fa-solid fa-pen-to-square"></i> Edit
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="openDeleteFromDetailModal()" style="font-weight: 600; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.45rem 0.85rem; border-radius: 8px; color: #dc2626; border-color: #fca5a5;">
+            <i class="fa-solid fa-trash-can"></i> Delete
+          </button>
+        </div>
         <div style="display: flex; gap: 0.5rem; align-items: center;">
           <button type="button" class="btn btn-secondary btn-sm" onclick="closeFeedbackModal()" style="font-weight: 600; font-size: 0.8rem; padding: 0.45rem 1rem; border-radius: 8px;">Close</button>
           <button type="button" class="btn btn-primary btn-sm" onclick="saveQaReview()" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border: none; color: #0f172a; font-weight: 700; font-size: 0.8rem; padding: 0.45rem 1.15rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35); display: inline-flex; align-items: center; gap: 0.4rem;">
             <i class="fa-solid fa-check"></i> Save Review
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Customer Feedback -->
+  <div class="modal-backdrop" id="modal-feedback-edit">
+    <div class="feedback-modal-card">
+      <div class="feedback-modal-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="width: 36px; height: 36px; border-radius: 8px; background: #f0fdfa; color: #0f766e; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </div>
+          <div>
+            <h3 style="color: #0f172a; margin: 0; font-weight: 800; font-size: 1.15rem;">Update Feedback Record</h3>
+            <span id="edit-modal-ticket-id" style="font-size: 0.775rem; color: #64748b; font-weight: 600;">TKT-000000</span>
+          </div>
+        </div>
+        <button onclick="closeEditFeedbackModal()" class="close-modal" title="Close modal" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; font-size: 1.25rem; line-height: 1; cursor: pointer; transition: all 0.15s ease;">&times;</button>
+      </div>
+
+      <div class="feedback-modal-body">
+        <!-- Ticket & Customer Info Banner -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; background: #f8fafc; padding: 0.85rem 1rem; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 0.8rem;">
+          <div>
+            <span style="color: #64748b; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Customer:</span>
+            <div id="edit-modal-customer" style="font-weight: 700; color: #0f172a; margin-top: 1px;">-</div>
+          </div>
+          <div>
+            <span style="color: #64748b; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Officer:</span>
+            <div id="edit-modal-officer" style="font-weight: 700; color: #0f172a; margin-top: 1px;">-</div>
+          </div>
+        </div>
+
+        <!-- Rating Selection -->
+        <div>
+          <label style="margin: 0 0 0.4rem 0; font-size: 0.825rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; justify-content: space-between;">
+            <span><i class="fa-solid fa-star" style="color: #f59e0b; margin-right: 4px;"></i> Star Rating <span style="color: #dc2626;">*</span></span>
+            <span id="edit-rating-badge" style="font-size: 0.75rem; font-weight: 700; color: #b45309;">5 Stars (Excellent)</span>
+          </label>
+          <div class="star-picker-container">
+            <div class="star-picker-stars" id="edit-star-picker">
+              <i class="fa-solid fa-star filled" data-rating="1" onclick="selectEditRating(1)" onmouseover="hoverEditRating(1)" onmouseout="resetHoverEditRating()"></i>
+              <i class="fa-solid fa-star filled" data-rating="2" onclick="selectEditRating(2)" onmouseover="hoverEditRating(2)" onmouseout="resetHoverEditRating()"></i>
+              <i class="fa-solid fa-star filled" data-rating="3" onclick="selectEditRating(3)" onmouseover="hoverEditRating(3)" onmouseout="resetHoverEditRating()"></i>
+              <i class="fa-solid fa-star filled" data-rating="4" onclick="selectEditRating(4)" onmouseover="hoverEditRating(4)" onmouseout="resetHoverEditRating()"></i>
+              <i class="fa-solid fa-star filled" data-rating="5" onclick="selectEditRating(5)" onmouseover="hoverEditRating(5)" onmouseout="resetHoverEditRating()"></i>
+            </div>
+            <div class="star-rating-label" id="edit-star-rating-label">5.0 / 5 Stars</div>
+          </div>
+        </div>
+
+        <!-- Feedback Comment -->
+        <div>
+          <label for="edit-modal-comment" style="margin: 0 0 0.4rem 0; font-size: 0.825rem; font-weight: 700; color: #0f172a; display: block;">
+            <i class="fa-solid fa-comment-dots" style="color: #2563eb; margin-right: 4px;"></i> Feedback Comment
+          </label>
+          <textarea id="edit-modal-comment" class="form-control" rows="3" placeholder="Enter customer feedback comment..." style="border-radius: 10px; font-size: 0.85rem; background: #ffffff; resize: vertical; border: 1px solid #cbd5e1;"></textarea>
+        </div>
+
+        <!-- Customer Suggestions -->
+        <div>
+          <label for="edit-modal-suggestions" style="margin: 0 0 0.4rem 0; font-size: 0.825rem; font-weight: 700; color: #0f172a; display: block;">
+            <i class="fa-solid fa-lightbulb" style="color: #f59e0b; margin-right: 4px;"></i> Customer Suggestions (Optional)
+          </label>
+          <textarea id="edit-modal-suggestions" class="form-control" rows="2" placeholder="Enter suggestions for improvement..." style="border-radius: 10px; font-size: 0.85rem; background: #ffffff; resize: vertical; border: 1px solid #cbd5e1;"></textarea>
+        </div>
+      </div>
+
+      <div class="feedback-modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeEditFeedbackModal()" style="font-weight: 600; font-size: 0.8rem; padding: 0.45rem 1rem; border-radius: 8px;">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm" id="btn-save-edit-feedback" onclick="submitUpdateFeedback()" style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); border: none; color: #ffffff; font-weight: 700; font-size: 0.8rem; padding: 0.45rem 1.25rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(13, 148, 136, 0.35); display: inline-flex; align-items: center; gap: 0.4rem;">
+          <i class="fa-solid fa-floppy-disk"></i> Update Feedback
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Delete Confirmation -->
+  <div class="modal-backdrop" id="modal-feedback-delete">
+    <div class="delete-modal-card">
+      <div class="delete-icon-wrap">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 style="margin: 0 0 0.35rem 0; font-size: 1.2rem; font-weight: 800; color: #0f172a;">Delete Feedback Entry?</h3>
+      <p style="margin: 0 0 1rem 0; font-size: 0.825rem; color: #64748b; line-height: 1.4;">
+        Are you sure you want to permanently delete this customer feedback? This action will remove the entry and update the satisfaction metrics.
+      </p>
+
+      <div class="delete-preview-box">
+        <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.25rem;" id="delete-modal-ticket-id">Ticket #TKT-000000</div>
+        <div style="color: #64748b; font-size: 0.775rem; margin-bottom: 0.25rem;" id="delete-modal-customer">Customer: -</div>
+        <div style="color: #475569; font-style: italic; font-size: 0.775rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" id="delete-modal-comment">"-"</div>
+      </div>
+
+      <div style="display: flex; gap: 0.6rem; justify-content: center; margin-top: 1.25rem;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeDeleteFeedbackModal()" style="font-weight: 600; font-size: 0.825rem; padding: 0.5rem 1.15rem; border-radius: 8px;">Cancel</button>
+        <button type="button" class="btn btn-danger btn-sm" id="btn-confirm-delete-feedback" onclick="submitDeleteFeedback()" style="background: #dc2626; border: none; color: #ffffff; font-weight: 700; font-size: 0.825rem; padding: 0.5rem 1.25rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35); display: inline-flex; align-items: center; gap: 0.4rem;">
+          <i class="fa-solid fa-trash-can"></i> Yes, Delete Feedback
+        </button>
       </div>
     </div>
   </div>
@@ -919,6 +1120,9 @@
     let currentPage = 1;
     const pageSize = 8;
     let selectedTicketId = '';
+    let currentFeedbackId = null;
+    let activeEditRating = 5;
+    let activeDeleteId = null;
 
     // Color maps for customer & agent avatar initials
     const avatarColors = {
@@ -1256,12 +1460,15 @@
               </span>
             </td>
             <td style="text-align: right;">
-              <div style="display: inline-flex; align-items: center;">
-                <button class="action-btn-view" onclick="openFeedbackModal(${f.id})">
+              <div class="action-btn-group">
+                <button class="action-btn-view" onclick="openFeedbackModal(${f.id})" title="View Details">
                   <i class="fa-regular fa-eye"></i> View
                 </button>
-                <button class="action-btn-dots" onclick="openFeedbackModal(${f.id})">
-                  <i class="fa-solid fa-ellipsis-vertical"></i>
+                <button class="action-btn-edit" onclick="openEditFeedbackModal(${f.id})" title="Edit Feedback">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+                <button class="action-btn-delete" onclick="confirmDeleteFeedback(${f.id})" title="Delete Feedback">
+                  <i class="fa-solid fa-trash-can"></i>
                 </button>
               </div>
             </td>
@@ -1314,6 +1521,7 @@
       const f = allFeedbackEntries.find(x => x.id === id);
       if (!f) return;
 
+      currentFeedbackId = f.id;
       selectedTicketId = f.ticketNumber;
       document.getElementById('modal-ticket-id').textContent = f.ticketNumber;
       document.getElementById('modal-customer-name').textContent = f.customerName;
@@ -1375,6 +1583,18 @@
       document.getElementById('modal-feedback-detail').classList.remove('show');
     }
 
+    function openEditFromDetailModal() {
+      if (!currentFeedbackId) return;
+      closeFeedbackModal();
+      openEditFeedbackModal(currentFeedbackId);
+    }
+
+    function openDeleteFromDetailModal() {
+      if (!currentFeedbackId) return;
+      closeFeedbackModal();
+      confirmDeleteFeedback(currentFeedbackId);
+    }
+
     function openTicketFullDetails() {
       if (!selectedTicketId) return;
       window.location.href = `../customer/ticket-details.html?id=${encodeURIComponent(selectedTicketId)}`;
@@ -1390,6 +1610,161 @@
       closeFeedbackModal();
     }
 
+    // =========================================================================
+    // Feedback EDIT Logic
+    // =========================================================================
+    const ratingLabels = {
+      1: '1 Star (Very Poor)',
+      2: '2 Stars (Poor)',
+      3: '3 Stars (Average)',
+      4: '4 Stars (Good)',
+      5: '5 Stars (Excellent)'
+    };
+
+    function openEditFeedbackModal(id) {
+      const f = allFeedbackEntries.find(x => x.id === id);
+      if (!f) return;
+
+      currentFeedbackId = f.id;
+      document.getElementById('edit-modal-ticket-id').textContent = `Ticket: ${f.ticketNumber}`;
+      document.getElementById('edit-modal-customer').textContent = `${f.customerName} (${f.customerEmail})`;
+      document.getElementById('edit-modal-officer').textContent = `${f.officerName} (${f.category})`;
+      document.getElementById('edit-modal-comment').value = f.comment || '';
+      document.getElementById('edit-modal-suggestions').value = f.suggestions || '';
+
+      activeEditRating = Number(f.rating) || 5;
+      updateEditStarPickerUI(activeEditRating);
+
+      document.getElementById('modal-feedback-edit').classList.add('show');
+    }
+
+    function closeEditFeedbackModal() {
+      document.getElementById('modal-feedback-edit').classList.remove('show');
+    }
+
+    function selectEditRating(val) {
+      activeEditRating = val;
+      updateEditStarPickerUI(val);
+    }
+
+    function hoverEditRating(val) {
+      updateEditStarPickerUI(val);
+    }
+
+    function resetHoverEditRating() {
+      updateEditStarPickerUI(activeEditRating);
+    }
+
+    function updateEditStarPickerUI(rating) {
+      const stars = document.querySelectorAll('#edit-star-picker i');
+      stars.forEach(s => {
+        const r = Number(s.getAttribute('data-rating'));
+        if (r <= rating) {
+          s.classList.add('filled');
+        } else {
+          s.classList.remove('filled');
+        }
+      });
+
+      const labelEl = document.getElementById('edit-star-rating-label');
+      const badgeEl = document.getElementById('edit-rating-badge');
+      if (labelEl) labelEl.textContent = `${rating}.0 / 5 Stars`;
+      if (badgeEl) badgeEl.textContent = ratingLabels[rating] || `${rating} Stars`;
+    }
+
+    async function submitUpdateFeedback() {
+      if (!currentFeedbackId) return;
+
+      const comment = document.getElementById('edit-modal-comment').value.trim();
+      const suggestions = document.getElementById('edit-modal-suggestions').value.trim();
+
+      const btn = document.getElementById('btn-save-edit-feedback');
+      const originalHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+      try {
+        await API.put(`/feedback/${currentFeedbackId}`, {
+          rating: activeEditRating,
+          comment: comment,
+          suggestions: suggestions
+        });
+
+        if (typeof Utils !== 'undefined' && Utils.showToast) {
+          Utils.showToast('Customer feedback updated successfully!', 'success');
+        } else {
+          alert('Customer feedback updated successfully!');
+        }
+
+        closeEditFeedbackModal();
+        await loadFeedbackLog();
+      } catch (err) {
+        console.error('Failed to update feedback:', err);
+        const msg = err.message || 'Failed to update feedback. Please try again.';
+        if (typeof Utils !== 'undefined' && Utils.showToast) {
+          Utils.showToast(msg, 'error');
+        } else {
+          alert(msg);
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }
+
+    // =========================================================================
+    // Feedback DELETE Logic
+    // =========================================================================
+    function confirmDeleteFeedback(id) {
+      const f = allFeedbackEntries.find(x => x.id === id);
+      if (!f) return;
+
+      activeDeleteId = f.id;
+      document.getElementById('delete-modal-ticket-id').textContent = `Ticket: ${f.ticketNumber}`;
+      document.getElementById('delete-modal-customer').textContent = `Customer: ${f.customerName} (${f.rating} ★ Rating)`;
+      document.getElementById('delete-modal-comment').textContent = f.comment ? `"${f.comment}"` : 'No comment text.';
+
+      document.getElementById('modal-feedback-delete').classList.add('show');
+    }
+
+    function closeDeleteFeedbackModal() {
+      document.getElementById('modal-feedback-delete').classList.remove('show');
+      activeDeleteId = null;
+    }
+
+    async function submitDeleteFeedback() {
+      if (!activeDeleteId) return;
+
+      const btn = document.getElementById('btn-confirm-delete-feedback');
+      const originalHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Deleting...';
+
+      try {
+        await API.delete(`/feedback/${activeDeleteId}`);
+
+        if (typeof Utils !== 'undefined' && Utils.showToast) {
+          Utils.showToast('Customer feedback deleted successfully.', 'success');
+        } else {
+          alert('Customer feedback deleted successfully.');
+        }
+
+        closeDeleteFeedbackModal();
+        await loadFeedbackLog();
+      } catch (err) {
+        console.error('Failed to delete feedback:', err);
+        const msg = err.message || 'Failed to delete feedback. Please try again.';
+        if (typeof Utils !== 'undefined' && Utils.showToast) {
+          Utils.showToast(msg, 'error');
+        } else {
+          alert(msg);
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }
+
     function escapeHtml(str) {
       if (!str) return '';
       return String(str)
@@ -1403,4 +1778,5 @@
 </body>
 
 </html>
+
 

@@ -7,9 +7,12 @@ import java.util.List;
 
 public interface FeedbackService {
     FeedbackDto submitFeedback(String customerEmail, CreateFeedbackRequest request);
+    FeedbackDto updateFeedback(Long id, UpdateFeedbackRequest request);
+    void deleteFeedback(Long id);
     FeedbackDto getFeedbackById(Long id);
     FeedbackDto getFeedbackByTicketId(Long ticketId);
     List<FeedbackDto> getAllFeedback();
     Page<FeedbackDto> filterFeedback(Integer rating, String keyword, Pageable pageable);
     FeedbackReportDto getFeedbackAnalytics();
 }
+

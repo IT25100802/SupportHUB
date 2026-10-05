@@ -37,6 +37,22 @@ public class FeedbackController {
         return ResponseEntity.ok(ApiResponse.success("Feedback details fetched successfully", feedback));
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('QA_EXECUTIVE', 'CUSTOMER_SUPPORT_MANAGER', 'OPERATIONS_SUPERVISOR')")
+    public ResponseEntity<ApiResponse<FeedbackDto>> updateFeedback(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody UpdateFeedbackRequest request) {
+        FeedbackDto feedback = feedbackService.updateFeedback(id, request);
+        return ResponseEntity.ok(ApiResponse.success("Feedback updated successfully", feedback));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('QA_EXECUTIVE', 'CUSTOMER_SUPPORT_MANAGER', 'OPERATIONS_SUPERVISOR')")
+    public ResponseEntity<ApiResponse<Void>> deleteFeedback(@PathVariable("id") Long id) {
+        feedbackService.deleteFeedback(id);
+        return ResponseEntity.ok(ApiResponse.success("Feedback deleted successfully", null));
+    }
+
     @GetMapping("/ticket/{ticketId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<FeedbackDto>> getFeedbackByTicketId(@PathVariable("ticketId") Long ticketId) {

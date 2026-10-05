@@ -97,6 +97,32 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
+    @Transactional
+    public FeedbackDto updateFeedback(Long id, UpdateFeedbackRequest request) {
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Feedback not found with id: " + id));
+
+        if (request.getRating() < 1 || request.getRating() > 5) {
+            throw new BadRequestException("Rating must be between 1 and 5 stars");
+        }
+
+        feedback.setRating(request.getRating());
+        feedback.setComment(request.getComment());
+        feedback.setSuggestions(request.getSuggestions());
+
+        Feedback updated = feedbackRepository.save(feedback);
+        return mapToDto(updated);
+    }
+
+    @Override
+    @Transactional
+    public void deleteFeedback(Long id) {
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Feedback not found with id: " + id));
+        feedbackRepository.delete(feedback);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public FeedbackDto getFeedbackById(Long id) {
         Feedback feedback = feedbackRepository.findById(id)
